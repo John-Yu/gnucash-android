@@ -73,4 +73,9 @@ public class AccountTest {
         assertEquals(testAccount.getFullName(), updatedFullName);
         assertEquals(testAccount.getAccountType(), type);
     }
+
+    @Test
+    public void testFavoritingAccountShouldBeFlaggedAsFavorite() {
+
+    }
 }
