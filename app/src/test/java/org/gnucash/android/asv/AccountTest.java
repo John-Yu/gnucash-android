@@ -33,9 +33,18 @@ public class AccountTest {
     }
 
     @Test
-    public void exampleTest2() {
-        Account testAccount = mock(Account.class);
+    public void testCreatingSubAccountMustBelongToParentAccount() {
+        Account parentAccount = mock(Account.class);
+        Account subAccount = mock(Account.class);
+        String parentUID = "test";
+        
+        parentAccount.setUID(parentUID);
+        subAccount.setParentUID(parentUID);
 
-        assertNotNull(testAccount);
+        when(parentAccount.getUID()).thenReturn(parentUID);
+        when(subAccount.getParentUID()).thenReturn(parentUID);
+
+        assertEquals(parentAccount.getUID(), parentUID);
+        assertEquals(subAccount.getParentUID(), parentUID);
     }
 }
