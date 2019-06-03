@@ -18,7 +18,7 @@ public class AccountTest {
         String testName = "Klaas";
         String testFullName = "Klaas van der Berg";
         String testDescription = "This is a test description";
-        AccountType testType = AccountType.CASH;
+        AccountType testType = AccountType.CASH; //enum
 
         when(testAccount.getName()).thenReturn(testName);
         when(testAccount.getFullName()).thenReturn(testFullName);
@@ -37,7 +37,7 @@ public class AccountTest {
         Account parentAccount = mock(Account.class);
         Account subAccount = mock(Account.class);
         String parentUID = "test";
-        
+
         parentAccount.setUID(parentUID);
         subAccount.setParentUID(parentUID);
 
@@ -46,5 +46,31 @@ public class AccountTest {
 
         assertEquals(parentAccount.getUID(), parentUID);
         assertEquals(subAccount.getParentUID(), parentUID);
+    }
+
+    @Test
+    public void testEditingAccountMustHaveUpdatedInformation() {
+        Account testAccount = mock(Account.class);
+        String updatedDescription = "updatedDescription";
+        String updatedName = "updatedName";
+        String updatedFullName = "updatedFullName";
+        AccountType type = AccountType.CASH; //enum
+
+        //setting the old values
+        testAccount.setDescription("oldDescription");
+        testAccount.setName("oldName");
+        testAccount.setFullName("oldFullName");
+        testAccount.setAccountType(AccountType.BANK);
+
+        // setting the "updated" values as return
+        when(testAccount.getDescription()).thenReturn(updatedDescription);
+        when(testAccount.getName()).thenReturn(updatedName);
+        when(testAccount.getFullName()).thenReturn(updatedFullName);
+        when(testAccount.getAccountType()).thenReturn(type);
+
+        assertEquals(testAccount.getDescription(), updatedDescription);
+        assertEquals(testAccount.getName(), updatedName);
+        assertEquals(testAccount.getFullName(), updatedFullName);
+        assertEquals(testAccount.getAccountType(), type);
     }
 }
