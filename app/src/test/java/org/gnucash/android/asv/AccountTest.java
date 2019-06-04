@@ -3,7 +3,11 @@ package org.gnucash.android.asv;
 import org.gnucash.android.db.adapter.AccountsDbAdapter;
 import org.gnucash.android.model.Account;
 import org.gnucash.android.model.AccountType;
+import org.gnucash.android.model.Transaction;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -110,5 +114,26 @@ public class AccountTest {
         adapter.deleteRecord(uid);
         when(adapter.getAccountName(uid)).thenReturn(null);
         assertNull(adapter.getAccountName(uid));
+    }
+
+    @Test
+    public void testAddingTransactionsToAccountShouldReturnSameTransactions() {
+        Account testAccount = mock(Account.class);
+        Transaction testTransaction1 = mock(Transaction.class);
+        Transaction testTransaction2 = mock(Transaction.class);
+        Transaction testTransaction3 = mock(Transaction.class);
+        List<Transaction> transactions = Arrays.asList(testTransaction1, testTransaction2,
+                testTransaction3);
+        int amountOfTransactions = transactions.size();
+
+        testAccount.addTransaction(testTransaction1);
+        testAccount.addTransaction(testTransaction2);
+        testAccount.addTransaction(testTransaction3);
+
+        when(testAccount.getTransactionCount()).thenReturn(amountOfTransactions);
+        when(testAccount.getTransactions()).thenReturn(transactions);
+
+        assertEquals(testAccount.getTransactionCount(), amountOfTransactions);
+        assertEquals(testAccount.getTransactions(), transactions);
     }
 }
