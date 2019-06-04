@@ -77,13 +77,14 @@ public class AccountTest {
     }
 
     @Test
-    public void testFavoritingAccountShouldBeFlaggedAsFavorite() {
+    public void testFavoringAccountShouldBeFlaggedAsFavorite() {
         AccountsDbAdapter adapter = mock(AccountsDbAdapter.class);
         Account testAccount = mock(Account.class);
         String uid = "123";
 
         adapter.addRecord(testAccount);
-        testAccount.setUID(uid);;
+        testAccount.setUID(uid);
+
         testAccount.setFavorite(true);
 
         when(adapter.isFavoriteAccount(uid)).thenReturn(true);
