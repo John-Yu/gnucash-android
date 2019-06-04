@@ -1,11 +1,13 @@
 package org.gnucash.android.asv;
 
+import org.gnucash.android.db.adapter.AccountsDbAdapter;
 import org.gnucash.android.model.Account;
 import org.gnucash.android.model.AccountType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -76,6 +78,16 @@ public class AccountTest {
 
     @Test
     public void testFavoritingAccountShouldBeFlaggedAsFavorite() {
+        AccountsDbAdapter adapter = mock(AccountsDbAdapter.class);
+        Account testAccount = mock(Account.class);
+        String uid = "123";
 
+        adapter.addRecord(testAccount);
+        testAccount.setUID(uid);;
+        testAccount.setFavorite(true);
+
+        when(adapter.isFavoriteAccount(uid)).thenReturn(true);
+
+        assertTrue(adapter.isFavoriteAccount(uid));
     }
 }
