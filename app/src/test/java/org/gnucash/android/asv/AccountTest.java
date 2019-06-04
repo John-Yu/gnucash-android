@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -90,5 +91,24 @@ public class AccountTest {
         when(adapter.isFavoriteAccount(uid)).thenReturn(true);
 
         assertTrue(adapter.isFavoriteAccount(uid));
+    }
+
+    @Test
+    public void testDeletingAccountShouldCompletelyDeleteAccountFromDbAdapter() {
+        AccountsDbAdapter adapter = mock(AccountsDbAdapter.class);
+        Account testAccount = mock(Account.class);
+        String uid = "123";
+
+        adapter.addRecord(testAccount);
+        testAccount.setUID(uid);
+
+        //checking if the account is present in the adapter
+        when(adapter.getAccountName(uid)).thenReturn(uid);
+        assertEquals(adapter.getAccountName(uid), uid);
+
+        //deleting the account and checking if it's deleted
+        adapter.deleteRecord(uid);
+        when(adapter.getAccountName(uid)).thenReturn(null);
+        assertNull(adapter.getAccountName(uid));
     }
 }
