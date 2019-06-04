@@ -30,7 +30,7 @@ public class AccountTest {
         when(testAccount.getFullName()).thenReturn(testFullName);
         when(testAccount.getDescription()).thenReturn(testDescription);
         when(testAccount.getCommodity().getCurrencyCode()).thenReturn(testCurrency);
-        when(testAccount.getAccountType()).thenReturn(testType);
+//        when(testAccount.getAccountType()).thenReturn(testType);
 
         assertNotNull(testAccount);
         assertEquals(testAccount.getName(), testName);
