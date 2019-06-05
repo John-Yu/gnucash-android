@@ -8,6 +8,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * This class contains the test for the book model.
+ * This test is created for the course ASV.
+ *
+ * @author Jordy Quak
+ */
 public class BookTest {
 
     @Test

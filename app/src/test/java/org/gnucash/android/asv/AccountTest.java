@@ -18,6 +18,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * This class contains the test for the account model.
+ * These tests are created for the course ASV.
+ *
+ * @author Jordy Quak
+ */
 public class AccountTest {
 
     @Test
