@@ -103,19 +103,19 @@ public class AccountTest {
     public void testDeletingAccountShouldCompletelyDeleteAccountFromDbAdapter() {
         AccountsDbAdapter adapter = mock(AccountsDbAdapter.class);
         Account testAccount = mock(Account.class);
-        String uid = "123";
+        String name = "testName";
 
+        testAccount.setName(name);
         adapter.addRecord(testAccount);
-        testAccount.setUID(uid);
 
         //checking if the account is present in the adapter
-        when(adapter.getAccountName(uid)).thenReturn(uid);
-        assertEquals(adapter.getAccountName(uid), uid);
+        when(adapter.getAccountName(name)).thenReturn(name);
+        assertEquals(adapter.getAccountName(name), name);
 
         //deleting the account and checking if it's deleted
-        adapter.deleteRecord(uid);
-        when(adapter.getAccountName(uid)).thenReturn(null);
-        assertNull(adapter.getAccountName(uid));
+        adapter.deleteRecord(name);
+        when(adapter.getAccountName(name)).thenReturn(null);
+        assertNull(adapter.getAccountName(name));
     }
 
     @Test
