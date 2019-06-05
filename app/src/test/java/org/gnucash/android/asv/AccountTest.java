@@ -3,6 +3,8 @@ package org.gnucash.android.asv;
 import org.gnucash.android.db.adapter.AccountsDbAdapter;
 import org.gnucash.android.model.Account;
 import org.gnucash.android.model.AccountType;
+import org.gnucash.android.model.Money;
+import org.gnucash.android.model.Split;
 import org.gnucash.android.model.Transaction;
 import org.junit.Test;
 
@@ -135,5 +137,25 @@ public class AccountTest {
 
         assertEquals(testAccount.getTransactionCount(), amountOfTransactions);
         assertEquals(testAccount.getTransactions(), transactions);
+    }
+
+    @Test
+    public void testRetrievingBalanceShouldReturnCorrectAmountOfMoney() {
+        AccountsDbAdapter testAdapter = mock(AccountsDbAdapter.class);
+        Account testAccount = mock(Account.class);
+        Transaction testTransaction = mock(Transaction.class);
+        Split testSplit = mock(Split.class);
+        Money testMoney = new Money("5", "USD");
+        String uid = "123";
+
+        testAccount.setUID(uid);
+        testSplit.setQuantity(testMoney);
+        testTransaction.addSplit(testSplit);
+        testAccount.addTransaction(testTransaction);
+        testAdapter.addRecord(testAccount);
+
+        when(testAdapter.getAccountBalance(uid)).thenReturn(testMoney);
+
+        assertEquals(testAdapter.getAccountBalance(uid), testMoney);
     }
 }
