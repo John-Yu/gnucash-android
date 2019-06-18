@@ -314,7 +314,7 @@ public final class Money implements Comparable<Money>{
 	 * Sets the amount value of this <code>Money</code> object
 	 * @param amount {@link BigDecimal} amount to be set
 	 */
-	private void setAmount(@NonNull BigDecimal amount) {
+	public void setAmount(@NonNull BigDecimal amount) {
 		mAmount = amount.setScale(mCommodity.getSmallestFractionDigits(), ROUNDING_MODE);
 	}
 
