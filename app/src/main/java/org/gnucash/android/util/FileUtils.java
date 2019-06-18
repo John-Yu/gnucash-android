@@ -63,18 +63,9 @@ public final class FileUtils {
     public static void moveFile(String src, String dst) throws IOException {
         File srcFile = new File(src);
         File dstFile = new File(dst);
-        FileChannel inChannel = null;
-        FileChannel outChannel = null;
-        try {
-            inChannel = new FileInputStream(srcFile).getChannel();
-            outChannel = new FileOutputStream(dstFile).getChannel();
+        try (FileChannel inChannel = new FileInputStream(srcFile).getChannel();
+             FileChannel outChannel = new FileOutputStream(dstFile).getChannel()) {
             inChannel.transferTo(0, inChannel.size(), outChannel);
-        } finally {
-            if (inChannel != null)
-                inChannel.close();
-            if (outChannel != null) {
-                outChannel.close();
-            }
         }
         srcFile.delete();
     }
