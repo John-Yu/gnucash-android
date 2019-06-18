@@ -329,7 +329,6 @@ public class AccountsDbAdapter extends DatabaseAdapter<Account> {
      */
     private void updateDirectDescendant(Account acct, String newParentAccountUID,
                                         String parentAccountFullName, ContentValues contentValues) {
-        // direct descendant
         acct.setParentUID(newParentAccountUID);
         if (parentAccountFullName == null || parentAccountFullName.isEmpty()) {
             acct.setFullName(acct.getName());
@@ -355,7 +354,6 @@ public class AccountsDbAdapter extends DatabaseAdapter<Account> {
      */
     private void updateIndirectDescendant(Account acct, HashMap<String, Account> mapAccounts,
                                           ContentValues contentValues) {
-        // indirect descendant
         acct.setFullName(
                 mapAccounts.get(acct.getParentUID()).getFullName() +
                         ACCOUNT_NAME_SEPARATOR + acct.getName()
