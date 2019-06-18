@@ -185,30 +185,43 @@ public class SplitsDbAdapter extends DatabaseAdapter<Split> {
             return new Money("0", currencyCode);
         }
 
-        Cursor cursor;
         String[] selectionArgs = null;
-        String selection = DatabaseSchema.AccountEntry.TABLE_NAME + "_" + DatabaseSchema.CommonColumns.COLUMN_UID + " in ( '" + TextUtils.join("' , '", accountUIDList) + "' ) AND " +
+        String selection = DatabaseSchema.AccountEntry.TABLE_NAME + "_" +
+                DatabaseSchema.CommonColumns.COLUMN_UID + " in ( '" +
+                TextUtils.join("' , '", accountUIDList) + "' ) AND " +
                 TransactionEntry.TABLE_NAME + "_" + TransactionEntry.COLUMN_TEMPLATE + " = 0";
 
         if (startTimestamp != -1 && endTimestamp != -1) {
-            selection += " AND " + TransactionEntry.TABLE_NAME + "_" + TransactionEntry.COLUMN_TIMESTAMP + " BETWEEN ? AND ? ";
+            selection += " AND " + TransactionEntry.TABLE_NAME + "_" +
+                    TransactionEntry.COLUMN_TIMESTAMP + " BETWEEN ? AND ? ";
             selectionArgs = new String[]{String.valueOf(startTimestamp), String.valueOf(endTimestamp)};
         } else if (startTimestamp == -1 && endTimestamp != -1) {
-            selection += " AND " + TransactionEntry.TABLE_NAME + "_" + TransactionEntry.COLUMN_TIMESTAMP + " <= ?";
+            selection += " AND " + TransactionEntry.TABLE_NAME + "_" +
+                    TransactionEntry.COLUMN_TIMESTAMP + " <= ?";
             selectionArgs = new String[]{String.valueOf(endTimestamp)};
         } else if (startTimestamp != -1/* && endTimestamp == -1*/) {
-            selection += " AND " + TransactionEntry.TABLE_NAME + "_" + TransactionEntry.COLUMN_TIMESTAMP + " >= ?";
+            selection += " AND " + TransactionEntry.TABLE_NAME + "_" +
+                    TransactionEntry.COLUMN_TIMESTAMP + " >= ?";
             selectionArgs = new String[]{String.valueOf(startTimestamp)};
         }
 
-        cursor = mDb.query("trans_split_acct",
-                new String[]{"TOTAL ( CASE WHEN " + SplitEntry.TABLE_NAME + "_" + SplitEntry.COLUMN_TYPE + " = 'DEBIT' THEN " +
+        Cursor cursor = cursorQuery(selectionArgs, selection);
+        return calculateTotal(currencyCode, cursor, hasDebitNormalBalance);
+    }
+
+    private Cursor cursorQuery(String[] selectionArgs, String selection) {
+        return mDb.query("trans_split_acct",
+                new String[]{"TOTAL ( CASE WHEN "
+                        + SplitEntry.TABLE_NAME + "_" + SplitEntry.COLUMN_TYPE + " = 'DEBIT' THEN " +
                         SplitEntry.TABLE_NAME + "_" + SplitEntry.COLUMN_QUANTITY_NUM + " ELSE - " +
                         SplitEntry.TABLE_NAME + "_" + SplitEntry.COLUMN_QUANTITY_NUM + " END )",
                         SplitEntry.TABLE_NAME + "_" + SplitEntry.COLUMN_QUANTITY_DENOM,
                         DatabaseSchema.AccountEntry.TABLE_NAME + "_" + DatabaseSchema.AccountEntry.COLUMN_CURRENCY},
-                selection, selectionArgs, DatabaseSchema.AccountEntry.TABLE_NAME + "_" + DatabaseSchema.AccountEntry.COLUMN_CURRENCY, null, null);
+                selection, selectionArgs, DatabaseSchema.AccountEntry.TABLE_NAME + "_"
+                        + DatabaseSchema.AccountEntry.COLUMN_CURRENCY, null, null);
+    }
 
+    private Money calculateTotal(String currencyCode, Cursor cursor, boolean hasDebitNormalBalance ) {
         try {
             Money total = Money.createZeroInstance(currencyCode);
             CommoditiesDbAdapter commoditiesDbAdapter = null;
@@ -219,7 +232,6 @@ public class SplitsDbAdapter extends DatabaseAdapter<Split> {
                 long amount_num = cursor.getLong(0);
                 long amount_denom = cursor.getLong(1);
                 String commodityCode = cursor.getString(2);
-                //Log.d(getClass().getName(), commodity + " " + amount_num + "/" + amount_denom);
                 if (commodityCode.equals("XXX") || amount_num == 0) {
                     // ignore custom currency
                     continue;
@@ -230,7 +242,6 @@ public class SplitsDbAdapter extends DatabaseAdapter<Split> {
                 if (commodityCode.equals(currencyCode)) {
                     // currency matches
                     total = total.add(new Money(amount_num, amount_denom, currencyCode));
-                    //Log.d(getClass().getName(), "currency " + commodity + " sub - total " + total);
                 } else {
                     // there is a second currency involved
                     if (commoditiesDbAdapter == null) {
@@ -250,7 +261,6 @@ public class SplitsDbAdapter extends DatabaseAdapter<Split> {
                     BigDecimal amountConverted = amount.multiply(new BigDecimal(price.first))
                             .divide(new BigDecimal(price.second), commodity.getSmallestFractionDigits(), BigDecimal.ROUND_HALF_EVEN);
                     total = total.add(new Money(amountConverted, commodity));
-                    //Log.d(getClass().getName(), "currency " + commodity + " sub - total " + total);
                 }
             }
             return total;
