@@ -22,22 +22,36 @@ public final class FileUtils {
     private static final String LOG_TAG = "FileUtils";
 
     public static void zipFiles(List<String> files, String zipFileName) throws IOException {
-        OutputStream outputStream = new FileOutputStream(zipFileName);
-        ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
-        byte[] buffer = new byte[1024];
-        for (String fileName : files) {
-            File file = new File(fileName);
-            FileInputStream fileInputStream = new FileInputStream(file);
-            zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
+        OutputStream outputStream;
+        ZipOutputStream zipOutputStream = null;
+        FileInputStream fileInputStream = null;
+        try {
+            outputStream = new FileOutputStream(zipFileName);
+            zipOutputStream = new ZipOutputStream(outputStream);
+            byte[] buffer = new byte[1024];
+            for (String fileName : files) {
+                File file = new File(fileName);
+                fileInputStream = new FileInputStream(file);
+                zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
 
-            int length;
-            while ((length = fileInputStream.read(buffer)) > 0) {
-                zipOutputStream.write(buffer, 0, length);
+                int length;
+                while ((length = fileInputStream.read(buffer)) > 0) {
+                    zipOutputStream.write(buffer, 0, length);
+                }
             }
-            zipOutputStream.closeEntry();
-            fileInputStream.close();
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        } finally {
+            if (zipOutputStream != null) {
+                zipOutputStream.closeEntry();
+            }
+            if (fileInputStream != null) {
+                fileInputStream.close();
+            }
+            if (zipOutputStream != null) {
+                zipOutputStream.close();
+            }
         }
-        zipOutputStream.close();
     }
 
     /**
@@ -49,14 +63,18 @@ public final class FileUtils {
     public static void moveFile(String src, String dst) throws IOException {
         File srcFile = new File(src);
         File dstFile = new File(dst);
-        FileChannel inChannel = new FileInputStream(srcFile).getChannel();
-        FileChannel outChannel = new FileOutputStream(dstFile).getChannel();
+        FileChannel inChannel = null;
+        FileChannel outChannel = null;
         try {
+            inChannel = new FileInputStream(srcFile).getChannel();
+            outChannel = new FileOutputStream(dstFile).getChannel();
             inChannel.transferTo(0, inChannel.size(), outChannel);
         } finally {
             if (inChannel != null)
                 inChannel.close();
-            outChannel.close();
+            if (outChannel != null) {
+                outChannel.close();
+            }
         }
         srcFile.delete();
     }
