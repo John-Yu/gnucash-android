@@ -311,39 +311,61 @@ public class AccountsDbAdapter extends DatabaseAdapter<Account> {
             for (String acctUID : descendantAccountUIDs) {
                 Account acct = mapAccounts.get(acctUID);
                 if (accountUID.equals(acct.getParentUID())) {
-                    // direct descendant
-                    acct.setParentUID(newParentAccountUID);
-                    if (parentAccountFullName == null || parentAccountFullName.isEmpty()) {
-                        acct.setFullName(acct.getName());
-                    } else {
-                        acct.setFullName(parentAccountFullName + ACCOUNT_NAME_SEPARATOR + acct.getName());
-                    }
-                    // update DB
-                    contentValues.clear();
-                    contentValues.put(AccountEntry.COLUMN_PARENT_ACCOUNT_UID, newParentAccountUID);
-                    contentValues.put(AccountEntry.COLUMN_FULL_NAME, acct.getFullName());
-                    mDb.update(
-                            AccountEntry.TABLE_NAME, contentValues,
-                            AccountEntry.COLUMN_UID + " = ?",
-                            new String[]{acct.getUID()}
-                    );
+                    updateDirectDescendant(acct, newParentAccountUID, parentAccountFullName,
+                            contentValues);
                 } else {
-                    // indirect descendant
-                    acct.setFullName(
-                            mapAccounts.get(acct.getParentUID()).getFullName() +
-                                    ACCOUNT_NAME_SEPARATOR + acct.getName()
-                    );
-                    // update DB
-                    contentValues.clear();
-                    contentValues.put(AccountEntry.COLUMN_FULL_NAME, acct.getFullName());
-                    mDb.update(
-                            AccountEntry.TABLE_NAME, contentValues,
-                            AccountEntry.COLUMN_UID + " = ?",
-                            new String[]{acct.getUID()}
-                    );
+                    updateIndirectDescendant(acct, mapAccounts, contentValues);
                 }
             }
         }
+    }
+
+    /**
+     * Updates the direct descendant with a given name
+     * @param acct Account of the parent
+     * @param newParentAccountUID UID of the new parent account
+     * @param parentAccountFullName Full name of the parent
+     * @param contentValues The specific content values
+     */
+    private void updateDirectDescendant(Account acct, String newParentAccountUID,
+                                        String parentAccountFullName, ContentValues contentValues) {
+        acct.setParentUID(newParentAccountUID);
+        if (parentAccountFullName == null || parentAccountFullName.isEmpty()) {
+            acct.setFullName(acct.getName());
+        } else {
+            acct.setFullName(parentAccountFullName + ACCOUNT_NAME_SEPARATOR + acct.getName());
+        }
+        // update DB
+        contentValues.clear();
+        contentValues.put(AccountEntry.COLUMN_PARENT_ACCOUNT_UID, newParentAccountUID);
+        contentValues.put(AccountEntry.COLUMN_FULL_NAME, acct.getFullName());
+        mDb.update(
+                AccountEntry.TABLE_NAME, contentValues,
+                AccountEntry.COLUMN_UID + " = ?",
+                new String[]{acct.getUID()}
+        );
+    }
+
+    /**
+     * Updates the indirect descendant with a given name
+     * @param acct Account of the parent
+     * @param mapAccounts map of the related accounts
+     * @param contentValues The specific content values
+     */
+    private void updateIndirectDescendant(Account acct, HashMap<String, Account> mapAccounts,
+                                          ContentValues contentValues) {
+        acct.setFullName(
+                mapAccounts.get(acct.getParentUID()).getFullName() +
+                        ACCOUNT_NAME_SEPARATOR + acct.getName()
+        );
+        // update DB
+        contentValues.clear();
+        contentValues.put(AccountEntry.COLUMN_FULL_NAME, acct.getFullName());
+        mDb.update(
+                AccountEntry.TABLE_NAME, contentValues,
+                AccountEntry.COLUMN_UID + " = ?",
+                new String[]{acct.getUID()}
+        );
     }
 
     /**
