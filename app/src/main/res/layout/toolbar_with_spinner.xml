@@ -22,19 +22,22 @@
 
     <include layout="@layout/actionbar_progress_indicator" />
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:background="?attr/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:elevation="@dimen/elevation_default"
-        app:layout_scrollFlags="scroll|enterAlways"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         tools:showIn="@layout/activity_form">
-        <Spinner android:id="@+id/toolbar_spinner"
+
+        <org.gnucash.android.ui.util.widget.searchablespinner.SearchableSpinnerView
+            android:id="@+id/toolbar_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-    </android.support.v7.widget.Toolbar>
+
+    </androidx.appcompat.widget.Toolbar>
+
 </FrameLayout>

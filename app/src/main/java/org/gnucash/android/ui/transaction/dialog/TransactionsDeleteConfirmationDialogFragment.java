@@ -20,7 +20,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 
 import org.gnucash.android.R;
 import org.gnucash.android.app.GnuCashApplication;
@@ -35,6 +34,8 @@ import org.gnucash.android.util.BackupManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.fragment.app.DialogFragment;
 
 /**
  * Displays a delete confirmation dialog for transactions

@@ -18,7 +18,6 @@ package org.gnucash.android.model;
 
 
 import android.graphics.Color;
-import android.support.annotation.NonNull;
 
 import org.gnucash.android.BuildConfig;
 import org.gnucash.android.export.ofx.OfxHelper;
@@ -28,6 +27,8 @@ import org.w3c.dom.Element;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * An account represents a transaction account in with {@link Transaction}s may be recorded

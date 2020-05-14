@@ -28,10 +28,11 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.os.Handler;
-import android.support.v7.widget.RecyclerView;
 import android.widget.Filter;
 import android.widget.FilterQueryProvider;
 import android.widget.Filterable;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Provide a {@link android.support.v7.widget.RecyclerView.Adapter} implementation with cursor
@@ -52,7 +53,7 @@ import android.widget.Filterable;
  * @see CursorFilter.CursorFilterClient
  */
 public abstract class CursorRecyclerAdapter<VH
-        extends android.support.v7.widget.RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>
+        extends androidx.recyclerview.widget.RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>
         implements Filterable, CursorFilter.CursorFilterClient {
     private boolean mDataValid;
     private int mRowIDColumn;

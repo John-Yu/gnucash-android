@@ -19,7 +19,6 @@ package org.gnucash.android.export;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.preference.PreferenceManager;
 
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.android.Auth;
@@ -28,6 +27,8 @@ import com.dropbox.core.v2.DbxClientV2;
 import org.gnucash.android.BuildConfig;
 import org.gnucash.android.R;
 import org.gnucash.android.app.GnuCashApplication;
+
+import androidx.preference.PreferenceManager;
 
 /**
  * Helper class for commonly used DropBox methods

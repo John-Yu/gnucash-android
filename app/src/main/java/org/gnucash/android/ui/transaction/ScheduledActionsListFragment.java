@@ -25,15 +25,18 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
+import androidx.core.content.ContextCompat;
+import androidx.cursoradapter.widget.SimpleCursorAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -78,6 +81,7 @@ public class ScheduledActionsListFragment extends ListFragment implements
      * Logging tag
      */
     protected static final String TAG = "ScheduledActionFragment";
+    private static final String FRAGMENT_ACTION_KEY = "action_key";
 
     private TransactionsDbAdapter mTransactionsDbAdapter;
     private SimpleCursorAdapter mCursorAdapter;
@@ -174,6 +178,10 @@ public class ScheduledActionsListFragment extends ListFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState != null && savedInstanceState.containsKey(FRAGMENT_ACTION_KEY)) {
+            mActionType = (ScheduledAction.ActionType) savedInstanceState.getSerializable(FRAGMENT_ACTION_KEY);
+        }
 
         mTransactionsDbAdapter = TransactionsDbAdapter.getInstance();
         switch (mActionType){
@@ -641,5 +649,10 @@ public class ScheduledActionsListFragment extends ListFragment implements
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putSerializable(FRAGMENT_ACTION_KEY, mActionType);
+        super.onSaveInstanceState(outState);
+    }
 }
 

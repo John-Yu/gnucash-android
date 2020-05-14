@@ -16,7 +16,6 @@
 
 package org.gnucash.android.ui.wizard;
 
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.tech.freak.wizardpager.model.ModelCallbacks;
@@ -24,6 +23,8 @@ import com.tech.freak.wizardpager.model.Page;
 import com.tech.freak.wizardpager.model.ReviewItem;
 
 import java.util.ArrayList;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * Page displaying all the commodities in the database

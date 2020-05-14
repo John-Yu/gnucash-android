@@ -17,11 +17,11 @@
 package org.gnucash.android.export.csv;
 
 
-import android.support.annotation.NonNull;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
+
+import androidx.annotation.NonNull;
 
 /**
  * Format data to be CSV-compatible

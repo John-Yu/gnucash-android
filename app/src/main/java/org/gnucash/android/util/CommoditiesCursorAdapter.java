@@ -18,14 +18,15 @@ package org.gnucash.android.util;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.annotation.LayoutRes;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import org.gnucash.android.db.DatabaseSchema;
 import org.gnucash.android.db.adapter.CommoditiesDbAdapter;
+
+import androidx.annotation.LayoutRes;
+import androidx.cursoradapter.widget.SimpleCursorAdapter;
 
 /**
  * Cursor adapter for displaying list of commodities.
@@ -35,11 +36,16 @@ import org.gnucash.android.db.adapter.CommoditiesDbAdapter;
  */
 public class CommoditiesCursorAdapter extends SimpleCursorAdapter {
 
-    public CommoditiesCursorAdapter(Context context, @LayoutRes int itemLayoutResource) {
-        super(context, itemLayoutResource,
-                CommoditiesDbAdapter.getInstance().fetchAllRecords(DatabaseSchema.CommodityEntry.COLUMN_MNEMONIC + " ASC"),
-                new String[]{DatabaseSchema.CommodityEntry.COLUMN_FULLNAME},
-                new int[] {android.R.id.text1}, 0);
+    public CommoditiesCursorAdapter(Context context,
+                                    @LayoutRes int itemLayoutResource) {
+
+        super(context,
+              itemLayoutResource,
+              CommoditiesDbAdapter.getInstance()
+                                  .fetchAllRecords(DatabaseSchema.CommodityEntry.COLUMN_MNEMONIC + " ASC"),
+              new String[]{DatabaseSchema.CommodityEntry.COLUMN_FULLNAME},
+              new int[]{android.R.id.text1},
+              0);
     }
 
     @Override

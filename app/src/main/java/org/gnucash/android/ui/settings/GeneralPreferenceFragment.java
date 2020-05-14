@@ -20,11 +20,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.CheckBoxPreference;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
 import android.widget.Toast;
 
 import org.gnucash.android.R;
@@ -32,12 +27,18 @@ import org.gnucash.android.ui.common.UxArgument;
 import org.gnucash.android.ui.passcode.PasscodeLockScreenActivity;
 import org.gnucash.android.ui.passcode.PasscodePreferenceActivity;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+
 /**
  * Fragment for general preferences. Currently caters to the passcode and reporting preferences
  * @author Oleksandr Tyshkovets <olexandr.tyshkovets@gmail.com>
  */
 public class GeneralPreferenceFragment extends PreferenceFragmentCompat implements
-        android.support.v7.preference.Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+        Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
     /**
      * Request code for retrieving passcode to store
@@ -57,6 +58,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat implemen
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
+
         addPreferencesFromResource(R.xml.fragment_general_preferences);
     }
 
@@ -107,24 +109,92 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat implemen
     }
 
     @Override
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (preference.getKey().equals(getString(R.string.key_enable_passcode))) {
+    public boolean onPreferenceChange(Preference preference,
+                                      Object newValue) {
+
+        //
+        // Preference : key_use_double_back_button_press_to_quit
+        //
+
+        if (preference.getKey()
+                      .equals(getString(R.string.key_use_double_back_button_press_to_quit))) {
+
+            // Store the new value of the Preference
+            getPreferenceManager().getSharedPreferences()
+                                  .edit()
+                                  .putBoolean(getString(R.string.key_use_double_back_button_press_to_quit),
+                                              Boolean.valueOf(newValue.toString()))
+                                  .commit();
+        }
+
+        //
+        // Set Preference : key_shall_open_keyboard_in_account_searchable_spinner
+        //
+
+        if (preference.getKey()
+                      .equals(getString(R.string.key_shall_open_keyboard_in_account_searchable_spinner))) {
+
+            // Store the new value of the Preference
+            getPreferenceManager().getSharedPreferences()
+                                  .edit()
+                                  .putBoolean(getString(R.string.key_shall_open_keyboard_in_account_searchable_spinner),
+                                              Boolean.valueOf(newValue.toString()))
+                                  .commit();
+        }
+
+        //
+        // Set Preference : key_use_color_in_account_list
+        //
+
+        if (preference.getKey()
+                      .equals(getString(R.string.key_use_color_in_account_list))) {
+
+            // Store the new value of the Preference
+            getPreferenceManager().getSharedPreferences()
+                                  .edit()
+                                  .putBoolean(getString(R.string.key_use_color_in_account_list),
+                                              Boolean.valueOf(newValue.toString()))
+                                  .commit();
+        }
+
+        //
+        // Set Preference : enable_passcode
+        //
+
+        if (preference.getKey()
+                      .equals(getString(R.string.key_enable_passcode))) {
+
             if ((Boolean) newValue) {
-                startActivityForResult(new Intent(getActivity(), PasscodePreferenceActivity.class),
-                        GeneralPreferenceFragment.PASSCODE_REQUEST_CODE);
+
+                startActivityForResult(new Intent(getActivity(),
+                                                  PasscodePreferenceActivity.class),
+                                       GeneralPreferenceFragment.PASSCODE_REQUEST_CODE);
+
             } else {
-                Intent passIntent = new Intent(getActivity(), PasscodeLockScreenActivity.class);
-                passIntent.putExtra(UxArgument.DISABLE_PASSCODE, UxArgument.DISABLE_PASSCODE);
-                startActivityForResult(passIntent, GeneralPreferenceFragment.REQUEST_DISABLE_PASSCODE);
+
+                Intent passIntent = new Intent(getActivity(),
+                                               PasscodeLockScreenActivity.class);
+                passIntent.putExtra(UxArgument.DISABLE_PASSCODE,
+                                    UxArgument.DISABLE_PASSCODE);
+                startActivityForResult(passIntent,
+                                       GeneralPreferenceFragment.REQUEST_DISABLE_PASSCODE);
             }
         }
 
-        if (preference.getKey().equals(getString(R.string.key_use_account_color))) {
+        //
+        // Set Preference : use_color_in_reports
+        //
+
+        if (preference.getKey()
+                      .equals(getString(R.string.key_use_account_color))) {
+
             getPreferenceManager().getSharedPreferences()
-                    .edit()
-                    .putBoolean(getString(R.string.key_use_account_color), Boolean.valueOf(newValue.toString()))
-                    .commit();
+                                  .edit()
+                                  .putBoolean(getString(R.string.key_use_account_color),
+                                              Boolean.valueOf(newValue.toString()))
+                                  .commit();
         }
+
         return true;
     }
 

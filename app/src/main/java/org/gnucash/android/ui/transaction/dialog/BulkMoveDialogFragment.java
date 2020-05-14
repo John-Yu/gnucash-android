@@ -18,8 +18,6 @@ package org.gnucash.android.ui.transaction.dialog;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +35,9 @@ import org.gnucash.android.ui.common.UxArgument;
 import org.gnucash.android.ui.homescreen.WidgetConfigurationActivity;
 import org.gnucash.android.ui.transaction.TransactionsActivity;
 import org.gnucash.android.util.QualifiedAccountNameCursorAdapter;
+
+import androidx.cursoradapter.widget.SimpleCursorAdapter;
+import androidx.fragment.app.DialogFragment;
 
 /**
  * Dialog fragment for moving transactions from one account to another
@@ -125,8 +126,9 @@ public class BulkMoveDialogFragment extends DialogFragment {
                 + DatabaseSchema.AccountEntry.COLUMN_HIDDEN         + " = 0 AND "
                 + DatabaseSchema.AccountEntry.COLUMN_PLACEHOLDER + " = 0"
                 + ")";
-		Cursor cursor = accountsDbAdapter.fetchAccountsOrderedByFullName(conditions,
-                new String[]{mOriginAccountUID, accountsDbAdapter.getCurrencyCode(mOriginAccountUID)});
+		Cursor cursor = accountsDbAdapter.fetchAccountsOrderedByFavoriteAndFullName(conditions,
+																					new String[]{mOriginAccountUID,
+																								 accountsDbAdapter.getCurrencyCode(mOriginAccountUID)});
 
 		SimpleCursorAdapter mCursorAdapter = new QualifiedAccountNameCursorAdapter(getActivity(), cursor);
 		mDestinationAccountSpinner.setAdapter(mCursorAdapter);

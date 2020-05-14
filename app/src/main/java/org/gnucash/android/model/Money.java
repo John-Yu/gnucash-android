@@ -17,7 +17,6 @@
 package org.gnucash.android.model;
 
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -29,6 +28,8 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
 
 /**
  * Money represents a money amount and a corresponding currency.
@@ -50,7 +51,7 @@ public final class Money implements Comparable<Money>{
 	private Commodity mCommodity;
 
 	/**
-	 * Amount value held by this object
+	 * Amount value held by this object (can be > 0 or < 0)
 	 */
 	private BigDecimal mAmount;
 
@@ -257,7 +258,7 @@ public final class Money implements Comparable<Money>{
 	public String asString(){
 		return toPlainString();
 	}
-	
+
 	/**
 	 * Returns a string representation of the Money object formatted according to 
 	 * the <code>locale</code> and includes the currency symbol. 
@@ -314,7 +315,7 @@ public final class Money implements Comparable<Money>{
 	 * Sets the amount value of this <code>Money</code> object
 	 * @param amount {@link BigDecimal} amount to be set
 	 */
-	public void setAmount(@NonNull BigDecimal amount) {
+	private void setAmount(@NonNull BigDecimal amount) {
 		mAmount = amount.setScale(mCommodity.getSmallestFractionDigits(), ROUNDING_MODE);
 	}
 

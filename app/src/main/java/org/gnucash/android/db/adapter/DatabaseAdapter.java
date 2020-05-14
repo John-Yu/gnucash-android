@@ -20,7 +20,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -35,6 +34,8 @@ import org.gnucash.android.util.TimestampHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * Adapter to be used for creating and opening the database for read/write operations.
@@ -556,10 +557,14 @@ public abstract class DatabaseAdapter<Model extends BaseModel> {
      * @throws IllegalArgumentException if the record ID does not exist in the database
      */
     public String getUID(long id){
+
         Cursor cursor = mDb.query(mTableName,
-                new String[]{DatabaseSchema.CommonColumns.COLUMN_UID},
-                DatabaseSchema.CommonColumns._ID + " = " + id,
-                null, null, null, null);
+                                  new String[]{DatabaseSchema.CommonColumns.COLUMN_UID},
+                                  DatabaseSchema.CommonColumns._ID + " = " + id,
+                                  null,
+                                  null,
+                                  null,
+                                  null);
 
         String uid = null;
         try {

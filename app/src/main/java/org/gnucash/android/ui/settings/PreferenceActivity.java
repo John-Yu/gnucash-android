@@ -16,20 +16,12 @@
 
 package org.gnucash.android.ui.settings;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SlidingPaneLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceManager;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -38,6 +30,12 @@ import org.gnucash.android.app.GnuCashApplication;
 import org.gnucash.android.db.adapter.BooksDbAdapter;
 import org.gnucash.android.ui.passcode.PasscodeLockActivity;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.slidingpanelayout.widget.SlidingPaneLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -78,12 +76,22 @@ public class PreferenceActivity extends PasscodeLockActivity implements
         });
 
         String action = getIntent().getAction();
-        if (action != null && action.equals(ACTION_MANAGE_BOOKS)){
-            loadFragment(new BookManagerFragment());
+        if (action != null && action.equals(ACTION_MANAGE_BOOKS)) {
+            // Intent action is to manage books
+
+            // Close the left Preference Pane
             mSlidingPaneLayout.closePane();
+
+            // Load the BookManager fragment (in the right pane)
+            loadFragment(new BookManagerFragment());
         } else {
+            // Intent action is not defined
+
+            // Open left Preference Pane with all Preferences Choices
             mSlidingPaneLayout.openPane();
-            loadFragment(new GeneralPreferenceFragment());
+
+            // Do not load Fragment now in order to not starting GeneralPreferenceFragment.onCreate() which will override title
+//            loadFragment(new GeneralPreferenceFragment());
         }
 
         ActionBar actionBar = getSupportActionBar();
@@ -127,12 +135,18 @@ public class PreferenceActivity extends PasscodeLockActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                android.app.FragmentManager fm = getFragmentManager();
-                if (fm.getBackStackEntryCount() > 0) {
-                    fm.popBackStack();
-                } else {
-                    finish();
-                }
+                // User clicked on the "home" button (i.e. left arrow in the ActionBar)
+
+                // Handle as it was a Back Button press
+                onBackPressed();
+
+//                android.app.FragmentManager fm = getFragmentManager();
+//                if (fm.getBackStackEntryCount() > 0) {
+//                    fm.popBackStack();
+//                } else {
+//                    finish();
+//                }
+
                 return true;
 
             default:

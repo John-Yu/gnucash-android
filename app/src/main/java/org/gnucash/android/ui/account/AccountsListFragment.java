@@ -23,20 +23,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -68,6 +62,12 @@ import org.gnucash.android.util.BackupManager;
 
 import java.util.List;
 
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -78,9 +78,9 @@ import butterknife.ButterKnife;
  */
 public class AccountsListFragment extends Fragment implements
         Refreshable,
-        LoaderCallbacks<Cursor>,
-        android.support.v7.widget.SearchView.OnQueryTextListener,
-        android.support.v7.widget.SearchView.OnCloseListener {
+        LoaderManager.LoaderCallbacks<Cursor>,
+        androidx.appcompat.widget.SearchView.OnQueryTextListener,
+        androidx.appcompat.widget.SearchView.OnCloseListener {
 
     AccountRecyclerAdapter mAccountRecyclerAdapter;
     @BindView(R.id.account_recycler_view)  EmptyRecyclerView mRecyclerView;
@@ -133,7 +133,7 @@ public class AccountsListFragment extends Fragment implements
     /**
      * Search view for searching accounts
      */
-    private android.support.v7.widget.SearchView mSearchView;
+    private SearchView mSearchView;
 
     public static AccountsListFragment newInstance(DisplayMode displayMode){
         AccountsListFragment fragment = new AccountsListFragment();
@@ -278,7 +278,7 @@ public class AccountsListFragment extends Fragment implements
 
             SearchManager searchManager =
                     (SearchManager) GnuCashApplication.getAppContext().getSystemService(Context.SEARCH_SERVICE);
-            mSearchView = (android.support.v7.widget.SearchView)
+            mSearchView = (SearchView)
                 MenuItemCompat.getActionView(menu.findItem(R.id.menu_search));
             if (mSearchView == null)
                 return;
@@ -433,19 +433,24 @@ public class AccountsListFragment extends Fragment implements
 
         @Override
         public Cursor loadInBackground() {
+
             mDatabaseAdapter = AccountsDbAdapter.getInstance();
             Cursor cursor;
 
-            if (mFilter != null){
-                cursor = ((AccountsDbAdapter)mDatabaseAdapter)
-                        .fetchAccounts(DatabaseSchema.AccountEntry.COLUMN_HIDDEN + "= 0 AND "
-                                + DatabaseSchema.AccountEntry.COLUMN_NAME + " LIKE '%" + mFilter + "%'",
-                                null, null);
+            if (mFilter != null) {
+                cursor = ((AccountsDbAdapter) mDatabaseAdapter).fetchAccounts(DatabaseSchema.AccountEntry.COLUMN_HIDDEN
+                                                                              + "= 0 AND "
+                                                                              + DatabaseSchema.AccountEntry.COLUMN_NAME
+                                                                              + " LIKE '%"
+                                                                              + mFilter
+                                                                              + "%'",
+                                                                              null,
+                                                                              null);
             } else {
-                if (mParentAccountUID != null && mParentAccountUID.length() > 0)
+                if (mParentAccountUID != null && mParentAccountUID.length() > 0) {
                     cursor = ((AccountsDbAdapter) mDatabaseAdapter).fetchSubAccounts(mParentAccountUID);
-                else {
-                    switch (this.mDisplayMode){
+                } else {
+                    switch (this.mDisplayMode) {
                         case RECENT:
                             cursor = ((AccountsDbAdapter) mDatabaseAdapter).fetchRecentAccounts(10);
                             break;
@@ -461,8 +466,9 @@ public class AccountsListFragment extends Fragment implements
 
             }
 
-            if (cursor != null)
+            if (cursor != null) {
                 registerContentObserver(cursor);
+            }
             return cursor;
         }
     }
@@ -499,11 +505,11 @@ public class AccountsListFragment extends Fragment implements
 
             // add a summary of transactions to the account view
 
-                // Make sure the balance task is truly multithread
+            // Make sure the balance task is truly multithread
             new AccountBalanceTask(holder.accountBalance).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, accountUID);
 
-            String accountColor = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseSchema.AccountEntry.COLUMN_COLOR_CODE));
-            int colorCode = accountColor == null ? Color.TRANSPARENT : Color.parseColor(accountColor);
+            // #871 Display inherited color from ancestor's account on the Strip View
+            int colorCode = AccountsDbAdapter.getActiveAccountColorResource(accountUID);
             holder.colorStripView.setBackgroundColor(colorCode);
 
             boolean isPlaceholderAccount = mAccountsDbAdapter.isPlaceholderAccount(accountUID);
@@ -581,7 +587,9 @@ public class AccountsListFragment extends Fragment implements
             long accoundId;
 
             public AccountViewHolder(View itemView) {
+
                 super(itemView);
+
                 ButterKnife.bind(this, itemView);
 
                 optionsMenu.setOnClickListener(new View.OnClickListener() {

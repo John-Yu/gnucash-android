@@ -75,12 +75,6 @@
                     android:textIsSelectable="true"
                     gnucash:keyboardKeysLayout="@xml/calculator_keyboard"/>
 
-                <ImageView android:id="@+id/btn_split_editor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="Open split editor"
-                    android:src="@drawable/content_split_holo_light" />
-
                 <org.gnucash.android.ui.util.widget.TransactionTypeSwitch
                     android:id="@+id/input_transaction_type"
                     android:layout_width="0dp"
@@ -93,6 +87,12 @@
                     android:textSize="14sp"
                     android:checked="true"/>
 
+                <ImageView android:id="@+id/btn_split_editor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Open split editor"
+                    android:src="@drawable/content_split_holo_light" />
+
             </TableRow>
             <View style="@style/Divider" />
             <TableRow android:id="@+id/layout_double_entry"
@@ -100,11 +100,13 @@
 
                 <ImageView style="@style/FormIcon"
                     android:src="@drawable/ic_action_forward"/>
-                <Spinner
+
+                <org.gnucash.android.ui.util.widget.searchablespinner.SearchableSpinnerView
                     android:id="@+id/input_transfer_account_spinner"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="5"
-                    android:layout_height="wrap_content"  />
+                    />
             </TableRow>
             <View style="@style/Divider" />
             <TableRow style="@style/FormRow" >

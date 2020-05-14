@@ -19,12 +19,13 @@ package org.gnucash.android.ui.settings.dialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
 import org.gnucash.android.R;
 import org.gnucash.android.db.adapter.BooksDbAdapter;
 import org.gnucash.android.ui.common.Refreshable;
 import org.gnucash.android.util.BackupManager;
+
+import androidx.annotation.NonNull;
 
 /**
  * Confirmation dialog for deleting a book.

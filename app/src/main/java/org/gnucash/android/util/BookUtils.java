@@ -1,9 +1,9 @@
 package org.gnucash.android.util;
 
-import android.support.annotation.NonNull;
-
 import org.gnucash.android.app.GnuCashApplication;
 import org.gnucash.android.ui.account.AccountsActivity;
+
+import androidx.annotation.NonNull;
 
 /**
  * Utility class for common operations involving books

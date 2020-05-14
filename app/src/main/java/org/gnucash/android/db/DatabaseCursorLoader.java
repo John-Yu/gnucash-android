@@ -18,10 +18,11 @@ package org.gnucash.android.db;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 
 import org.gnucash.android.db.adapter.DatabaseAdapter;
+
+import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.Loader;
 
 /**
  * Abstract base class for asynchronously loads records from a database and manages the cursor.

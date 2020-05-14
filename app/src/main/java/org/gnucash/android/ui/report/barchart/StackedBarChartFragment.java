@@ -19,7 +19,6 @@ package org.gnucash.android.ui.report.barchart;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,6 +51,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.Nullable;
 import butterknife.BindView;
 
 import static org.gnucash.android.ui.report.ReportsActivity.COLORS;
@@ -81,7 +81,7 @@ public class StackedBarChartFragment extends BaseReportFragment {
 
     @Override
     public int getTitle() {
-        return R.string.title_cash_flow_report;
+        return R.string.title_bar_chart;
     }
 
     @Override

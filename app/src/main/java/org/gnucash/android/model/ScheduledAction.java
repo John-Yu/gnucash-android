@@ -16,7 +16,6 @@
 package org.gnucash.android.model;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import org.gnucash.android.R;
 import org.gnucash.android.app.GnuCashApplication;
@@ -28,6 +27,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import androidx.annotation.NonNull;
 
 /**
 * Represents a scheduled event which is stored in the database and run at regular mPeriod

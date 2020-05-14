@@ -22,20 +22,20 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.core.content.ContextCompat;
+
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.gnucash.android.R;
 import org.gnucash.android.app.GnuCashApplication;
@@ -50,6 +50,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 
 /**
@@ -63,7 +67,7 @@ import butterknife.BindView;
  */
 public class ReportsActivity extends BaseDrawerActivity implements AdapterView.OnItemSelectedListener,
         DatePickerDialog.OnDateSetListener, DateRangePickerDialogFragment.OnDateRangeSetListener,
-        Refreshable{
+        Refreshable {
 
     public static final int[] COLORS = {
             Color.parseColor("#17ee4e"), Color.parseColor("#cc1f09"), Color.parseColor("#3940f7"),
@@ -76,9 +80,12 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
     };
     private static final String STATE_REPORT_TYPE = "STATE_REPORT_TYPE";
 
-    @BindView(R.id.time_range_spinner) Spinner mTimeRangeSpinner;
-    @BindView(R.id.report_account_type_spinner) Spinner mAccountTypeSpinner;
-    @BindView(R.id.toolbar_spinner) Spinner mReportTypeSpinner;
+    @BindView(R.id.time_range_spinner)
+    Spinner mTimeRangeSpinner;
+    @BindView(R.id.report_account_type_spinner)
+    Spinner mAccountTypeSpinner;
+    @BindView(R.id.toolbar_spinner)
+    Spinner mReportsToolbarSpinner;
 
     private TransactionsDbAdapter mTransactionsDbAdapter;
     private AccountType mAccountType = AccountType.EXPENSE;
@@ -98,7 +105,7 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if (mSkipNextReportTypeSelectedRun){
+            if (mSkipNextReportTypeSelectedRun) {
                 mSkipNextReportTypeSelectedRun = false;
             } else {
                 String reportName = parent.getItemAtPosition(position).toString();
@@ -145,7 +152,7 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
         mAccountTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                switch(position) {
+                switch (position) {
                     default:
                     case 0:
                         mAccountType = AccountType.EXPENSE;
@@ -174,13 +181,14 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
         super.onAttachFragment(fragment);
 
         if (fragment instanceof BaseReportFragment) {
-            BaseReportFragment reportFragment = (BaseReportFragment)fragment;
+            BaseReportFragment reportFragment = (BaseReportFragment) fragment;
             updateReportTypeSpinner(reportFragment.getReportType(), getString(reportFragment.getTitle()));
         }
     }
 
     /**
      * Load the provided fragment into the view replacing the previous one
+     *
      * @param fragment BaseReportFragment instance
      */
     private void loadFragment(BaseReportFragment fragment) {
@@ -202,14 +210,64 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
         mReportType = reportType;
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(actionBar.getThemedContext(),
-                android.R.layout.simple_list_item_1,
-                mReportType.getReportNames());
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(actionBar.getThemedContext(),
+                R.layout.toolbar_spinner_selected_item,
+                mReportType.getReportNames()) {
+            /**
+             * @param position
+             * @param convertView
+             * @param parent
+             *
+             * @return
+             */
+            @Override
+            public View getView(final int position,
+                                final View convertView,
+                                final ViewGroup parent) {
+
+                View view = super.getView(position,
+                        convertView,
+                        parent);
+
+                if (parent.getId() != R.id.toolbar_spinner) {
+                    // Parent view is not the Toolbar Spinner
+
+                    //
+                    // Set item text color according to Report's type
+                    //
+
+                    TextView reportTextView = (TextView) view.findViewById(android.R.id.text1);
+
+                    if (reportTextView != null) {
+                        //
+
+                        String reportName = (String) getItem(position);
+
+                        final ReportType reportType = ReportType.getReportType(reportName);
+
+                        reportTextView.setTextColor(getResources().getColor(reportType.getTitleColor()));
+
+                    } else {
+                        //  n' pas
+
+                        // RAF
+                    }
+
+                } else {
+                    // Parent view is the Toolbar
+
+                    // NTD (White by default)
+                }
+
+                return view;
+            }
+        };
 
         mSkipNextReportTypeSelectedRun = true; //selection event will be fired again
-        mReportTypeSpinner.setAdapter(arrayAdapter);
-        mReportTypeSpinner.setSelection(arrayAdapter.getPosition(reportName));
-        mReportTypeSpinner.setOnItemSelectedListener(mReportTypeSelectedListener);
+        mReportsToolbarSpinner.setAdapter(arrayAdapter);
+        mReportsToolbarSpinner.setSelection(arrayAdapter.getPosition(reportName));
+        mReportsToolbarSpinner.setOnItemSelectedListener(mReportTypeSelectedListener);
 
 
         toggleToolbarTitleVisibility();
@@ -219,10 +277,10 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
 
-        if (mReportType == ReportType.NONE){
-            mReportTypeSpinner.setVisibility(View.GONE);
+        if (mReportType == ReportType.NONE) {
+            mReportsToolbarSpinner.setVisibility(View.GONE);
         } else {
-            mReportTypeSpinner.setVisibility(View.VISIBLE);
+            mReportsToolbarSpinner.setVisibility(View.VISIBLE);
         }
         actionBar.setDisplayShowTitleEnabled(mReportType == ReportType.NONE);
     }
@@ -242,10 +300,10 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
     /**
      * Updates the reporting time range for all listening fragments
      */
-    private void updateDateRangeOnFragment(){
+    private void updateDateRangeOnFragment() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
-            if (fragment instanceof ReportOptionsListener){
+            if (fragment instanceof ReportOptionsListener) {
                 ((ReportOptionsListener) fragment).onTimeRangeUpdated(mReportPeriodStart, mReportPeriodEnd);
             }
         }
@@ -254,10 +312,10 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
     /**
      * Updates the account type for all attached fragments which are listening
      */
-    private void updateAccountTypeOnFragments(){
+    private void updateAccountTypeOnFragments() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
-            if (fragment instanceof ReportOptionsListener){
+            if (fragment instanceof ReportOptionsListener) {
                 ((ReportOptionsListener) fragment).onAccountTypeUpdated(mAccountType);
             }
         }
@@ -266,10 +324,10 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
     /**
      * Updates the report grouping interval on all attached fragments which are listening
      */
-    private void updateGroupingOnFragments(){
+    private void updateGroupingOnFragments() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
-            if (fragment instanceof ReportOptionsListener){
+            if (fragment instanceof ReportOptionsListener) {
                 ((ReportOptionsListener) fragment).onGroupingUpdated(mReportGroupInterval);
             }
         }
@@ -283,7 +341,7 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.menu_group_reports_by:
                 return true;
 
@@ -317,7 +375,7 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         mReportPeriodEnd = new LocalDate().plusDays(1).toDate().getTime();
-        switch (position){
+        switch (position) {
             case 0: //current month
                 mReportPeriodStart = new LocalDate().dayOfMonth().withMinimumValue().toDate().getTime();
                 break;
@@ -344,7 +402,7 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
                 rangeFragment.show(getSupportFragmentManager(), "range_dialog");
                 break;
         }
-        if (position != 5){ //the date picker will trigger the update itself
+        if (position != 5) { //the date picker will trigger the update itself
             updateDateRangeOnFragment();
         }
     }
@@ -370,12 +428,13 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
 
     }
 
-    public AccountType getAccountType(){
+    public AccountType getAccountType() {
         return mAccountType;
     }
 
     /**
      * Return the end time of the reporting period
+     *
      * @return Time in millis
      */
     public long getReportPeriodEnd() {
@@ -384,6 +443,7 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
 
     /**
      * Return the start time of the reporting period
+     *
      * @return Time in millis
      */
     public long getReportPeriodStart() {
@@ -392,8 +452,8 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK){
-            if (mReportType != ReportType.NONE){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mReportType != ReportType.NONE) {
                 loadFragment(mReportsOverviewFragment);
                 return true;
             }
@@ -405,7 +465,7 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
     public void refresh() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
-            if (fragment instanceof Refreshable){
+            if (fragment instanceof Refreshable) {
                 ((Refreshable) fragment).refresh();
             }
         }

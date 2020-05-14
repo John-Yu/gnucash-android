@@ -15,27 +15,38 @@
  limitations under the License.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference android:title="@string/title_default_transaction_type"
-        android:entryValues="@array/key_transaction_type_values"
-        android:entries="@array/transaction_types"
+
+    <ListPreference
         android:key="@string/key_default_transaction_type"
-        android:summary="@string/summary_default_transaction_type"/>
+        android:title="@string/title_default_transaction_type"
+        android:summary="@string/summary_default_transaction_type"
+        android:entryValues="@array/key_transaction_types"
+        android:entries="@array/transaction_types"
+        />
 
-    <android.support.v7.preference.SwitchPreferenceCompat android:summary="@string/summary_use_double_entry"
-                                                          android:key="@string/key_use_double_entry"
-                                                          android:defaultValue="true"
-                                                          android:title="@string/title_use_double_entry"/>
+    <SwitchPreferenceCompat
+        android:key="@string/key_use_double_entry"
+        android:title="@string/title_use_double_entry"
+        android:summary="@string/summary_use_double_entry"
+        android:defaultValue="true" />
 
-    <android.support.v7.preference.SwitchPreferenceCompat
+    <SwitchPreferenceCompat
         android:summary="@string/summary_use_compact_list"
         android:key="@string/key_use_compact_list"
         android:dependency="@string/key_use_double_entry"
         android:title="@string/title_use_compact_list"/>
 
-    <android.support.v7.preference.SwitchPreferenceCompat android:summary="@string/summary_save_opening_balances"
+    <SwitchPreferenceCompat
+        android:key="@string/key_display_negative_signum_in_splits"
+        android:title="@string/title_display_negative_signum_in_splits"
+        android:summary="@string/summary_display_negative_signum_in_splits"
+        android:defaultValue="false" />
+
+    <SwitchPreferenceCompat android:summary="@string/summary_save_opening_balances"
         android:key="@string/key_save_opening_balances"
         android:defaultValue="false"
         android:title="@string/title_save_opening_balances" />
+
     <Preference android:key="@string/key_delete_all_transactions"
         android:summary="@string/summary_delete_all_transactions"
         android:title="@string/title_delete_all_transactions" />

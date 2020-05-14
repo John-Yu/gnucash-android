@@ -18,7 +18,6 @@
 package org.gnucash.android.importer;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -68,6 +67,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Pattern;
+
+import androidx.annotation.NonNull;
 
 /**
  * Handler for parsing the GnuCash XML file.
@@ -1031,7 +1032,8 @@ public class GncXmlHandler extends DefaultHandler {
      * Returns the unique identifier of the just-imported book
      * @return GUID of the newly imported book
      */
-    public @NonNull String getBookUID(){
+    public @NonNull
+    String getBookUID(){
         return mBook.getUID();
     }
 

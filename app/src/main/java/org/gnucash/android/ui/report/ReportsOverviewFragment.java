@@ -18,11 +18,11 @@ package org.gnucash.android.ui.report;
 import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.AppCompatButton;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -44,13 +44,13 @@ import org.gnucash.android.ui.report.barchart.StackedBarChartFragment;
 import org.gnucash.android.ui.report.linechart.CashFlowLineChartFragment;
 import org.gnucash.android.ui.report.piechart.PieChartFragment;
 import org.gnucash.android.ui.report.sheet.BalanceSheetFragment;
-import org.gnucash.android.ui.transaction.TransactionsActivity;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.fragment.app.FragmentManager;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -213,9 +213,10 @@ public class ReportsOverviewFragment extends BaseReportFragment {
         mChart.highlightValues(null);
         mChart.invalidate();
 
-        TransactionsActivity.displayBalance(mTotalAssets, mAssetsBalance);
-        TransactionsActivity.displayBalance(mTotalLiabilities, mLiabilitiesBalance);
-        TransactionsActivity.displayBalance(mNetWorth, mAssetsBalance.subtract(mLiabilitiesBalance));
+        AccountType.ASSET.displayBalance(mTotalAssets, mAssetsBalance);
+        AccountType.LIABILITY.displayBalance(mTotalLiabilities, mLiabilitiesBalance);
+        // #8xx
+        AccountType.ASSET.displayBalance(mNetWorth, mAssetsBalance.add(mLiabilitiesBalance));
     }
 
     /**

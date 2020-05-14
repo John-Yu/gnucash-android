@@ -17,9 +17,6 @@ package org.gnucash.android.ui.account;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +40,10 @@ import org.gnucash.android.util.BackupManager;
 import org.gnucash.android.util.QualifiedAccountNameCursorAdapter;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
+import androidx.cursoradapter.widget.SimpleCursorAdapter;
+import androidx.fragment.app.DialogFragment;
 
 /**
  * Delete confirmation dialog for accounts.
@@ -148,8 +149,10 @@ public class DeleteAccountDialogFragment extends DialogFragment {
                 + DatabaseSchema.AccountEntry.COLUMN_PLACEHOLDER + " = 0 AND "
                 + DatabaseSchema.AccountEntry.COLUMN_UID + " NOT IN ('" + TextUtils.join("','", descendantAccountUIDs) + "')"
                 + ")";
-        Cursor cursor = accountsDbAdapter.fetchAccountsOrderedByFullName(transactionDeleteConditions,
-                new String[]{mOriginAccountUID, currencyCode, accountType.name()});
+        Cursor cursor = accountsDbAdapter.fetchAccountsOrderedByFavoriteAndFullName(transactionDeleteConditions,
+                                                                                    new String[]{mOriginAccountUID,
+                                                                                                 currencyCode,
+                                                                                                 accountType.name()});
 
         SimpleCursorAdapter mCursorAdapter = new QualifiedAccountNameCursorAdapter(getActivity(), cursor);
         mTransactionsDestinationAccountSpinner.setAdapter(mCursorAdapter);
@@ -160,8 +163,11 @@ public class DeleteAccountDialogFragment extends DialogFragment {
                 + DatabaseSchema.AccountEntry.COLUMN_TYPE         + " = ? AND "
                 + DatabaseSchema.AccountEntry.COLUMN_UID + " NOT IN ('" + TextUtils.join("','", descendantAccountUIDs) + "')"
                 + ")";
-        cursor = accountsDbAdapter.fetchAccountsOrderedByFullName(accountMoveConditions,
-                new String[]{mOriginAccountUID, currencyCode, accountType.name()});
+        cursor = accountsDbAdapter.fetchAccountsOrderedByFavoriteAndFullName(accountMoveConditions,
+                                                                             new String[]{mOriginAccountUID,
+                                                                                          currencyCode,
+                                                                                          accountType.name()});
+
         mCursorAdapter = new QualifiedAccountNameCursorAdapter(getActivity(), cursor);
         mAccountsDestinationAccountSpinner.setAdapter(mCursorAdapter);
 

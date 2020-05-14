@@ -18,7 +18,6 @@ package org.gnucash.android.model;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
 
 import org.gnucash.android.R;
 import org.gnucash.android.app.GnuCashApplication;
@@ -40,6 +39,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * Model for recurrences in the database

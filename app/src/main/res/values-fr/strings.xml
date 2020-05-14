@@ -54,7 +54,7 @@
   <string name="btn_export">Exporter</string>
   <string name="option_delete_after_export">Effacer les transactions après export</string>
   <string name="hint_delete_after_export">Toutes les transactions exportées seront supprimées après l\'export</string>
-  <string name="title_settings">Paramètres</string>
+    <string name="title_settings">Préférences / Maintenance</string>
   <string-array name="export_destinations">
     <item>Enregistrer sous &#8230;</item>
     <item>Dropbox</item>
@@ -65,7 +65,7 @@
   <string name="title_move_transactions">Déplacer %1$d transaction(s)</string>
   <string name="label_move_destination">Compte de destination</string>
   <string name="toast_incompatible_currency">Impossible de déplacer les transactions.\nLe compte de destination utilise une monnaie différente du compte d\'origine</string>
-  <string name="header_general_settings">Général</string>
+    <string name="header_general_settings">Générales</string>
   <string name="header_about_gnucash">À propos</string>
   <string name="title_choose_currency">Choisisez une monnaie par défaut</string>
   <string name="title_default_currency">Monnaie par défaut</string>
@@ -95,10 +95,14 @@
   <string name="title_transaction_preferences">Préférences des transactions</string>
   <string name="title_account_preferences">Préférences du compte</string>
   <string name="title_default_transaction_type">Type de transaction par défaut</string>
-  <string name="summary_default_transaction_type">Le type de transaction à utiliser par défaut, CRÉDIT ou DÉBIT</string>
+  <string name="summary_default_transaction_type">@string/label_credit</string>
+  <string name="label_use_account_usual_balance_expense_mode">Utiliser le Solde habituel du Compte (sauf pour les Actifs)</string>
+  <string name="label_use_account_usual_balance_income_mode">Utiliser le Solde habituel du Compte</string>
   <string-array name="transaction_types">
-    <item>CRÉDIT</item>
-    <item>DÉBIT</item>
+  <item>@string/label_use_account_usual_balance_expense_mode</item>
+  <item>@string/label_use_account_usual_balance_income_mode</item>
+    <item>@string/label_debit</item>
+    <item>@string/label_credit</item>
   </string-array>
   <string name="msg_delete_all_transactions_confirmation">Êtes vous sûre de vouloir supprimer TOUTES les transactions ?</string>
   <string name="msg_delete_transaction_confirmation">Êtes vous sûre de vouloir supprimer cette transaction ?</string>
@@ -109,7 +113,7 @@
   <string name="summary_default_export_email">Email par défaut pour les exports. Vous pourrez toujours le changer lors de votre prochain export.</string>
   <string name="summary_use_double_entry">Toutes les transactions seront un transfert d’un compte à un autre</string>
   <string name="title_use_double_entry">Activer la Double entrée</string>
-  <string name="account_balance">Solde</string>
+  <string name="account_balance">Solde du Compte à la date indiquée ci-dessous</string>
   <string name="toast_no_account_name_entered">Entrer un nom de compte pour créer un compte</string>
   <string name="label_account_currency">Monnaie</string>
   <string name="label_parent_account">Compte parent</string>
@@ -145,7 +149,7 @@
   <string name="title_progress_exporting_transactions">Exportation des transactions</string>
   <string name="label_no_recurring_transactions">Pas de transactions planifiées à afficher.</string>
   <string name="toast_recurring_transaction_deleted">Transaction récurrente supprimée avec succès</string>
-  <string name="label_placeholder_account">Compte de référence</string>
+  <string name="label_placeholder_account">Compte virtuel</string>
   <string name="label_default_transfer_account">Compte de transfert par défaut</string>
   <plurals name="label_sub_accounts">
     <item quantity="one">%d sous-compte</item>
@@ -186,7 +190,7 @@
   <string name="msg_confirm_create_default_accounts_setting">Un nouveau livre sera ouvert avec les comptes courants par défaut\n\n Vos comptes et opérations actuels ne seront pas modifiés !</string>
   <string name="title_scheduled_transactions">Transactions planifiées</string>
   <string name="title_select_export_destination">Selectionnez une destination pour l\'export</string>
-  <string name="hint_split_memo">Memo</string>
+  <string name="hint_split_memo">Memo (Cliquez pour ajouter)</string>
   <string name="label_spend">Dépenser</string>
   <string name="label_receive">Recevoir</string>
   <string name="label_withdrawal">Retrait</string>
@@ -197,7 +201,7 @@
   <string name="label_increase">Augmenter</string>
   <string name="label_income">Revenu</string>
   <string name="label_rebate">Remboursement</string>
-  <string name="label_expense">Frais</string>
+  <string name="label_expense">Dépense</string>
   <string name="label_bill">Facture</string>
   <string name="label_invoice">Facture d\'achat</string>
   <string name="label_buy">Achat</string>
@@ -258,7 +262,7 @@
   <string name="nav_menu_open">Ouvrir&#8230;</string>
   <string name="nav_menu_reports">Rapports</string>
   <string name="nav_menu_export">Export&#8230;</string>
-  <string name="nav_menu_settings">Paramètres</string>
+    <string name="nav_menu_settings">Préférences / Maintenance</string>
   <string name="username">Nom d\'utilisateur</string>
   <string name="password">Mot de passe</string>
   <string name="owncloud_pref">ownCloud</string>
@@ -445,5 +449,9 @@
   <string name="label_backup_filename">gnucash_android_backup.gnca</string>
   <string name="label_select_destination_after_export">Sélectionnez la destination une fois l\'exportation terminée</string>
   <string name="label_dropbox_export_destination">Exporter dans le dossier \'/Apps/GnuCash Android/\' sur Dropbox</string>
-  <string name="title_section_preferences">Préférences</string>
+  <string name="title_section_preferences">Préférences</string><string name="double_back_press_exit_msg">Cliquez à nouveau sur BACK pour Quitter\n(ou modifiez les Préférences Générales)</string><string name="prefs_ui_category_title">Préférences d\'ergonomie</string><string name="prefs_ui_title_use_double_back_button_press_to_quit">Double confirmation pour Quitter</string><string name="prefs_ui_summary_use_double_back_button_press_to_quit">Appuyer deux fois de suite sur le bouton \"BACK\" pour Quitter l\'application</string><string name="select_account">Selectionner un Compte</string>
+  <string name="prefs_ui_title_use_color_in_account_list">Utiliser les couleurs dans les listes de Comptes</string>
+  <string name="prefs_ui_summary_use_color_in_account_list">Utiliser les couleurs dans les listes de Comptes et les listes de Transactions</string><string name="prefs_ui_summary_account_searchable_spinner_openkeyboard">Afficher le Clavier lors de l\'ouverture d\'une liste de Compte avec champ de Recherche</string><string name="prefs_ui_title_account_searchable_spinner_openkeyboard">Afficher le Clavier dans les listes de Compte avec champ de Recherche</string>
+  <string name="title_display_negative_signum_in_splits">Afficher le signe - dans les transactions splittées</string>
+  <string name="summary_display_negative_signum_in_splits">Autoriser l\'affichage du signe - même lorsque le bouton Débit/Crédit est affiché</string>
 </resources>

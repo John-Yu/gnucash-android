@@ -23,8 +23,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -40,6 +38,9 @@ import org.gnucash.android.util.TimestampHelper;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import static org.gnucash.android.db.DatabaseSchema.AccountEntry;
 import static org.gnucash.android.db.DatabaseSchema.ScheduledActionEntry;
@@ -119,11 +120,7 @@ public class TransactionsDbAdapter extends DatabaseAdapter<Transaction> {
                 } else {
                     mSplitsDbAdapter.addRecord(split, updateMethod);
                 }
-                if(split.getUID() == null) {
-                    Log.d(LOG_TAG, "Could not add split, specific split not found");
-                } else {
-                    splitUIDs.add(split.getUID());
-                }
+                splitUIDs.add(split.getUID());
             }
             Log.d(LOG_TAG, transaction.getSplits().size() + " splits added");
 
@@ -517,6 +514,8 @@ public class TransactionsDbAdapter extends DatabaseAdapter<Transaction> {
      * @return Number of splits belonging to the transaction
      */
     public long getSplitCount(@NonNull String transactionUID){
+        if (transactionUID == null)
+            return 0;
         String sql = "SELECT COUNT(*) FROM " + SplitEntry.TABLE_NAME
                 + " WHERE " + SplitEntry.COLUMN_TRANSACTION_UID + "= '" + transactionUID + "'";
         SQLiteStatement statement = mDb.compileStatement(sql);

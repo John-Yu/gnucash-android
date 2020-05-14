@@ -17,8 +17,6 @@ package org.gnucash.android.ui.budget;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import org.gnucash.android.R;
@@ -26,6 +24,9 @@ import org.gnucash.android.app.GnuCashApplication;
 import org.gnucash.android.ui.common.BaseDrawerActivity;
 import org.gnucash.android.ui.common.FormActivity;
 import org.gnucash.android.ui.common.UxArgument;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 /**
  * Activity for managing display and editing of budgets

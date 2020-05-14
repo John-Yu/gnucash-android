@@ -19,9 +19,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.inputmethodservice.KeyboardView;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.annotation.XmlRes;
-import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -45,6 +42,10 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.XmlRes;
+import androidx.appcompat.widget.AppCompatEditText;
 
 /**
  * A custom EditText which supports computations and uses a custom calculator keyboard.
@@ -203,7 +204,8 @@ public class CalculatorEditText extends AppCompatEditText {
      * Returns the XML resource ID describing the calculator keys layout
      * @return XML resource ID
      */
-    public @XmlRes int getCalculatorKeysLayout() {
+    public @XmlRes
+    int getCalculatorKeysLayout() {
         return mCalculatorKeysLayout;
     }
 
@@ -304,7 +306,8 @@ public class CalculatorEditText extends AppCompatEditText {
      * Performs an evaluation of the expression first
      * @return BigDecimal value
      */
-    public @Nullable BigDecimal getValue(){
+    public @Nullable
+    BigDecimal getValue(){
         evaluate();
         try { //catch any exceptions in the conversion e.g. if a string with only "-" is entered
             return AmountParser.parse(getText().toString());
