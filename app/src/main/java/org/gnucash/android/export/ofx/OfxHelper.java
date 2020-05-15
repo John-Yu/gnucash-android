@@ -101,7 +101,7 @@ public class OfxHelper {
         String dateString = OFX_DATE_FORMATTER.format(date);
         TimeZone tz = Calendar.getInstance().getTimeZone();
         int offset = tz.getRawOffset();
-        int hours   = (int) (( offset / (1000*60*60)) % 24);
+        int hours   = ( offset / (1000*60*60)) % 24;
         String sign = offset > 0 ?  "+" : "";
         return dateString + "[" + sign + hours + ":" + tz.getDisplayName(false, TimeZone.SHORT, Locale.getDefault()) + "]";
     }

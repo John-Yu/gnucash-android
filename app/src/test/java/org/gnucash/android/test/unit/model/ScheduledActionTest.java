@@ -187,7 +187,7 @@ public class ScheduledActionTest {
     public void weeklyActionsWithoutDayOfWeekSet_shouldReturnDateInTheFuture() {
         ScheduledAction scheduledAction = new ScheduledAction(ScheduledAction.ActionType.BACKUP);
         Recurrence recurrence = new Recurrence(PeriodType.WEEK);
-        recurrence.setByDays(Collections.<Integer>emptyList());
+        recurrence.setByDays(Collections.emptyList());
         scheduledAction.setRecurrence(recurrence);
         scheduledAction.setStartTime(new DateTime(2016, 6, 6, 9, 0).getMillis());
         scheduledAction.setLastRun(new DateTime(2017, 4, 12, 9, 0).getMillis());

@@ -279,7 +279,7 @@ public class StackedBarChartFragment extends BaseReportFragment {
      * @return a float array
      */
     private float[] floatListToArray(List<Float> list) {
-        float array[] = new float[list.size()];
+        float[] array = new float[list.size()];
         for (int i = 0;  i < list.size(); i++) {
             array[i] = list.get(i);
         }

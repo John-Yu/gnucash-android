@@ -67,7 +67,7 @@ public abstract class DatabaseAdapter<Model extends BaseModel> {
 
     public enum UpdateMethod {
         insert, update, replace
-    };
+    }
 
     /**
      * Opens the database adapter with an existing database

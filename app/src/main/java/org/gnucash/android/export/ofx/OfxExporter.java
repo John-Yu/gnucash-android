@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -175,7 +176,7 @@ public class OfxExporter extends Exporter{
 
         try {
             File file = new File(getExportCacheFilePath());
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
             writer.write(generateOfxExport());
         } catch (IOException e) {
             throw new ExporterException(mExportParams, e);

@@ -237,12 +237,12 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
                     // Set item text color according to Report's type
                     //
 
-                    TextView reportTextView = (TextView) view.findViewById(android.R.id.text1);
+                    TextView reportTextView = view.findViewById(android.R.id.text1);
 
                     if (reportTextView != null) {
                         //
 
-                        String reportName = (String) getItem(position);
+                        String reportName = getItem(position);
 
                         final ReportType reportType = ReportType.getReportType(reportName);
 

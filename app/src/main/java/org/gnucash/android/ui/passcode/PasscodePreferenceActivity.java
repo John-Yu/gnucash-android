@@ -45,7 +45,7 @@ public class PasscodePreferenceActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.passcode_lockscreen);
 
-        mPassTextView = (TextView) findViewById(R.id.passcode_label);
+        mPassTextView = findViewById(R.id.passcode_label);
 
         mIsPassEnabled = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                 .getBoolean(UxArgument.ENABLED_PASSCODE, false);

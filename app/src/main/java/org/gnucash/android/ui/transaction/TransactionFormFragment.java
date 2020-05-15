@@ -376,7 +376,7 @@ public class TransactionFormFragment extends Fragment implements
                             // Set Account Color
                             //
 
-                            TextView accountFullNameTextView = (TextView) spinnerSelectedItemView.findViewById(android.R.id.text1);
+                            TextView accountFullNameTextView = spinnerSelectedItemView.findViewById(android.R.id.text1);
 
                             AccountUtils.setAccountTextColor(accountFullNameTextView,
                                                              accountUID);
@@ -455,7 +455,7 @@ public class TransactionFormFragment extends Fragment implements
                                                          | DateUtils.FORMAT_SHOW_DATE
                                                          | DateUtils.FORMAT_SHOW_YEAR);
 
-            TextView secondaryTextView = (TextView) view.findViewById(secondary_text);
+            TextView secondaryTextView = view.findViewById(secondary_text);
             secondaryTextView.setText(balance.formattedString() + " on " + dateString); //TODO: Extract string
         }
     }

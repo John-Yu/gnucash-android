@@ -30,11 +30,11 @@ public interface OnTransactionClickedListener {
 	 * Callback for creating a new transaction
 	 * @param accountUID GUID of the account in which to create the new transaction
 	 */
-	public void createNewTransaction(String accountUID);
+    void createNewTransaction(String accountUID);
 	
 	/**
 	 * Callback request to edit a transaction
 	 * @param transactionUID GUID of the transaction to be edited
 	 */
-	public void editTransaction(String transactionUID);
+    void editTransaction(String transactionUID);
 }

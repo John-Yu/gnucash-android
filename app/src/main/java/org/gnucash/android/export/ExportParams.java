@@ -207,7 +207,7 @@ public class ExportParams {
         return mExportFormat.name() + separator
                 + mExportTarget.name() + separator
                 + TimestampHelper.getUtcStringFromTimestamp(mExportStartTime) + separator
-                + Boolean.toString(mDeleteTransactionsAfterExport) + separator
+                + mDeleteTransactionsAfterExport + separator
                 + (mExportLocation != null ? mExportLocation : "");
     }
 

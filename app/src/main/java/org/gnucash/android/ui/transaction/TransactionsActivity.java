@@ -374,7 +374,6 @@ public class TransactionsActivity extends BaseDrawerActivity implements
                         addAccountIntent.putExtra(UxArgument.PARENT_ACCOUNT_UID,
                                                   getCurrentAccountUID());
                         startActivityForResult(addAccountIntent, AccountsActivity.REQUEST_EDIT_ACCOUNT);
-                        ;
                         break;
 
                     case INDEX_TRANSACTIONS_FRAGMENT:

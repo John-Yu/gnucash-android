@@ -54,12 +54,12 @@ public class ScheduledActionsActivity extends BaseDrawerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.title_scheduled_transactions));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.title_scheduled_exports));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = findViewById(R.id.pager);
 
         //show the simple accounts list
         PagerAdapter mPagerAdapter = new ScheduledActionsViewPager(getSupportFragmentManager());

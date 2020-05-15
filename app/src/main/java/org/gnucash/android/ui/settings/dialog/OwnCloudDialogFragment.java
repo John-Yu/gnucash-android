@@ -102,25 +102,25 @@ public class OwnCloudDialogFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.dialog_owncloud_account, container, false);
 
-        mServer = (EditText) view.findViewById(R.id.owncloud_hostname);
-        mUsername = (EditText) view.findViewById(R.id.owncloud_username);
-        mPassword = (EditText) view.findViewById(R.id.owncloud_password);
-        mDir = (EditText) view.findViewById(R.id.owncloud_dir);
+        mServer = view.findViewById(R.id.owncloud_hostname);
+        mUsername = view.findViewById(R.id.owncloud_username);
+        mPassword = view.findViewById(R.id.owncloud_password);
+        mDir = view.findViewById(R.id.owncloud_dir);
 
         mServer.setText(mOC_server);
         mDir.setText(mOC_dir);
         mPassword.setText(mOC_password); // TODO: Remove - debugging only
         mUsername.setText(mOC_username);
 
-        mServerError = (TextView) view.findViewById(R.id.owncloud_hostname_invalid);
-        mUsernameError = (TextView) view.findViewById(R.id.owncloud_username_invalid);
-        mDirError = (TextView) view.findViewById(R.id.owncloud_dir_invalid);
+        mServerError = view.findViewById(R.id.owncloud_hostname_invalid);
+        mUsernameError = view.findViewById(R.id.owncloud_username_invalid);
+        mDirError = view.findViewById(R.id.owncloud_dir_invalid);
         mServerError.setVisibility(View.GONE);
         mUsernameError.setVisibility(View.GONE);
         mDirError.setVisibility(View.GONE);
 
-        mCancelButton = (Button) view.findViewById(R.id.btn_cancel);
-        mOkButton = (Button) view.findViewById(R.id.btn_save);
+        mCancelButton = view.findViewById(R.id.btn_cancel);
+        mOkButton = view.findViewById(R.id.btn_save);
         mOkButton.setText(R.string.btn_test);
 
         return view;

@@ -52,7 +52,7 @@ public class QualifiedAccountNameCursorAdapter
      */
     public static void hideFavoriteAccountStarIcon(View spinnerView) {
 
-        TextView textViewWithStarIcon = (TextView) spinnerView.findViewById(R.id.text2);
+        TextView textViewWithStarIcon = spinnerView.findViewById(R.id.text2);
 
         if (textViewWithStarIcon != null) {
 
@@ -256,7 +256,7 @@ public class QualifiedAccountNameCursorAdapter
         // Put Parent Account Full Name in text3
         //
 
-        TextView parentAccountFullNameTextView = (TextView) view.findViewById(R.id.text3);
+        TextView parentAccountFullNameTextView = view.findViewById(R.id.text3);
 
         if (parentAccountFullNameTextView != null) {
             // The field exists
@@ -353,7 +353,7 @@ public class QualifiedAccountNameCursorAdapter
         // Set color on text1 (selected spinner item)
         //
 
-        TextView simpleAccountNameTextView = (TextView) view.findViewById(android.R.id.text1);
+        TextView simpleAccountNameTextView = view.findViewById(android.R.id.text1);
 
         AccountUtils.setAccountTextColor(simpleAccountNameTextView,
                                          accountUID);
@@ -362,7 +362,7 @@ public class QualifiedAccountNameCursorAdapter
         // Set color on text2
         //
 
-        simpleAccountNameTextView = (TextView) view.findViewById(R.id.text2);
+        simpleAccountNameTextView = view.findViewById(R.id.text2);
 
         AccountUtils.setAccountTextColor(simpleAccountNameTextView,
                                          accountUID);
@@ -377,7 +377,7 @@ public class QualifiedAccountNameCursorAdapter
     void displayFavoriteAccountStarIcon(View spinnerSelectedItemView,
                                         Integer isFavoriteAccount) {
 
-        TextView simpleAccountNameTextView = (TextView) spinnerSelectedItemView.findViewById(R.id.text2);
+        TextView simpleAccountNameTextView = spinnerSelectedItemView.findViewById(R.id.text2);
 
         if (simpleAccountNameTextView != null) {
             // The field exists

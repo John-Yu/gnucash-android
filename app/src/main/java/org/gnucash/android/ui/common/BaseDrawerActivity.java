@@ -132,7 +132,7 @@ public abstract class BaseDrawerActivity extends PasscodeLockActivity implements
             }
         });
 
-        mBookNameTextView = (TextView) headerView.findViewById(R.id.book_name);
+        mBookNameTextView = headerView.findViewById(R.id.book_name);
         mBookNameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

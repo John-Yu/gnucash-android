@@ -270,7 +270,7 @@ public class ScheduledActionsListFragment extends ListFragment implements
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         if (mActionMode != null){
-            CheckBox checkbox = (CheckBox) v.findViewById(R.id.checkbox);
+            CheckBox checkbox = v.findViewById(R.id.checkbox);
             checkbox.setChecked(!checkbox.isChecked());
             return;
         }
@@ -417,12 +417,12 @@ public class ScheduledActionsListFragment extends ListFragment implements
         public View getView(int position, View convertView, ViewGroup parent) {
             final View view = super.getView(position, convertView, parent);
             final int itemPosition = position;
-            CheckBox checkbox = (CheckBox) view.findViewById(R.id.checkbox);
+            CheckBox checkbox = view.findViewById(R.id.checkbox);
             //TODO: Revisit this if we ever change the application theme
             int id = Resources.getSystem().getIdentifier("btn_check_holo_light", "drawable", "android");
             checkbox.setButtonDrawable(id);
 
-            final TextView secondaryText = (TextView) view.findViewById(R.id.secondary_text);
+            final TextView secondaryText = view.findViewById(R.id.secondary_text);
 
             checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -477,7 +477,7 @@ public class ScheduledActionsListFragment extends ListFragment implements
 
             Transaction transaction = mTransactionsDbAdapter.buildModelInstance(cursor);
 
-            TextView amountTextView = (TextView) view.findViewById(R.id.right_text);
+            TextView amountTextView = view.findViewById(R.id.right_text);
             if (transaction.getSplits().size() == 2){
                 if (transaction.getSplits().get(0).isPairOf(transaction.getSplits().get(1))){
                     amountTextView.setText(transaction.getSplits().get(0).getValue().formattedString());
@@ -485,7 +485,7 @@ public class ScheduledActionsListFragment extends ListFragment implements
             } else {
                 amountTextView.setText(getString(R.string.label_split_count, transaction.getSplits().size()));
             }
-            TextView descriptionTextView = (TextView) view.findViewById(R.id.secondary_text);
+            TextView descriptionTextView = view.findViewById(R.id.secondary_text);
 
             ScheduledActionDbAdapter scheduledActionDbAdapter = ScheduledActionDbAdapter.getInstance();
             String scheduledActionUID = cursor.getString(cursor.getColumnIndexOrThrow("origin_scheduled_action_uid")); //column created from join when fetching scheduled transactions
@@ -518,12 +518,12 @@ public class ScheduledActionsListFragment extends ListFragment implements
         public View getView(int position, View convertView, ViewGroup parent) {
             final View view = super.getView(position, convertView, parent);
             final int itemPosition = position;
-            CheckBox checkbox = (CheckBox) view.findViewById(R.id.checkbox);
+            CheckBox checkbox = view.findViewById(R.id.checkbox);
             //TODO: Revisit this if we ever change the application theme
             int id = Resources.getSystem().getIdentifier("btn_check_holo_light", "drawable", "android");
             checkbox.setButtonDrawable(id);
 
-            final TextView secondaryText = (TextView) view.findViewById(R.id.secondary_text);
+            final TextView secondaryText = view.findViewById(R.id.secondary_text);
 
             checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -578,7 +578,7 @@ public class ScheduledActionsListFragment extends ListFragment implements
             ScheduledActionDbAdapter mScheduledActionDbAdapter = ScheduledActionDbAdapter.getInstance();
             ScheduledAction scheduledAction = mScheduledActionDbAdapter.buildModelInstance(cursor);
 
-            TextView primaryTextView = (TextView) view.findViewById(R.id.primary_text);
+            TextView primaryTextView = view.findViewById(R.id.primary_text);
             ExportParams params = ExportParams.parseCsv(scheduledAction.getTag());
             String exportDestination = params.getExportTarget().getDescription();
             if (params.getExportTarget() == ExportParams.ExportTarget.URI){
@@ -590,7 +590,7 @@ public class ScheduledActionsListFragment extends ListFragment implements
 
             view.findViewById(R.id.right_text).setVisibility(View.GONE);
 
-            TextView descriptionTextView = (TextView) view.findViewById(R.id.secondary_text);
+            TextView descriptionTextView = view.findViewById(R.id.secondary_text);
             descriptionTextView.setText(scheduledAction.getRepeatString());
             long endTime = scheduledAction.getEndTime();
             if (endTime > 0 && endTime < System.currentTimeMillis()){

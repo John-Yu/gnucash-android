@@ -24,11 +24,11 @@ public interface Refreshable {
     /**
      * Refresh the list, typically be restarting the loader
      */
-    public void refresh();
+    void refresh();
 
     /**
      * Refresh the list with modified parameters
      * @param uid GUID of relevant item to be refreshed
      */
-    public void refresh(String uid);
+    void refresh(String uid);
 }

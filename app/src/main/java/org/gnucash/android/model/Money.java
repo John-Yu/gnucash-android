@@ -480,9 +480,7 @@ public final class Money implements Comparable<Money>{
 		Money other = (Money) obj;
 		if (!mAmount.equals(other.mAmount))
 			return false;
-		if (!mCommodity.equals(other.mCommodity))
-			return false;
-		return true;
+		return mCommodity.equals(other.mCommodity);
 	}
 
 	@Override

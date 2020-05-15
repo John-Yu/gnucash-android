@@ -17,7 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
-import android.widget.SearchView;
+import androidx.appcompat.widget.SearchView;
 
 import org.gnucash.android.R;
 import org.gnucash.android.util.KeyboardUtils;
@@ -373,7 +373,7 @@ public class SearchableListDialogFragment<T_ITEM>
         // Search Edit text
         //
 
-        mSearchTextEditView = (SearchView) searchableListRootView.findViewById(R.id.search);
+        mSearchTextEditView = searchableListRootView.findViewById(R.id.search);
 
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
 
@@ -412,7 +412,7 @@ public class SearchableListDialogFragment<T_ITEM>
         // Items list
         //
 
-        setListView((ListView) searchableListRootView.findViewById(R.id.listItems));
+        setListView(searchableListRootView.findViewById(R.id.listItems));
 
         // Use the parent spinner view adapter for the list view
         setListViewAdapter((BaseAdapter) getParentSearchableSpinnerView().getAdapter());

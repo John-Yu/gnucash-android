@@ -26,5 +26,5 @@ public interface TaskDelegate {
     /**
      * Function to execute on completion of task
      */
-    public void onTaskComplete();
+    void onTaskComplete();
 }

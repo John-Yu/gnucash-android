@@ -306,7 +306,7 @@ public class AccountsActivity extends BaseDrawerActivity implements OnAccountCli
                                 Toast.LENGTH_SHORT);
 
         // Align-Center text inside the Toast
-        TextView toastTextView = (TextView) mToast.getView()
+        TextView toastTextView = mToast.getView()
                                                   .findViewById(android.R.id.message);
         if (toastTextView != null) {
             toastTextView.setGravity(Gravity.CENTER);
