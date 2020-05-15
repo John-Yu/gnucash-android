@@ -34,16 +34,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
                       android:layout_marginBottom="-8dp">
+
             <TextView
-                android:text="@string/label_export_destination"
-                android:layout_marginLeft="8dp"
-                android:layout_height="?android:attr/listPreferredItemHeight"
+                style="@style/TextAppearance.EditTransaction_Small"
                 android:layout_width="wrap_content"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:layout_marginStart="8dp"
                 android:gravity="center_vertical"
-                style="@style/TextAppearance.EditTransaction_Small" />
+                android:text="@string/label_export_destination" />
 
             <org.gnucash.android.ui.util.widget.ReselectSpinner android:id="@+id/spinner_export_destination"
-                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:layout_width="match_parent" />
         </LinearLayout>
@@ -51,7 +52,7 @@
                   tools:text="/path/to/export/file"
                   android:textColor="@color/title_green"
                   android:layout_marginBottom="@dimen/dialog_padding"
-                  android:layout_marginLeft="100dp"
+                  android:layout_marginStart="100dp"
                   style="@style/TextAppearance.Hint" />
 
         <LinearLayout android:orientation="horizontal"
@@ -63,7 +64,7 @@
                 android:id="@+id/label_export_format"
                 android:text="@string/label_export_format"
                 android:gravity="center_vertical"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:layout_width="wrap_content"
                 style="@style/TextAppearance.EditTransaction_Small" />
@@ -71,41 +72,47 @@
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="35dp"
+                android:layout_marginStart="32dp"
+                android:checkedButton="@id/radio_csv_transactions_format"
                 android:gravity="center_vertical"
+                android:layerType="none"
                 android:orientation="horizontal">
 
-                <RadioButton android:id="@+id/radio_csv_transactions_format"
+                <RadioButton
+                    android:id="@+id/radio_csv_transactions_format"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="12dp"
                     android:checked="true"
-                    android:text="CSV"/>
+                    android:text="CSV" />
 
-                <RadioButton android:id="@+id/radio_qif_format"
+                <RadioButton
+                    android:id="@+id/radio_qif_format"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="12dp"
                     android:text="QIF" />
 
-                <RadioButton android:id="@+id/radio_xml_format"
+                <RadioButton
+                    android:id="@+id/radio_xml_format"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
-                    android:text="XML"/>
+                    android:layout_marginEnd="12dp"
+                    android:text="XML" />
 
-                <RadioButton android:id="@+id/radio_ofx_format"
+                <RadioButton
+                    android:id="@+id/radio_ofx_format"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
-                    android:text="OFX"/>
+                    android:layout_marginEnd="12dp"
+                    android:text="OFX" />
             </RadioGroup>
         </LinearLayout>
 
         <TextView android:id="@+id/export_warning"
             tools:text="Some format-based export warning"
             android:textColor="@color/title_green"
-            android:layout_marginLeft="100dp"
+            android:layout_marginStart="100dp"
             style="@style/TextAppearance.Hint" />
 
         <LinearLayout
@@ -120,33 +127,40 @@
                 android:id="@+id/label_separator_format"
                 android:text="@string/label_csv_separator"
                 android:gravity="center_vertical"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:layout_width="wrap_content"
                 style="@style/TextAppearance.EditTransaction_Small" />
+
             <RadioGroup
                 android:id="@+id/export_separator_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="35dp"
+                android:layout_marginStart="12dp"
+                android:checkedButton="@id/radio_separator_comma_format"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <RadioButton android:id="@+id/radio_separator_comma_format"
+                <RadioButton
+                    android:id="@+id/radio_separator_comma_format"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
                     android:checked="true"
                     android:text="," />
-                <RadioButton android:id="@+id/radio_separator_semicolon_format"
+
+                <RadioButton
+                    android:id="@+id/radio_separator_semicolon_format"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
                     android:text=";" />
-                <RadioButton android:id="@+id/radio_separator_colon_format"
+
+                <RadioButton
+                    android:id="@+id/radio_separator_colon_format"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
                     android:text=":" />
             </RadioGroup>
         </LinearLayout>
@@ -166,34 +180,40 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             style="@style/TextAppearance.EditTransaction_Small" />
-        <TextView android:id="@+id/export_start_date"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textSize="15sp"
-            tools:text="25.12.2015"
-            android:textColor="@android:color/black"
-            android:clickable="true"/>
 
-        <TextView android:id="@+id/export_start_time"
+        <TextView
+            android:id="@+id/export_start_date"
             android:layout_width="0dp"
-            android:layout_weight="1.2"
             android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center"
-            android:textSize="15sp"
-            tools:text="15:30H"
             android:textColor="@android:color/black"
-            android:clickable="true"/>
+            android:textSize="15sp"
+            tools:text="25.12.2015" />
+
+        <TextView
+            android:id="@+id/export_start_time"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            tools:text="15:30H" />
+
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switch_export_all"
-            android:text="@string/switch_export_transactions_from_all_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:checked="false"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:layout_marginLeft="5dp"
-            android:checked="false"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:text="@string/switch_export_transactions_from_all_time" />
     </LinearLayout>
 
         <CheckBox android:id="@+id/checkbox_post_export_delete"
@@ -206,13 +226,14 @@
 
         <LinearLayout android:id="@+id/recurrence_options"
             style="@style/FormRow">
+
             <TextView
                 android:id="@+id/label_recurring_transaction"
-                android:text="@string/label_recurring_transaction"
-                android:layout_marginLeft="8dp"
-                android:layout_height="wrap_content"
+                style="@style/TextAppearance.EditTransaction_Small"
                 android:layout_width="wrap_content"
-                style="@style/TextAppearance.EditTransaction_Small" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/label_recurring_transaction" />
 
             <TextView android:id="@+id/input_recurrence"
                 android:layout_width="match_parent"
