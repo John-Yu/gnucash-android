@@ -172,6 +172,7 @@
     <item>贸易</item>
   </string-array>
   <string-array name="export_formats">
+    <item>CSV</item>
     <item>QIF</item>
     <item>OFX</item>
     <item>XML</item>
@@ -358,6 +359,8 @@
   <string name="title_budgets">预算</string>
   <string name="title_use_compact_list">启用精简视图</string>
   <string name="summary_use_compact_list">交易列表总是用精简视图显示</string>
+  <string name="title_display_negative_signum_in_splits">Display negative signum in splits</string>
+  <string name="summary_display_negative_signum_in_splits">Enable to display negative signum amount even when debit/credit toggle button is displayed</string>
   <string name="error_invalid_exchange_rate">无效汇率</string>
   <string name="sample_exchange_rate">例如 1 %1$s = x.xx %2$s</string>
   <string name="error_invalid_amount">无效金额</string>
@@ -442,4 +445,58 @@
   <string name="label_select_destination_after_export">选择导出位置</string>
   <string name="label_dropbox_export_destination">导出到Dropbox的 \'/Apps/GnuCash Android/\' 文件夹</string>
   <string name="title_section_preferences">首选项</string>
+  <string name="yes_sure">是的, 我确定</string>
+  <string name="key_export_accounts_csv">export_accounts_csv_key</string>
+  <string name="summary_export_accounts_csv">导出所有账号(不包括交易)CSV</string>
+  <string name="title_export_accounts_csv">导出CSV</string>
+  <string name="label_csv_separator">分隔符</string>
+  <string name="export_notice_csv">导出交易CSV</string>
+  <string-array name="csv_transaction_headers">
+    <item>Date</item>
+    <item>Transaction ID</item>
+    <item>Number</item>
+    <item>Description</item>
+    <item>Notes</item>
+    <item>Commodity/Currency</item>
+    <item>Void Reason</item>
+    <item>Action</item>
+    <item>Memo</item>
+    <item>Full Account Name</item>
+    <item>Account Name</item>
+    <item>Amount With Sym.</item>
+    <item>Amount Num</item>
+    <item>Reconcile</item>
+    <item>Reconcile Date</item>
+    <item>Rate/Price</item>
+  </string-array>
+  <string-array name="csv_account_headers">
+    <item>Type</item>
+    <item>Full Name</item>
+    <item>Name</item>
+    <item>Code</item>
+    <item>Description</item>
+    <item>Color</item>
+    <item>Notes</item>
+    <item>Commoditym</item>
+    <item>Commodityn</item>
+    <item>Hidden</item>
+    <item>Tax</item>
+    <item>Placeholder</item>
+  </string-array>
+
+  <string name="select_account">选择账户</string>
+
+  <string name="double_back_press_exit_msg">再次点BACK退出\n(或者修改首选项)</string>
+
+  <string name="prefs_ui_category_title">界面首选项</string>
+
+  <string name="prefs_ui_title_use_double_back_button_press_to_quit">双击BACK退出</string>
+  <string name="prefs_ui_summary_use_double_back_button_press_to_quit">Shall click twice on back button to actually quit GnuCashAndroid</string>
+
+  <string name="prefs_ui_title_account_searchable_spinner_openkeyboard">在可搜索的账户列表中显示键盘</string>
+  <string name="prefs_ui_summary_account_searchable_spinner_openkeyboard">当打开一个可搜索的账户列表时显示键盘</string>
+
+  <string name="prefs_ui_title_use_color_in_account_list">在账户列表中应用颜色</string>
+  <string name="prefs_ui_summary_use_color_in_account_list">在账户列表和交易列表中应用颜色</string>
+
 </resources>

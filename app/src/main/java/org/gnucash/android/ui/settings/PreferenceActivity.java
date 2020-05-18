@@ -113,9 +113,11 @@ public class PreferenceActivity extends PasscodeLockActivity implements
             //if we do not have a matching class, do nothing
             return false;
         }
+        final Bundle args = pref.getExtras();
+        fragment.setArguments(args);
         loadFragment(fragment);
         mSlidingPaneLayout.closePane();
-        return false;
+        return true;
     }
 
     /**
