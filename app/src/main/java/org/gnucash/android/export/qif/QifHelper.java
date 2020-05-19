@@ -52,7 +52,7 @@ public class QifHelper {
      * @param timeMillis Time in milliseconds since epoch
      * @return Formatted date from the time
      */
-    public static final String formatDate(long timeMillis){
+    public static String formatDate(long timeMillis) {
         Date date = new Date(timeMillis);
         return QIF_DATE_FORMATTER.format(date);
     }

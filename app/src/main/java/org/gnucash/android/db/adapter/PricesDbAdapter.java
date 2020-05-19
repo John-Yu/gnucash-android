@@ -93,20 +93,21 @@ public class PricesDbAdapter extends DatabaseAdapter<Price> {
         Pair<Long, Long> pairZero = new Pair<>(0L, 0L);
         if (commodityUID.equals(currencyUID))
         {
-            return new Pair<Long, Long>(1L, 1L);
+            return new Pair<>(1L, 1L);
         }
-        Cursor cursor = mDb.query(PriceEntry.TABLE_NAME, null,
+        // the commodity and currency can be swapped
+        // only get the latest price
+        try (Cursor cursor = mDb.query(PriceEntry.TABLE_NAME, null,
                 // the commodity and currency can be swapped
                 "( " + PriceEntry.COLUMN_COMMODITY_UID + " = ? AND " + PriceEntry.COLUMN_CURRENCY_UID + " = ? ) OR ( "
-                + PriceEntry.COLUMN_COMMODITY_UID + " = ? AND " + PriceEntry.COLUMN_CURRENCY_UID + " = ? )",
+                        + PriceEntry.COLUMN_COMMODITY_UID + " = ? AND " + PriceEntry.COLUMN_CURRENCY_UID + " = ? )",
                 new String[]{commodityUID, currencyUID, currencyUID, commodityUID}, null, null,
                 // only get the latest price
-                PriceEntry.COLUMN_DATE + " DESC", "1");
-        try {
+                PriceEntry.COLUMN_DATE + " DESC", "1")) {
             if (cursor.moveToNext()) {
                 String commodityUIDdb = cursor.getString(cursor.getColumnIndexOrThrow(PriceEntry.COLUMN_COMMODITY_UID));
-                long valueNum     = cursor.getLong(cursor.getColumnIndexOrThrow(PriceEntry.COLUMN_VALUE_NUM));
-                long valueDenom   = cursor.getLong(cursor.getColumnIndexOrThrow(PriceEntry.COLUMN_VALUE_DENOM));
+                long valueNum = cursor.getLong(cursor.getColumnIndexOrThrow(PriceEntry.COLUMN_VALUE_NUM));
+                long valueDenom = cursor.getLong(cursor.getColumnIndexOrThrow(PriceEntry.COLUMN_VALUE_DENOM));
                 if (valueNum < 0 || valueDenom < 0) {
                     // this should not happen
                     return pairZero;
@@ -121,8 +122,6 @@ public class PricesDbAdapter extends DatabaseAdapter<Price> {
             } else {
                 return pairZero;
             }
-        } finally {
-            cursor.close();
         }
     }
 }

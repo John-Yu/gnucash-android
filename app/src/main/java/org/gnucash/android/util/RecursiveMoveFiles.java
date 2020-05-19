@@ -52,15 +52,9 @@ public class RecursiveMoveFiles implements Runnable {
      * @throws IOException
      */
     private boolean copy(File src, File dst) throws IOException {
-        FileChannel inChannel = new FileInputStream(src).getChannel();
-        FileChannel outChannel = new FileOutputStream(dst).getChannel();
-        try {
+        try (FileChannel inChannel = new FileInputStream(src).getChannel(); FileChannel outChannel = new FileOutputStream(dst).getChannel()) {
             long bytesCopied = inChannel.transferTo(0, inChannel.size(), outChannel);
             return bytesCopied >= src.length();
-        } finally {
-            if (inChannel != null)
-                inChannel.close();
-            outChannel.close();
         }
     }
 

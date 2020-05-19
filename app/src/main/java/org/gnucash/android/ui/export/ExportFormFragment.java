@@ -22,11 +22,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,7 +34,6 @@ import android.view.animation.Transformation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
@@ -78,7 +72,13 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -191,7 +191,7 @@ public class ExportFormFragment extends Fragment implements
             case R.id.radio_ofx_format:
                 mExportFormat = ExportFormat.OFX;
                 if (GnuCashApplication.isDoubleEntryEnabled()){
-                    mExportWarningTextView.setText(getActivity().getString(R.string.export_warning_ofx));
+					mExportWarningTextView.setText(Objects.requireNonNull(getActivity()).getString(R.string.export_warning_ofx));
                     mExportWarningTextView.setVisibility(View.VISIBLE);
                 } else {
                     mExportWarningTextView.setVisibility(View.GONE);
@@ -205,7 +205,7 @@ public class ExportFormFragment extends Fragment implements
                 mExportFormat = ExportFormat.QIF;
                 //TODO: Also check that there exist transactions with multiple currencies before displaying warning
                 if (GnuCashApplication.isDoubleEntryEnabled()) {
-                    mExportWarningTextView.setText(getActivity().getString(R.string.export_warning_qif));
+					mExportWarningTextView.setText(Objects.requireNonNull(getActivity()).getString(R.string.export_warning_qif));
                     mExportWarningTextView.setVisibility(View.VISIBLE);
                 } else {
                     mExportWarningTextView.setVisibility(View.GONE);
@@ -253,7 +253,7 @@ public class ExportFormFragment extends Fragment implements
 		return view;
 	}
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.default_save_actions, menu);
 		MenuItem menuItem = menu.findItem(R.id.menu_save);
 		menuItem.setTitle(R.string.btn_export);
@@ -267,7 +267,7 @@ public class ExportFormFragment extends Fragment implements
 				return true;
 
 			case android.R.id.home:
-				getActivity().finish();
+				Objects.requireNonNull(getActivity()).finish();
 				return true;
 
 			default:
@@ -279,7 +279,7 @@ public class ExportFormFragment extends Fragment implements
 	public void onActivityCreated(Bundle savedInstanceState) {		
 		super.onActivityCreated(savedInstanceState);
 
-		ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+		ActionBar supportActionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
 		assert supportActionBar != null;
 		supportActionBar.setTitle(R.string.title_export_dialog);
 		setHasOptionsMenu(true);
@@ -350,7 +350,7 @@ public class ExportFormFragment extends Fragment implements
 	 */
 	private void bindViewListeners(){
 		// export destination bindings
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(Objects.requireNonNull(getActivity()),
 		        R.array.export_destinations, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);		
 		mDestinationSpinner.setAdapter(adapter);
@@ -374,7 +374,7 @@ public class ExportFormFragment extends Fragment implements
 						String dropboxAppSecret = getString(R.string.dropbox_app_secret, BackupPreferenceFragment.DROPBOX_APP_SECRET);
 
 						if (!DropboxHelper.hasToken()) {
-							Auth.startOAuth2Authentication(getActivity(), dropboxAppKey);
+							Auth.startOAuth2Authentication(Objects.requireNonNull(getActivity()), dropboxAppKey);
 						}
 						break;
 					case 2: //OwnCloud
@@ -384,7 +384,7 @@ public class ExportFormFragment extends Fragment implements
 						if(!(PreferenceManager.getDefaultSharedPreferences(getActivity())
 								.getBoolean(getString(R.string.key_owncloud_sync), false))) {
 							OwnCloudDialogFragment ocDialog = OwnCloudDialogFragment.newInstance(null);
-							ocDialog.show(getActivity().getSupportFragmentManager(), "ownCloud dialog");
+							ocDialog.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), "ownCloud dialog");
 						}
 						break;
 					case 3: //Share File
@@ -417,63 +417,52 @@ public class ExportFormFragment extends Fragment implements
 		mExportStartDate.setText(TransactionFormFragment.DATE_FORMATTER.format(date));
 		mExportStartTime.setText(TransactionFormFragment.TIME_FORMATTER.format(date));
 
-		mExportStartDate.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				long dateMillis = 0;
-				try {
-					Date date = TransactionFormFragment.DATE_FORMATTER.parse(mExportStartDate.getText().toString());
-					dateMillis = date.getTime();
-				} catch (ParseException e) {
-					Log.e(getTag(), "Error converting input time to Date object");
-				}
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTimeInMillis(dateMillis);
-
-				int year = calendar.get(Calendar.YEAR);
-				int monthOfYear = calendar.get(Calendar.MONTH);
-				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-				CalendarDatePickerDialogFragment datePickerDialog = new CalendarDatePickerDialogFragment();
-				datePickerDialog.setOnDateSetListener(ExportFormFragment.this);
-				datePickerDialog.setPreselectedDate(year, monthOfYear, dayOfMonth);
-				datePickerDialog.show(getFragmentManager(), "date_picker_fragment");
+		mExportStartDate.setOnClickListener(v -> {
+			long dateMillis = 0;
+			try {
+				Date date1 = TransactionFormFragment.DATE_FORMATTER.parse(mExportStartDate.getText().toString());
+				dateMillis = date1.getTime();
+			} catch (ParseException e) {
+				Log.e(getTag(), "Error converting input time to Date object");
 			}
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(dateMillis);
+
+			int year = calendar.get(Calendar.YEAR);
+			int monthOfYear = calendar.get(Calendar.MONTH);
+			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+			CalendarDatePickerDialogFragment datePickerDialog = new CalendarDatePickerDialogFragment();
+			datePickerDialog.setOnDateSetListener(ExportFormFragment.this);
+			datePickerDialog.setPreselectedDate(year, monthOfYear, dayOfMonth);
+			datePickerDialog.show(getFragmentManager(), "date_picker_fragment");
 		});
 
-		mExportStartTime.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				long timeMillis = 0;
-				try {
-					Date date = TransactionFormFragment.TIME_FORMATTER.parse(mExportStartTime.getText().toString());
-					timeMillis = date.getTime();
-				} catch (ParseException e) {
-					Log.e(getTag(), "Error converting input time to Date object");
-				}
-
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTimeInMillis(timeMillis);
-
-				RadialTimePickerDialogFragment timePickerDialog = new RadialTimePickerDialogFragment();
-				timePickerDialog.setOnTimeSetListener(ExportFormFragment.this);
-				timePickerDialog.setStartTime(calendar.get(Calendar.HOUR_OF_DAY),
-						calendar.get(Calendar.MINUTE));
-				timePickerDialog.show(getFragmentManager(), "time_picker_dialog_fragment");
+		mExportStartTime.setOnClickListener(v -> {
+			long timeMillis = 0;
+			try {
+				Date date12 = TransactionFormFragment.TIME_FORMATTER.parse(mExportStartTime.getText().toString());
+				timeMillis = date12.getTime();
+			} catch (ParseException e) {
+				Log.e(getTag(), "Error converting input time to Date object");
 			}
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(timeMillis);
+
+			RadialTimePickerDialogFragment timePickerDialog = new RadialTimePickerDialogFragment();
+			timePickerDialog.setOnTimeSetListener(ExportFormFragment.this);
+			timePickerDialog.setStartTime(calendar.get(Calendar.HOUR_OF_DAY),
+					calendar.get(Calendar.MINUTE));
+			timePickerDialog.show(getFragmentManager(), "time_picker_dialog_fragment");
 		});
 
 		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		mExportAllSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				mExportStartDate.setEnabled(!isChecked);
-				mExportStartTime.setEnabled(!isChecked);
-				int color = isChecked ? android.R.color.darker_gray : android.R.color.black;
-				mExportStartDate.setTextColor(ContextCompat.getColor(getContext(), color));
-				mExportStartTime.setTextColor(ContextCompat.getColor(getContext(), color));
-			}
+		mExportAllSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+			mExportStartDate.setEnabled(!isChecked);
+			mExportStartTime.setEnabled(!isChecked);
+			int color = isChecked ? android.R.color.darker_gray : android.R.color.black;
+			mExportStartDate.setTextColor(ContextCompat.getColor(getContext(), color));
+			mExportStartTime.setTextColor(ContextCompat.getColor(getContext(), color));
 		});
 
 		mExportAllSwitch.setChecked(sharedPrefs.getBoolean(getString(R.string.key_export_all_transactions), false));
@@ -485,12 +474,7 @@ public class ExportFormFragment extends Fragment implements
         String defaultExportFormat = sharedPrefs.getString(getString(R.string.key_default_export_format), ExportFormat.CSVT.name());
         mExportFormat = ExportFormat.valueOf(defaultExportFormat);
 
-        View.OnClickListener radioClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onRadioButtonClicked(view);
-            }
-        };
+		View.OnClickListener radioClickListener = this::onRadioButtonClicked;
 
 		View v = getView();
 		assert v != null;
@@ -579,9 +563,10 @@ public class ExportFormFragment extends Fragment implements
 						mExportUri = data.getData();
 					}
 
+					assert data != null;
 					final int takeFlags = data.getFlags()
 							& (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-					getActivity().getContentResolver().takePersistableUriPermission(mExportUri, takeFlags);
+					Objects.requireNonNull(getActivity()).getContentResolver().takePersistableUriPermission(mExportUri, takeFlags);
 
 					mTargetUriTextView.setText(mExportUri.toString());
 					if (mExportStarted)

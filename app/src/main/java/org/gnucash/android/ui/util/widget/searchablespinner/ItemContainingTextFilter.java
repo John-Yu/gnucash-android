@@ -58,7 +58,7 @@ public class ItemContainingTextFilter<T_ITEM>
 
         // Create a new list to store filtered items (the list points to the same items as the original's one, but not all the
         // items
-        final List<T_ITEM> filteredItems = new ArrayList<T_ITEM>();
+        final List<T_ITEM> filteredItems = new ArrayList<>();
 
         if (textToSearch == null || textToSearch.length() == 0) {
             // Nothing to search

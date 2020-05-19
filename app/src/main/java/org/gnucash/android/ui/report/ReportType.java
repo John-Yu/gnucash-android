@@ -147,9 +147,7 @@ public enum ReportType {
         BaseReportFragment fragment = null;
         try {
             fragment = (BaseReportFragment) mReportTypeMap.get(name).newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return fragment;

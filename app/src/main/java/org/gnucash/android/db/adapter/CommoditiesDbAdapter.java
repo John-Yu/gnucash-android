@@ -124,17 +124,14 @@ public class CommoditiesDbAdapter extends DatabaseAdapter<Commodity> {
     }
 
     public String getCurrencyCode(@NonNull String guid) {
-        Cursor cursor = mDb.query(mTableName, new String[]{CommodityEntry.COLUMN_MNEMONIC},
+        try (Cursor cursor = mDb.query(mTableName, new String[]{CommodityEntry.COLUMN_MNEMONIC},
                 DatabaseSchema.CommonColumns.COLUMN_UID + " = ?", new String[]{guid},
-                null, null, null);
-        try {
+                null, null, null)) {
             if (cursor.moveToNext()) {
                 return cursor.getString(cursor.getColumnIndexOrThrow(CommodityEntry.COLUMN_MNEMONIC));
             } else {
                 throw new IllegalArgumentException("guid " + guid + " not exits in commodity db");
             }
-        } finally {
-            cursor.close();
         }
     }
 }

@@ -22,7 +22,6 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.Currency;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,7 +49,7 @@ public class GncXmlHelperTest {
     }
 
     @Test
-    public void testFormatSplitAmount(){
+    public void testFormatSplitAmount() {
         Commodity usdCommodity = new Commodity("US Dollars", "USD", 100);
         Commodity euroCommodity = new Commodity("Euro", "EUR", 100);
 

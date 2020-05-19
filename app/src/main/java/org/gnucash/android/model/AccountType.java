@@ -38,14 +38,14 @@ public enum AccountType {
     TRADING,
     ROOT;
 
-    public final static List<AccountType> ASSET_ACCOUNT_TYPES = new ArrayList<AccountType>(Arrays.asList(AccountType.ASSET,
-                                                                                                         AccountType.CASH,
-                                                                                                         AccountType.BANK));
+    public final static List<AccountType> ASSET_ACCOUNT_TYPES = new ArrayList<>(Arrays.asList(AccountType.ASSET,
+            AccountType.CASH,
+            AccountType.BANK));
 
-    public final static List<AccountType> LIABLITY_ACCOUNT_TYPES = new ArrayList<AccountType>(Arrays.asList(AccountType.LIABILITY,
-                                                                                                            AccountType.CREDIT));
+    public final static List<AccountType> LIABLITY_ACCOUNT_TYPES = new ArrayList<>(Arrays.asList(AccountType.LIABILITY,
+            AccountType.CREDIT));
 
-    public final static List<AccountType> EQUITY_ACCOUNT_TYPES = new ArrayList<AccountType>(Arrays.asList(AccountType.EQUITY));
+    public final static List<AccountType> EQUITY_ACCOUNT_TYPES = new ArrayList<>(Arrays.asList(AccountType.EQUITY));
 
     //
     // Preference Key (must be the same as in donottranslate.xml)

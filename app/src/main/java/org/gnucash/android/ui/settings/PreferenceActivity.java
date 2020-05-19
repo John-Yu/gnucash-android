@@ -19,9 +19,6 @@ package org.gnucash.android.ui.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -30,6 +27,9 @@ import org.gnucash.android.app.GnuCashApplication;
 import org.gnucash.android.db.adapter.BooksDbAdapter;
 import org.gnucash.android.ui.passcode.PasscodeLockActivity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -43,11 +43,12 @@ import butterknife.ButterKnife;
  * Activity for unified preferences
  */
 public class PreferenceActivity extends PasscodeLockActivity implements
-        PreferenceFragmentCompat.OnPreferenceStartFragmentCallback{
+        PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     public static final String ACTION_MANAGE_BOOKS = "org.gnucash.android.intent.action.MANAGE_BOOKS";
 
-    @BindView(R.id.slidingpane_layout) SlidingPaneLayout mSlidingPaneLayout;
+    @BindView(R.id.slidingpane_layout)
+    SlidingPaneLayout mSlidingPaneLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,19 +59,19 @@ public class PreferenceActivity extends PasscodeLockActivity implements
 
         mSlidingPaneLayout.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
             @Override
-            public void onPanelSlide(View panel, float slideOffset) {
+            public void onPanelSlide(@NonNull View panel, float slideOffset) {
                 //nothing to see here, move along
             }
 
             @Override
-            public void onPanelOpened(View panel) {
+            public void onPanelOpened(@NonNull View panel) {
                 ActionBar actionBar = getSupportActionBar();
                 assert actionBar != null;
                 actionBar.setTitle(R.string.title_settings);
             }
 
             @Override
-            public void onPanelClosed(View panel) {
+            public void onPanelClosed(@NonNull View panel) {
                 //nothing to see here, move along
             }
         });
@@ -104,7 +105,7 @@ public class PreferenceActivity extends PasscodeLockActivity implements
     @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
         String key = pref.getKey();
-        Fragment fragment = null;
+        Fragment fragment;
         try {
             Class<?> clazz = Class.forName(pref.getFragment());
             fragment = (Fragment) clazz.newInstance();
@@ -122,6 +123,7 @@ public class PreferenceActivity extends PasscodeLockActivity implements
 
     /**
      * Load the provided fragment into the right pane, replacing the previous one
+     *
      * @param fragment BaseReportFragment instance
      */
     private void loadFragment(Fragment fragment) {
@@ -159,18 +161,20 @@ public class PreferenceActivity extends PasscodeLockActivity implements
     /**
      * Returns the shared preferences file for the currently active book.
      * Should be used instead of {@link PreferenceManager#getDefaultSharedPreferences(Context)}
+     *
      * @return Shared preferences file
      */
-    public static SharedPreferences getActiveBookSharedPreferences(){
+    public static SharedPreferences getActiveBookSharedPreferences() {
         return getBookSharedPreferences(BooksDbAdapter.getInstance().getActiveBookUID());
     }
 
     /**
      * Return the {@link SharedPreferences} for a specific book
+     *
      * @param bookUID GUID of the book
      * @return Shared preferences
      */
-    public static SharedPreferences getBookSharedPreferences(String bookUID){
+    public static SharedPreferences getBookSharedPreferences(String bookUID) {
         Context context = GnuCashApplication.getAppContext();
         return context.getSharedPreferences(bookUID, Context.MODE_PRIVATE);
     }

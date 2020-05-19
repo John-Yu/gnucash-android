@@ -17,7 +17,6 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
-import androidx.appcompat.widget.SearchView;
 
 import org.gnucash.android.R;
 import org.gnucash.android.util.KeyboardUtils;
@@ -25,6 +24,7 @@ import org.gnucash.android.util.QualifiedAccountNameCursorAdapter;
 
 import java.io.Serializable;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.preference.PreferenceManager;
 
 
@@ -36,25 +36,24 @@ import androidx.preference.PreferenceManager;
 public class SearchableListDialogFragment<T_ITEM>
         extends DialogFragment
         implements SearchView.OnQueryTextListener,
-                   SearchView.OnCloseListener,
-                   Filter.FilterListener {
+        SearchView.OnCloseListener,
+        Filter.FilterListener {
 
     /**
      * Logging tag
      */
     protected static final String LOG_TAG = "SearchLstDlgFragment";
 
-    public static final String KEY_ACCOUNT_UID              = "key_accountUID";
-    public static final String KEY_ACCOUNT_SIMPLE_NAME      = "key_accountName";
-    public static final String KEY_ACCOUNT_FULL_NAME        = "key_accountFullName";
+    public static final String KEY_ACCOUNT_UID = "key_accountUID";
+    public static final String KEY_ACCOUNT_SIMPLE_NAME = "key_accountName";
+    public static final String KEY_ACCOUNT_FULL_NAME = "key_accountFullName";
     public static final String KEY_PARENT_ACCOUNT_FULL_NAME = "key_parentAccountFullName";
-    public static final String KEY_IS_FAVORITE_ACCOUNT      = "key_isFavoriteAccount";
+    public static final String KEY_IS_FAVORITE_ACCOUNT = "key_isFavoriteAccount";
 
     /**
      * Listener to call when user clicks on an item
      *
-     * @param <T_ITEM>
-     *      item Type
+     * @param <T_ITEM> item Type
      */
     public interface OnSearchableItemClickedListener<T_ITEM>
             extends Serializable {
@@ -153,8 +152,8 @@ public class SearchableListDialogFragment<T_ITEM>
                              Bundle savedInstanceState) {
 
         return super.onCreateView(inflater,
-                                  container,
-                                  savedInstanceState);
+                container,
+                savedInstanceState);
     }
 
     @Override
@@ -177,8 +176,7 @@ public class SearchableListDialogFragment<T_ITEM>
         //
 
         // Instantiate the searchableListView from XML
-        View searchableListRootView = inflater.inflate(R.layout.searchable_list_dialog,
-                                                       null);
+        View searchableListRootView = inflater.inflate(R.layout.searchable_list_dialog, null);
 
         // Configure the searchableListView
         configureView(searchableListRootView);
@@ -195,41 +193,41 @@ public class SearchableListDialogFragment<T_ITEM>
         // Title
 
         String strTitle = mStrTitle == null
-                          ? "Select Item"
-                          : mStrTitle;
+                ? "Select Item"
+                : mStrTitle;
 
         alertDialogBuilder.setTitle(strTitle);
 
         // Positive Button
 
         String strPositiveButton = mStrPositiveButtonText == null
-                                   ? "CLOSE"
-                                   : mStrPositiveButtonText;
+                ? "CLOSE"
+                : mStrPositiveButtonText;
 
         alertDialogBuilder.setPositiveButton(strPositiveButton,
-                                             new DialogInterface.OnClickListener() {
+                new DialogInterface.OnClickListener() {
 
-                                                 @Override
-                                                 public void onClick(final DialogInterface dialog,
-                                                                     final int which) {
+                    @Override
+                    public void onClick(final DialogInterface dialog,
+                                        final int which) {
 
-                                                     // Dismiss dialog
-                                                     dismissDialog();
+                        // Dismiss dialog
+                        dismissDialog();
 
-                                                     if (mOnPositiveBtnClickListener != null) {
-                                                         //
+                        if (mOnPositiveBtnClickListener != null) {
+                            //
 
-                                                         // Call listener
-                                                         mOnPositiveBtnClickListener.onClick(dialog,
-                                                                                             which);
+                            // Call listener
+                            mOnPositiveBtnClickListener.onClick(dialog,
+                                    which);
 
-                                                     } else {
-                                                         //  n' pas
+                        } else {
+                            //  n' pas
 
-                                                         // RAF
-                                                     }
-                                                 }
-                                             });
+                            // RAF
+                        }
+                    }
+                });
 
         //
         // Create searchableListDialog
@@ -259,8 +257,8 @@ public class SearchableListDialogFragment<T_ITEM>
                 // Force filtering with null string to get the full account list
 
                 listViewCursorAdapter.getFilter()
-                                     .filter(null,
-                                             this);
+                        .filter(null,
+                                this);
 
             } else {
 
@@ -271,8 +269,8 @@ public class SearchableListDialogFragment<T_ITEM>
 
                 // instead, use this
                 listViewCursorAdapter.getFilter()
-                                     .filter(s,
-                                             this);
+                        .filter(s,
+                                this);
             }
 
         } else {
@@ -324,7 +322,7 @@ public class SearchableListDialogFragment<T_ITEM>
     public void onSaveInstanceState(Bundle outState) {
 
         outState.putSerializable("item",
-                                 getOnSearchableListItemClickedListener());
+                getOnSearchableListItemClickedListener());
         super.onSaveInstanceState(outState);
     }
     // Change End
@@ -384,8 +382,8 @@ public class SearchableListDialogFragment<T_ITEM>
 
         // Get Preference about opening keyboard, default to false
         boolean prefShallOpenKeyboard = PreferenceManager.getDefaultSharedPreferences(getActivity())
-                                                         .getBoolean(getString(R.string.key_shall_open_keyboard_in_account_searchable_spinner),
-                                                                     false);
+                .getBoolean(getString(R.string.key_shall_open_keyboard_in_account_searchable_spinner),
+                        false);
 
         if (prefShallOpenKeyboard) {
             // Want to open keyboard
@@ -404,8 +402,7 @@ public class SearchableListDialogFragment<T_ITEM>
             // Hide keyboard after 500ms to let keyboard appeared before hiding it
             //
 
-            KeyboardUtils.hideKeyboard(mSearchTextEditView,
-                                       500);
+            KeyboardUtils.hideKeyboard(mSearchTextEditView, 500);
         }
 
         //
@@ -511,7 +508,7 @@ public class SearchableListDialogFragment<T_ITEM>
             //
 
             if (QualifiedAccountNameCursorAdapter.class.isAssignableFrom(getParentSearchableSpinnerView().getAdapter()
-                                                                                                         .getClass())) {
+                    .getClass())) {
                 // The Adapter is a QualifiedAccountNameCursorAdapter
 
                 QualifiedAccountNameCursorAdapter parentCursorAdapter = (QualifiedAccountNameCursorAdapter) getParentSearchableSpinnerView().getAdapter();

@@ -19,12 +19,6 @@ package org.gnucash.android.test.ui;
 import android.Manifest;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-
-import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.espresso.contrib.DrawerActions;
-import androidx.test.rule.GrantPermissionRule;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import android.support.v7.preference.PreferenceManager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
@@ -51,6 +45,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
+import androidx.test.espresso.contrib.DrawerActions;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.GrantPermissionRule;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
@@ -59,15 +58,11 @@ import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ExportTransactionsTest extends
-		ActivityInstrumentationTestCase2<AccountsActivity> {
+        ActivityInstrumentationTestCase2<AccountsActivity> {
 
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
@@ -75,23 +70,24 @@ public class ExportTransactionsTest extends
     private TransactionsDbAdapter mTransactionsDbAdapter;
     private SplitsDbAdapter mSplitsDbAdapter;
 
-	private AccountsActivity mAcccountsActivity;
+    private AccountsActivity mAcccountsActivity;
 
-	@Rule public GrantPermissionRule animationPermissionsRule = GrantPermissionRule.grant(Manifest.permission.SET_ANIMATION_SCALE);
+    @Rule
+    public GrantPermissionRule animationPermissionsRule = GrantPermissionRule.grant(Manifest.permission.SET_ANIMATION_SCALE);
 
-	public ExportTransactionsTest() {
-		super(AccountsActivity.class);
-	}
+    public ExportTransactionsTest() {
+        super(AccountsActivity.class);
+    }
 
-	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-		injectInstrumentation(InstrumentationRegistry.getInstrumentation());
-		AccountsActivityTest.preventFirstRunDialogs(getInstrumentation().getTargetContext());
-		mAcccountsActivity = getActivity();
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        injectInstrumentation(InstrumentationRegistry.getInstrumentation());
+        AccountsActivityTest.preventFirstRunDialogs(getInstrumentation().getTargetContext());
+        mAcccountsActivity = getActivity();
 
-		String activeBookUID = BooksDbAdapter.getInstance().getActiveBookUID();
+        String activeBookUID = BooksDbAdapter.getInstance().getActiveBookUID();
         mDbHelper = new DatabaseHelper(getActivity(), activeBookUID);
         try {
             mDb = mDbHelper.getWritableDatabase();
@@ -100,60 +96,62 @@ public class ExportTransactionsTest extends
             mDb = mDbHelper.getReadableDatabase();
         }
 
-		mSplitsDbAdapter        = SplitsDbAdapter.getInstance();
-		mTransactionsDbAdapter  = TransactionsDbAdapter.getInstance();
-		mAccountsDbAdapter      = AccountsDbAdapter.getInstance();
+        mSplitsDbAdapter = SplitsDbAdapter.getInstance();
+        mTransactionsDbAdapter = TransactionsDbAdapter.getInstance();
+        mAccountsDbAdapter = AccountsDbAdapter.getInstance();
 
-		//this call initializes the static variables like DEFAULT_COMMODITY which are used implicitly by accounts/transactions
-		@SuppressWarnings("unused")
-		CommoditiesDbAdapter commoditiesDbAdapter = new CommoditiesDbAdapter(mDb);
-		String currencyCode = GnuCashApplication.getDefaultCurrencyCode();
-		Commodity.DEFAULT_COMMODITY = CommoditiesDbAdapter.getInstance().getCommodity(currencyCode);
+        //this call initializes the static variables like DEFAULT_COMMODITY which are used implicitly by accounts/transactions
+        @SuppressWarnings("unused")
+        CommoditiesDbAdapter commoditiesDbAdapter = new CommoditiesDbAdapter(mDb);
+        String currencyCode = GnuCashApplication.getDefaultCurrencyCode();
+        Commodity.DEFAULT_COMMODITY = CommoditiesDbAdapter.getInstance().getCommodity(currencyCode);
 
-		mAccountsDbAdapter.deleteAllRecords();
+        mAccountsDbAdapter.deleteAllRecords();
 
-		Account account = new Account("Exportable");
-		Transaction transaction = new Transaction("Pizza");
-		transaction.setNote("What up?");
-		transaction.setTime(System.currentTimeMillis());
+        Account account = new Account("Exportable");
+        Transaction transaction = new Transaction("Pizza");
+        transaction.setNote("What up?");
+        transaction.setTime(System.currentTimeMillis());
         Split split = new Split(new Money("8.99", currencyCode), account.getUID());
-		split.setMemo("Hawaii is the best!");
-		transaction.addSplit(split);
-		transaction.addSplit(split.createPair(
-				mAccountsDbAdapter.getOrCreateImbalanceAccountUID(Commodity.DEFAULT_COMMODITY)));
-		account.addTransaction(transaction);
+        split.setMemo("Hawaii is the best!");
+        transaction.addSplit(split);
+        transaction.addSplit(split.createPair(
+                mAccountsDbAdapter.getOrCreateImbalanceAccountUID(Commodity.DEFAULT_COMMODITY)));
+        account.addTransaction(transaction);
 
-		mAccountsDbAdapter.addRecord(account, DatabaseAdapter.UpdateMethod.insert);
+        mAccountsDbAdapter.addRecord(account, DatabaseAdapter.UpdateMethod.insert);
 
-	}
+    }
 
-	@Test
-	public void testCreateBackup(){
-		onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-		onView(withId(R.id.nav_view)).perform(swipeUp());
-		onView(withText(R.string.title_settings)).perform(click());
-		onView(withText(R.string.header_backup_and_export_settings)).perform(click());
+    @Test
+    public void testCreateBackup() {
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.nav_view)).perform(swipeUp());
+        onView(withText(R.string.title_settings)).perform(click());
+        onView(withText(R.string.header_backup_and_export_settings)).perform(click());
 
-		onView(withText(R.string.title_create_backup_pref)).perform(click());
-		assertToastDisplayed(R.string.toast_backup_successful);
-	}
+        onView(withText(R.string.title_create_backup_pref)).perform(click());
+        assertToastDisplayed(R.string.toast_backup_successful);
+    }
 
-	/**
-	 * Checks that a specific toast message is displayed
-	 * @param toastString String that should be displayed
-	 */
-	private void assertToastDisplayed(int toastString) {
-		onView(withText(toastString))
-				.inRoot(withDecorView(not(is(getActivity().getWindow().getDecorView()))))
-				.check(matches(isDisplayed()));
-	}
+    /**
+     * Checks that a specific toast message is displayed
+     *
+     * @param toastString String that should be displayed
+     */
+    private void assertToastDisplayed(int toastString) {
+        onView(withText(toastString))
+                .inRoot(withDecorView(not(is(getActivity().getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+    }
 
-	//todo: add testing of export flag to unit test
-	//todo: add test of ignore exported transactions to unit tests
-	@Override
-	@After public void tearDown() throws Exception {
+    //todo: add testing of export flag to unit test
+    //todo: add test of ignore exported transactions to unit tests
+    @Override
+    @After
+    public void tearDown() throws Exception {
         mDbHelper.close();
         mDb.close();
-		super.tearDown();
-	}
+        super.tearDown();
+    }
 }

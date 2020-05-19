@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import org.gnucash.android.db.adapter.AccountsDbAdapter;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 
@@ -505,7 +506,7 @@ public class Split extends BaseModel implements Parcelable{
         if (!mTransactionUID.equals(split.mTransactionUID)) return false;
         if (!mAccountUID.equals(split.mAccountUID)) return false;
         if (mSplitType != split.mSplitType) return false;
-        return mMemo != null ? mMemo.equals(split.mMemo) : split.mMemo == null;
+        return Objects.equals(mMemo, split.mMemo);
     }
 
     /**
@@ -534,7 +535,7 @@ public class Split extends BaseModel implements Parcelable{
         if (!mTransactionUID.equals(split.mTransactionUID)) return false;
         if (!mAccountUID.equals(split.mAccountUID)) return false;
         if (mSplitType != split.mSplitType) return false;
-        return mMemo != null ? mMemo.equals(split.mMemo) : split.mMemo == null;
+        return Objects.equals(mMemo, split.mMemo);
     }
 
     @Override

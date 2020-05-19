@@ -312,7 +312,7 @@ public class TransactionsDbAdapter extends DatabaseAdapter<Transaction> {
      */
     public List<Transaction> getAllTransactions(){
         Cursor cursor = fetchAllRecords();
-        List<Transaction> transactions = new ArrayList<Transaction>();
+        List<Transaction> transactions = new ArrayList<>();
         try {
             while (cursor.moveToNext()) {
                 transactions.add(buildModelInstance(cursor));
@@ -371,12 +371,9 @@ public class TransactionsDbAdapter extends DatabaseAdapter<Transaction> {
     public long getRecordsCount() {
         String queryCount = "SELECT COUNT(*) FROM " + TransactionEntry.TABLE_NAME +
                 " WHERE " + TransactionEntry.COLUMN_TEMPLATE + " =0";
-        Cursor cursor = mDb.rawQuery(queryCount, null);
-        try {
+        try (Cursor cursor = mDb.rawQuery(queryCount, null)) {
             cursor.moveToFirst();
             return cursor.getLong(0);
-        } finally {
-            cursor.close();
         }
     }
 
@@ -387,7 +384,7 @@ public class TransactionsDbAdapter extends DatabaseAdapter<Transaction> {
      * @return Number of records in the databases
      */
     public long getRecordsCount(@Nullable String where, @Nullable String[] whereArgs) {
-        Cursor cursor = mDb.query(true, TransactionEntry.TABLE_NAME + " , trans_extra_info ON "
+        try (Cursor cursor = mDb.query(true, TransactionEntry.TABLE_NAME + " , trans_extra_info ON "
                         + TransactionEntry.TABLE_NAME + "." + TransactionEntry.COLUMN_UID
                         + " = trans_extra_info.trans_acct_t_uid",
                 new String[]{"COUNT(*)"},
@@ -396,12 +393,9 @@ public class TransactionsDbAdapter extends DatabaseAdapter<Transaction> {
                 null,
                 null,
                 null,
-                null);
-        try{
+                null)) {
             cursor.moveToFirst();
             return cursor.getLong(0);
-        } finally {
-            cursor.close();
         }
     }
 
@@ -496,15 +490,12 @@ public class TransactionsDbAdapter extends DatabaseAdapter<Transaction> {
      * @return List of all scheduled transactions
      */
     public List<Transaction> getScheduledTransactionsForAccount(String accountUID){
-        Cursor cursor = fetchScheduledTransactionsForAccount(accountUID);
-        List<Transaction> scheduledTransactions = new ArrayList<>();
-        try {
+        try (Cursor cursor = fetchScheduledTransactionsForAccount(accountUID)) {
+            List<Transaction> scheduledTransactions = new ArrayList<>();
             while (cursor.moveToNext()) {
                 scheduledTransactions.add(buildModelInstance(cursor));
             }
             return scheduledTransactions;
-        } finally {
-            cursor.close();
         }
     }
 

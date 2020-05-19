@@ -125,7 +125,7 @@ public class BooksDbAdapter extends DatabaseAdapter<Book> {
      * @param bookUID Unique identifier of the book
      * @return GUID of the currently active book
      */
-    public String setActive(@NonNull String bookUID){
+    public String setActive(String bookUID) {
         if (bookUID == null)
             return getActiveBookUID();
 
@@ -277,15 +277,12 @@ public class BooksDbAdapter extends DatabaseAdapter<Book> {
      * @return Display name of the book
      */
     public @NonNull String getActiveBookDisplayName(){
-        Cursor cursor = mDb.query(mTableName,
+        try (Cursor cursor = mDb.query(mTableName,
                 new String[]{BookEntry.COLUMN_DISPLAY_NAME}, BookEntry.COLUMN_ACTIVE + " = 1",
-                null, null, null, null);
-        try {
-            if (cursor.moveToFirst()){
+                null, null, null, null)) {
+            if (cursor.moveToFirst()) {
                 return cursor.getString(cursor.getColumnIndexOrThrow(BookEntry.COLUMN_DISPLAY_NAME));
             }
-        } finally {
-            cursor.close();
         }
         return "Book1";
     }

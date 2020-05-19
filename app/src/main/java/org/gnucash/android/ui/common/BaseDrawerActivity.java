@@ -44,7 +44,10 @@ import org.gnucash.android.ui.settings.PreferenceActivity;
 import org.gnucash.android.ui.transaction.ScheduledActionsActivity;
 import org.gnucash.android.util.BookUtils;
 
+import java.util.Objects;
+
 import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -125,20 +128,10 @@ public abstract class BaseDrawerActivity extends PasscodeLockActivity implements
         mToolbarProgress.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
 
         View headerView = mNavigationView.getHeaderView(0);
-        headerView.findViewById(R.id.drawer_title).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickAppTitle(v);
-            }
-        });
+        headerView.findViewById(R.id.drawer_title).setOnClickListener(this::onClickAppTitle);
 
         mBookNameTextView = headerView.findViewById(R.id.book_name);
-        mBookNameTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickBook(v);
-            }
-        });
+        mBookNameTextView.setOnClickListener(this::onClickBook);
         updateActiveBookName();
         setUpNavigationDrawer();
     }
@@ -212,7 +205,7 @@ public abstract class BaseDrawerActivity extends PasscodeLockActivity implements
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
@@ -315,7 +308,7 @@ public abstract class BaseDrawerActivity extends PasscodeLockActivity implements
                 final int takeFlags = data.getFlags()
                         & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 AccountsActivity.importXmlFileFromIntent(this, data, null);
-                getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
+                getContentResolver().takePersistableUriPermission(Objects.requireNonNull(data.getData()), takeFlags);
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);

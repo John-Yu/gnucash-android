@@ -172,19 +172,13 @@ public class MigrationHelper {
     static void moveFile(File src, File dst) throws IOException {
         Log.d(LOG_TAG, String.format(Locale.US, "Moving %s from %s to %s",
                 src.getName(), src.getParent(), dst.getParent()));
-        FileChannel inChannel = new FileInputStream(src).getChannel();
-        FileChannel outChannel = new FileOutputStream(dst).getChannel();
-        try {
+        try (FileChannel inChannel = new FileInputStream(src).getChannel(); FileChannel outChannel = new FileOutputStream(dst).getChannel()) {
             long bytesCopied = inChannel.transferTo(0, inChannel.size(), outChannel);
-            if(bytesCopied >= src.length()) {
+            if (bytesCopied >= src.length()) {
                 boolean result = src.delete();
                 String msg = result ? "Deleted src file: " : "Could not delete src: ";
                 Log.d(LOG_TAG, msg + src.getPath());
             }
-        } finally {
-            if (inChannel != null)
-                inChannel.close();
-            outChannel.close();
         }
     }
 
@@ -784,32 +778,28 @@ public class MigrationHelper {
                         String currencyCode = cursor.getString(cursor.getColumnIndexOrThrow("trans_currency"));
                         String imbalanceAccountName = GnuCashApplication.getAppContext().getString(R.string.imbalance_account_name) + "-" + currencyCode;
                         String imbalanceAccountUID;
-                        Cursor c = db.query(AccountEntry.TABLE_NAME, new String[]{AccountEntry.COLUMN_UID},
+                        try (Cursor c = db.query(AccountEntry.TABLE_NAME, new String[]{AccountEntry.COLUMN_UID},
                                 AccountEntry.COLUMN_FULL_NAME + "= ?", new String[]{imbalanceAccountName},
-                                null, null, null);
-                        try {
+                                null, null, null)) {
                             if (c.moveToFirst()) {
                                 imbalanceAccountUID = c.getString(c.getColumnIndexOrThrow(AccountEntry.COLUMN_UID));
-                            }
-                            else {
+                            } else {
                                 imbalanceAccountUID = BaseModel.generateUID();
                                 contentValues.clear();
                                 contentValues.put(CommonColumns.COLUMN_UID, imbalanceAccountUID);
                                 contentValues.put(CommonColumns.COLUMN_CREATED_AT, timestamp);
-                                contentValues.put(AccountEntry.COLUMN_NAME,         imbalanceAccountName);
-                                contentValues.put(AccountEntry.COLUMN_TYPE,         "BANK");
-                                contentValues.put(AccountEntry.COLUMN_CURRENCY,     currencyCode);
-                                contentValues.put(AccountEntry.COLUMN_PLACEHOLDER,  0);
-                                contentValues.put(AccountEntry.COLUMN_HIDDEN,       GnuCashApplication.isDoubleEntryEnabled() ? 0 : 1);
+                                contentValues.put(AccountEntry.COLUMN_NAME, imbalanceAccountName);
+                                contentValues.put(AccountEntry.COLUMN_TYPE, "BANK");
+                                contentValues.put(AccountEntry.COLUMN_CURRENCY, currencyCode);
+                                contentValues.put(AccountEntry.COLUMN_PLACEHOLDER, 0);
+                                contentValues.put(AccountEntry.COLUMN_HIDDEN, GnuCashApplication.isDoubleEntryEnabled() ? 0 : 1);
                                 contentValues.putNull(AccountEntry.COLUMN_COLOR_CODE);
                                 contentValues.put(AccountEntry.COLUMN_FAVORITE, 0);
-                                contentValues.put(AccountEntry.COLUMN_FULL_NAME,    imbalanceAccountName);
+                                contentValues.put(AccountEntry.COLUMN_FULL_NAME, imbalanceAccountName);
                                 contentValues.put(AccountEntry.COLUMN_PARENT_ACCOUNT_UID, rootAccountUID);
                                 contentValues.putNull(AccountEntry.COLUMN_DEFAULT_TRANSFER_ACCOUNT_UID);
                                 db.insert(AccountEntry.TABLE_NAME, null, contentValues);
                             }
-                        } finally {
-                            c.close();
                         }
                         String TransactionUID = cursor.getString(cursor.getColumnIndexOrThrow("trans_uid"));
                         contentValues.clear();

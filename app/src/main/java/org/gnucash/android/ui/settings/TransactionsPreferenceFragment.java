@@ -177,7 +177,7 @@ public class TransactionsPreferenceFragment extends PreferenceFragmentCompat imp
 			// Store the new value of the Preference
 			sharedPreferences.edit()
 							 .putBoolean(getString(R.string.key_display_negative_signum_in_splits),
-										 Boolean.valueOf(newValue.toString()))
+									 Boolean.parseBoolean(newValue.toString()))
 							 .commit();
 		}
 

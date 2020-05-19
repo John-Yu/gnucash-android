@@ -4,7 +4,6 @@ import android.content.Context;
 
 import org.gnucash.android.R;
 import org.gnucash.android.app.GnuCashApplication;
-import org.gnucash.android.db.DatabaseSchema;
 import org.gnucash.android.model.AccountType;
 
 /**
@@ -17,22 +16,18 @@ public class AccountTypeUtils {
     /**
      * Get the debit label customized for the account type
      *
-     * @param accountType
-     *          Account Type
-     *
-     * @return
-     *          The debit label customized for the account type
-     *
+     * @param accountType Account Type
+     * @return The debit label customized for the account type
      * @author JeanGarf
      */
     public static String getLabelDebit(final AccountType accountType) {
 
         final String label;
-        
+
         Context context = GnuCashApplication.getAppContext().getApplicationContext();
 
         switch (accountType) {
-            
+
             case CASH:
                 label = context.getString(R.string.label_receive); // DEBIT
                 break;
@@ -94,12 +89,8 @@ public class AccountTypeUtils {
     /**
      * Get the credit label customized for the account type
      *
-     * @param accountType
-     *          Account Type
-     *
-     * @return
-     *          The credit label customized for the account type
-     *
+     * @param accountType Account Type
+     * @return The credit label customized for the account type
      * @author JeanGarf
      */
     public static String getLabelCredit(final AccountType accountType) {

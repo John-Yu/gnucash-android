@@ -23,12 +23,6 @@ import android.content.SharedPreferences.Editor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.rule.GrantPermissionRule;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.core.app.Fragment;
 import android.util.Log;
 import android.view.View;
 
@@ -66,6 +60,13 @@ import org.junit.runner.RunWith;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import androidx.core.app.Fragment;
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -110,8 +111,6 @@ public class AccountsActivityTest {
     private static final String CHILD_ACCOUNT_NAME = "Child account";
     public static final String TEST_DB_NAME = "test_gnucash_db.sqlite";
 
-    private static DatabaseHelper mDbHelper;
-    private static SQLiteDatabase mDb;
     private static AccountsDbAdapter mAccountsDbAdapter;
     private static TransactionsDbAdapter mTransactionsDbAdapter;
     private static SplitsDbAdapter mSplitsDbAdapter;
@@ -122,28 +121,31 @@ public class AccountsActivityTest {
     }
 
 
-    @Rule public GrantPermissionRule animationPermissionsRule = GrantPermissionRule.grant(Manifest.permission.SET_ANIMATION_SCALE);
+    @Rule
+    public GrantPermissionRule animationPermissionsRule = GrantPermissionRule.grant(Manifest.permission.SET_ANIMATION_SCALE);
 
-    @ClassRule public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
+    @ClassRule
+    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
 
     @Rule
     public ActivityTestRule<AccountsActivity> mActivityRule = new ActivityTestRule<>(AccountsActivity.class);
 
     @BeforeClass
-    public static void prepTest(){
+    public static void prepTest() {
         preventFirstRunDialogs(GnuCashApplication.getAppContext());
 
         String activeBookUID = BooksDbAdapter.getInstance().getActiveBookUID();
-        mDbHelper = new DatabaseHelper(GnuCashApplication.getAppContext(), activeBookUID);
+        DatabaseHelper mDbHelper = new DatabaseHelper(GnuCashApplication.getAppContext(), activeBookUID);
+        SQLiteDatabase mDb;
         try {
             mDb = mDbHelper.getWritableDatabase();
         } catch (SQLException e) {
             Log.e("AccountsActivityTest", "Error getting database: " + e.getMessage());
             mDb = mDbHelper.getReadableDatabase();
         }
-        mSplitsDbAdapter        = SplitsDbAdapter.getInstance();
-        mTransactionsDbAdapter  = TransactionsDbAdapter.getInstance();
-        mAccountsDbAdapter      = AccountsDbAdapter.getInstance();
+        mSplitsDbAdapter = SplitsDbAdapter.getInstance();
+        mTransactionsDbAdapter = TransactionsDbAdapter.getInstance();
+        mAccountsDbAdapter = AccountsDbAdapter.getInstance();
         CommoditiesDbAdapter commoditiesDbAdapter = new CommoditiesDbAdapter(mDb); //initialize commodity constants
     }
 
@@ -165,6 +167,7 @@ public class AccountsActivityTest {
 
     /**
      * Prevents the first-run dialogs (Whats new, Create accounts etc) from being displayed when testing
+     *
      * @param context Application context
      */
     public static void preventFirstRunDialogs(Context context) {
@@ -183,7 +186,7 @@ public class AccountsActivityTest {
     }
 
 
-    public void testDisplayAccountsList(){
+    public void testDisplayAccountsList() {
         AccountsActivity.createDefaultAccounts("EUR", mAccountsActivity);
         mAccountsActivity.recreate();
 
@@ -195,7 +198,7 @@ public class AccountsActivityTest {
     }
 
     @Test
-    public void testSearchAccounts(){
+    public void testSearchAccounts() {
         String SEARCH_ACCOUNT_NAME = "Search Account";
 
         Account account = new Account(SEARCH_ACCOUNT_NAME);
@@ -216,7 +219,7 @@ public class AccountsActivityTest {
      * Tests that an account can be created successfully and that the account list is sorted alphabetically.
      */
     @Test
-    public void testCreateAccount(){
+    public void testCreateAccount() {
         assertThat(mAccountsDbAdapter.getAllRecords()).hasSize(1);
         onView(allOf(isDisplayed(), withId(R.id.fab_create_account))).perform(click());
 
@@ -240,7 +243,7 @@ public class AccountsActivityTest {
     }
 
     @Test
-    public void should_IncludeFutureTransactionsInAccountBalance(){
+    public void should_IncludeFutureTransactionsInAccountBalance() {
         Transaction transaction = new Transaction("Future transaction");
         Split split1 = new Split(new Money("4.15", ACCOUNTS_CURRENCY_CODE), SIMPLE_ACCOUNT_UID);
         transaction.addSplit(split1);
@@ -291,7 +294,7 @@ public class AccountsActivityTest {
      * The account which is then created is not a sub-account, but rather a top-level account
      */
     @Test
-    public void shouldHideParentAccountViewWhenNoParentsExist(){
+    public void shouldHideParentAccountViewWhenNoParentsExist() {
         onView(allOf(withText(SIMPLE_ACCOUNT_NAME), isDisplayed())).perform(click());
         onView(withId(R.id.fragment_transaction_list)).perform(swipeRight());
         onView(withId(R.id.fab_create_transaction)).check(matches(isDisplayed())).perform(click());
@@ -318,11 +321,11 @@ public class AccountsActivityTest {
     }
 
     @Test
-    public void testEditAccount(){
+    public void testEditAccount() {
         refreshAccountsList();
 
         onView(allOf(withParent(hasDescendant(withText(SIMPLE_ACCOUNT_NAME))),
-                     withId(R.id.options_menu))).perform(click());
+                withId(R.id.options_menu))).perform(click());
 //        onView(withId(R.id.options_menu)).perform(click()); //there should only be one account visible
         sleep(1000);
         onView(withText(R.string.title_edit_account)).check(matches(isDisplayed())).perform(click());
@@ -342,10 +345,10 @@ public class AccountsActivityTest {
     }
 
     @Test
-    public void editingAccountShouldNotDeleteTransactions(){
+    public void editingAccountShouldNotDeleteTransactions() {
         onView(allOf(withParent(hasDescendant(withText(SIMPLE_ACCOUNT_NAME))),
-                     withId(R.id.options_menu),
-                     isDisplayed())).perform(click());
+                withId(R.id.options_menu),
+                isDisplayed())).perform(click());
 
         Account account = new Account("Transfer Account");
         account.setCommodity(Commodity.getInstance(ACCOUNTS_CURRENCY.getCurrencyCode()));
@@ -371,6 +374,7 @@ public class AccountsActivityTest {
 
     /**
      * Sleep the thread for a specified period
+     *
      * @param millis Duration to sleep in milliseconds
      */
     private void sleep(long millis) {
@@ -406,11 +410,11 @@ public class AccountsActivityTest {
         refreshAccountsList();
 
         onView(allOf(withParent(hasDescendant(withText(SIMPLE_ACCOUNT_NAME))),
-                     withId(R.id.options_menu))).perform(click());
+                withId(R.id.options_menu))).perform(click());
         onView(withText(R.string.menu_delete)).perform(click());
 
         onView(allOf(withParent(withId(R.id.accounts_options)),
-                     withId(R.id.radio_delete))).perform(click());
+                withId(R.id.radio_delete))).perform(click());
         onView(withText(R.string.alert_dialog_ok_delete)).perform(click());
 
         assertThat(accountExists(SIMPLE_ACCOUNT_UID)).isFalse();
@@ -427,7 +431,7 @@ public class AccountsActivityTest {
         mAccountsDbAdapter.addRecord(subAccount, DatabaseAdapter.UpdateMethod.insert);
         mAccountsDbAdapter.addRecord(tranferAcct, DatabaseAdapter.UpdateMethod.insert);
 
-        assertThat(mAccountsDbAdapter.getRecordsCount()).isEqualTo(accountCount+2);
+        assertThat(mAccountsDbAdapter.getRecordsCount()).isEqualTo(accountCount + 2);
 
         refreshAccountsList();
 
@@ -450,6 +454,7 @@ public class AccountsActivityTest {
 
     /**
      * Checks if an account exists in the database
+     *
      * @param accountUID GUID of the account
      * @return {@code true} if the account exists, {@code false} otherwise
      */
@@ -465,7 +470,7 @@ public class AccountsActivityTest {
     //TODO: Test import of account file
     //TODO: test settings activity
     @Test
-    public void testIntentAccountCreation(){
+    public void testIntentAccountCreation() {
         Intent intent = new Intent(Intent.ACTION_INSERT);
         intent.putExtra(Intent.EXTRA_TITLE, "Intent Account");
         intent.putExtra(Intent.EXTRA_UID, "intent-account");
@@ -516,7 +521,7 @@ public class AccountsActivityTest {
     /**
      * Refresh the account list fragment
      */
-    private void refreshAccountsList(){
+    private void refreshAccountsList() {
         try {
             mActivityRule.runOnUiThread(new Runnable() {
                 @Override
@@ -532,10 +537,11 @@ public class AccountsActivityTest {
 
     /**
      * Matcher to select the first of multiple views which are matched in the UI
+     *
      * @param expected Matcher which fits multiple views
      * @return Single match
      */
-    public static Matcher<View> first(final Matcher<View> expected){
+    public static Matcher<View> first(final Matcher<View> expected) {
 
         return new TypeSafeMatcher<View>() {
             private boolean first = false;
@@ -543,7 +549,7 @@ public class AccountsActivityTest {
             @Override
             protected boolean matchesSafely(View item) {
 
-                if( expected.matches(item) && !first ){
+                if (expected.matches(item) && !first) {
                     return first = true;
                 }
 
@@ -552,7 +558,7 @@ public class AccountsActivityTest {
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("Matcher.first( " + expected.toString() + " )" );
+                description.appendText("Matcher.first( " + expected.toString() + " )");
             }
         };
     }

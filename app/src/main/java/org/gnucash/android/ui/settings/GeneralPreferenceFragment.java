@@ -123,7 +123,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat implemen
             getPreferenceManager().getSharedPreferences()
                                   .edit()
                                   .putBoolean(getString(R.string.key_use_double_back_button_press_to_quit),
-                                              Boolean.valueOf(newValue.toString()))
+                                          Boolean.parseBoolean(newValue.toString()))
                                   .commit();
         }
 
@@ -138,7 +138,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat implemen
             getPreferenceManager().getSharedPreferences()
                                   .edit()
                                   .putBoolean(getString(R.string.key_shall_open_keyboard_in_account_searchable_spinner),
-                                              Boolean.valueOf(newValue.toString()))
+                                          Boolean.parseBoolean(newValue.toString()))
                                   .commit();
         }
 
@@ -153,7 +153,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat implemen
             getPreferenceManager().getSharedPreferences()
                                   .edit()
                                   .putBoolean(getString(R.string.key_use_color_in_account_list),
-                                              Boolean.valueOf(newValue.toString()))
+                                          Boolean.parseBoolean(newValue.toString()))
                                   .commit();
         }
 
@@ -191,7 +191,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat implemen
             getPreferenceManager().getSharedPreferences()
                                   .edit()
                                   .putBoolean(getString(R.string.key_use_account_color),
-                                              Boolean.valueOf(newValue.toString()))
+                                          Boolean.parseBoolean(newValue.toString()))
                                   .commit();
         }
 

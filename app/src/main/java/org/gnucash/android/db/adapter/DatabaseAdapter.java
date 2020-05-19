@@ -396,16 +396,12 @@ public abstract class DatabaseAdapter<Model extends BaseModel> {
     public Model getRecord(@NonNull String uid){
         Log.v(LOG_TAG, "Fetching record with GUID " + uid);
 
-        Cursor cursor = fetchRecord(uid);
-        try {
+        try (Cursor cursor = fetchRecord(uid)) {
             if (cursor.moveToFirst()) {
                 return buildModelInstance(cursor);
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException(LOG_TAG + ": Record with " + uid + " does not exist");
             }
-        } finally {
-            cursor.close();
         }
     }
 
@@ -425,13 +421,10 @@ public abstract class DatabaseAdapter<Model extends BaseModel> {
      */
     public List<Model> getAllRecords(){
         List<Model> modelRecords = new ArrayList<>();
-        Cursor c = fetchAllRecords();
-        try {
+        try (Cursor c = fetchAllRecords()) {
             while (c.moveToNext()) {
                 modelRecords.add(buildModelInstance(c));
             }
-        } finally {
-            c.close();
         }
         return modelRecords;
     }
@@ -587,18 +580,15 @@ public abstract class DatabaseAdapter<Model extends BaseModel> {
      *      does not exist in DB
      */
     public String getAccountCurrencyCode(@NonNull String accountUID) {
-        Cursor cursor = mDb.query(DatabaseSchema.AccountEntry.TABLE_NAME,
-                new String[] {DatabaseSchema.AccountEntry.COLUMN_CURRENCY},
-                DatabaseSchema.AccountEntry.COLUMN_UID + "= ?",
-                new String[]{accountUID}, null, null, null);
-        try {
+        try (Cursor cursor = mDb.query(AccountEntry.TABLE_NAME,
+                new String[]{AccountEntry.COLUMN_CURRENCY},
+                AccountEntry.COLUMN_UID + "= ?",
+                new String[]{accountUID}, null, null, null)) {
             if (cursor.moveToFirst()) {
                 return cursor.getString(0);
             } else {
                 throw new IllegalArgumentException("Account " + accountUID + " does not exist");
             }
-        } finally {
-            cursor.close();
         }
     }
 
@@ -612,17 +602,14 @@ public abstract class DatabaseAdapter<Model extends BaseModel> {
         String where = DatabaseSchema.CommodityEntry.COLUMN_MNEMONIC + "= ?";
         String[] whereArgs = new String[]{currencyCode};
 
-        Cursor cursor = mDb.query(DatabaseSchema.CommodityEntry.TABLE_NAME,
+        try (Cursor cursor = mDb.query(DatabaseSchema.CommodityEntry.TABLE_NAME,
                 new String[]{DatabaseSchema.CommodityEntry.COLUMN_UID},
-                where, whereArgs, null, null, null);
-        try {
+                where, whereArgs, null, null, null)) {
             if (cursor.moveToNext()) {
                 return cursor.getString(cursor.getColumnIndexOrThrow(DatabaseSchema.CommodityEntry.COLUMN_UID));
             } else {
                 throw new IllegalArgumentException("Currency code not found in commodities");
             }
-        } finally {
-            cursor.close();
         }
     }
 
@@ -634,18 +621,15 @@ public abstract class DatabaseAdapter<Model extends BaseModel> {
      */
     public AccountType getAccountType(@NonNull String accountUID){
         String type = "";
-        Cursor c = mDb.query(DatabaseSchema.AccountEntry.TABLE_NAME,
-                new String[]{DatabaseSchema.AccountEntry.COLUMN_TYPE},
-                DatabaseSchema.AccountEntry.COLUMN_UID + "=?",
-                new String[]{accountUID}, null, null, null);
-        try {
+        try (Cursor c = mDb.query(AccountEntry.TABLE_NAME,
+                new String[]{AccountEntry.COLUMN_TYPE},
+                AccountEntry.COLUMN_UID + "=?",
+                new String[]{accountUID}, null, null, null)) {
             if (c.moveToFirst()) {
-                type = c.getString(c.getColumnIndexOrThrow(DatabaseSchema.AccountEntry.COLUMN_TYPE));
+                type = c.getString(c.getColumnIndexOrThrow(AccountEntry.COLUMN_TYPE));
             } else {
                 throw new IllegalArgumentException("account " + accountUID + " does not exist in DB");
             }
-        } finally {
-            c.close();
         }
         return AccountType.valueOf(type);
     }
@@ -745,19 +729,16 @@ public abstract class DatabaseAdapter<Model extends BaseModel> {
      * @throws IllegalArgumentException if either the {@code recordUID} or {@code columnName} do not exist in the database
      */
     protected String getAttribute(@NonNull String tableName, @NonNull String recordUID, @NonNull String columnName){
-        Cursor cursor = mDb.query(tableName,
+
+        try (Cursor cursor = mDb.query(tableName,
                 new String[]{columnName},
                 AccountEntry.COLUMN_UID + " = ?",
-                new String[]{recordUID}, null, null, null);
-
-        try {
+                new String[]{recordUID}, null, null, null)) {
             if (cursor.moveToFirst())
                 return cursor.getString(cursor.getColumnIndexOrThrow(columnName));
             else {
                 throw new IllegalArgumentException(String.format("Record with GUID %s does not exist in the db", recordUID));
             }
-        } finally {
-            cursor.close();
         }
     }
 

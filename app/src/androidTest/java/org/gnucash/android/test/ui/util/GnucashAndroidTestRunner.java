@@ -19,17 +19,17 @@ package org.gnucash.android.test.ui.util;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.multidex.MultiDex;
-import androidx.test.runner.AndroidJUnitRunner;
 import android.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import androidx.test.runner.AndroidJUnitRunner;
+
 /**
  * Custom test runner
  */
-public class GnucashAndroidTestRunner extends AndroidJUnitRunner{
+public class GnucashAndroidTestRunner extends AndroidJUnitRunner {
     private static final String TAG = "GncAndroidTestRunner";
     private static final String ANIMATION_PERMISSION = "android.permission.SET_ANIMATION_SCALE";
     private static final float DISABLED = 0.0f;
@@ -62,7 +62,7 @@ public class GnucashAndroidTestRunner extends AndroidJUnitRunner{
         }
     }
 
-    private void enableAnimation(){
+    private void enableAnimation() {
         int permStatus = getContext().checkCallingOrSelfPermission(ANIMATION_PERMISSION);
         if (permStatus == PackageManager.PERMISSION_GRANTED) {
             if (reflectivelyDisableAnimation(DEFAULT)) {
@@ -94,18 +94,10 @@ public class GnucashAndroidTestRunner extends AndroidJUnitRunner{
             }
             setAnimationScales.invoke(windowManagerObj, currentScales);
             return true;
-        } catch (ClassNotFoundException cnfe) {
-            Log.w(TAG, "Cannot disable animations reflectively.", cnfe);
-        } catch (NoSuchMethodException mnfe) {
-            Log.w(TAG, "Cannot disable animations reflectively.", mnfe);
-        } catch (SecurityException se) {
+        } catch (SecurityException | IllegalAccessException | InvocationTargetException se) {
             Log.w(TAG, "Cannot disable animations reflectively.", se);
-        } catch (InvocationTargetException ite) {
-            Log.w(TAG, "Cannot disable animations reflectively.", ite);
-        } catch (IllegalAccessException iae) {
-            Log.w(TAG, "Cannot disable animations reflectively.", iae);
-        } catch (RuntimeException re) {
-            Log.w(TAG, "Cannot disable animations reflectively.", re);
+        } catch (ClassNotFoundException | NoSuchMethodException | RuntimeException cnfe) {
+            Log.w(TAG, "Cannot disable animations reflectively.", cnfe);
         }
         return false;
     }

@@ -122,8 +122,8 @@ public class QualifiedAccountNameCursorAdapter
                 // Convert WhereArgs into List
                 final String[] cursorWhereArgs = getCursorWhereArgs();
                 final List<String> whereArgsAsList = (cursorWhereArgs != null)
-                                                     ? new ArrayList<String>(Arrays.asList(cursorWhereArgs))
-                                                     : new ArrayList<String>();
+                        ? new ArrayList<>(Arrays.asList(cursorWhereArgs))
+                        : new ArrayList<>();
 
                 // Add the %constraint% for the LIKE added in the where clause
                 whereArgsAsList.add("%" + ((constraint != null)

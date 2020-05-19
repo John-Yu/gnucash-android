@@ -41,6 +41,7 @@ import org.gnucash.android.ui.settings.dialog.DeleteAllAccountsConfirmationDialo
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import androidx.appcompat.app.ActionBar;
@@ -56,7 +57,7 @@ import androidx.preference.PreferenceFragmentCompat;
  * @author Oleksandr Tyshkovets <olexandr.tyshkovets@gmail.com>
  */
 public class AccountPreferencesFragment extends PreferenceFragmentCompat implements
-        Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener{
+        Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
     private static final int REQUEST_EXPORT_FILE = 0xC5;
 
@@ -72,11 +73,12 @@ public class AccountPreferencesFragment extends PreferenceFragmentCompat impleme
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
+        assert actionBar != null;
         actionBar.setTitle(R.string.title_account_preferences);
 
         Cursor cursor = CommoditiesDbAdapter.getInstance().fetchAllRecords(DatabaseSchema.CommodityEntry.COLUMN_MNEMONIC + " ASC");
-        while(cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             String code = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseSchema.CommodityEntry.COLUMN_MNEMONIC));
             String name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseSchema.CommodityEntry.COLUMN_FULLNAME));
             mCurrencyEntries.add(code + " - " + name);
@@ -101,45 +103,43 @@ public class AccountPreferencesFragment extends PreferenceFragmentCompat impleme
         ((ListPreference) pref).setEntryValues(mCurrencyEntryValues.toArray(entryValues));
 
         Preference preference = findPreference(getString(R.string.key_import_accounts));
+        assert preference != null;
         preference.setOnPreferenceClickListener(this);
 
         preference = findPreference(getString(R.string.key_export_accounts_csv));
+        assert preference != null;
         preference.setOnPreferenceClickListener(this);
 
         preference = findPreference(getString(R.string.key_delete_all_accounts));
-        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                showDeleteAccountsDialog();
-                return true;
-            }
+        assert preference != null;
+        preference.setOnPreferenceClickListener(preference1 -> {
+            showDeleteAccountsDialog();
+            return true;
         });
 
         preference = findPreference(getString(R.string.key_create_default_accounts));
-        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.title_create_default_accounts)
-                        .setMessage(R.string.msg_confirm_create_default_accounts_setting)
-                        .setIcon(R.drawable.ic_warning_black_24dp)
-                        .setPositiveButton(R.string.btn_create_accounts, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                AccountsActivity.createDefaultAccounts(Money.DEFAULT_CURRENCY_CODE, getActivity());
-                            }
-                        })
-                        .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        })
-                        .create()
-                        .show();
+        assert preference != null;
+        preference.setOnPreferenceClickListener(preference12 -> {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.title_create_default_accounts)
+                    .setMessage(R.string.msg_confirm_create_default_accounts_setting)
+                    .setIcon(R.drawable.ic_warning_black_24dp)
+                    .setPositiveButton(R.string.btn_create_accounts, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            AccountsActivity.createDefaultAccounts(Money.DEFAULT_CURRENCY_CODE, getActivity());
+                        }
+                    })
+                    .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
 
-                return true;
-            }
+            return true;
         });
     }
 
@@ -147,12 +147,12 @@ public class AccountPreferencesFragment extends PreferenceFragmentCompat impleme
     public boolean onPreferenceClick(Preference preference) {
         String key = preference.getKey();
 
-        if (key.equals(getString(R.string.key_import_accounts))){
+        if (key.equals(getString(R.string.key_import_accounts))) {
             AccountsActivity.startXmlFileChooser(this);
             return true;
         }
 
-        if (key.equals(getString(R.string.key_export_accounts_csv))){
+        if (key.equals(getString(R.string.key_export_accounts_csv))) {
             selectExportFile();
             return true;
         }
@@ -177,7 +177,7 @@ public class AccountPreferencesFragment extends PreferenceFragmentCompat impleme
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (preference.getKey().equals(getString(R.string.key_default_currency))){
+        if (preference.getKey().equals(getString(R.string.key_default_currency))) {
             GnuCashApplication.setDefaultCurrencyCode(newValue.toString());
             String fullname = CommoditiesDbAdapter.getInstance().getCommodity(newValue.toString()).getFullname();
             preference.setSummary(fullname);
@@ -189,14 +189,14 @@ public class AccountPreferencesFragment extends PreferenceFragmentCompat impleme
     /**
      * Show the dialog for deleting accounts
      */
-    public void showDeleteAccountsDialog(){
+    public void showDeleteAccountsDialog() {
         DeleteAllAccountsConfirmationDialog deleteConfirmationDialog = DeleteAllAccountsConfirmationDialog.newInstance();
-        deleteConfirmationDialog.show(getActivity().getSupportFragmentManager(), "account_settings");
+        deleteConfirmationDialog.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), "account_settings");
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
+        switch (requestCode) {
             case AccountsActivity.REQUEST_PICK_ACCOUNTS_FILE:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     AccountsActivity.importXmlFileFromIntent(getActivity(), data, null);
@@ -204,10 +204,10 @@ public class AccountPreferencesFragment extends PreferenceFragmentCompat impleme
                 break;
 
             case REQUEST_EXPORT_FILE:
-                if (resultCode == Activity.RESULT_OK && data != null){
+                if (resultCode == Activity.RESULT_OK && data != null) {
                     ExportParams exportParams = new ExportParams(ExportFormat.CSVA);
                     exportParams.setExportTarget(ExportParams.ExportTarget.URI);
-                    exportParams.setExportLocation(data.getData().toString());
+                    exportParams.setExportLocation(Objects.requireNonNull(data.getData()).toString());
                     ExportAsyncTask exportTask = new ExportAsyncTask(getActivity(), GnuCashApplication.getActiveDb());
 
                     try {
