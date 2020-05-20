@@ -193,7 +193,7 @@ public class SearchableListDialogFragment<T_ITEM>
         // Title
 
         String strTitle = mStrTitle == null
-                ? "Select Item"
+                ? getString(R.string.dialog_title_select)
                 : mStrTitle;
 
         alertDialogBuilder.setTitle(strTitle);
@@ -201,31 +201,26 @@ public class SearchableListDialogFragment<T_ITEM>
         // Positive Button
 
         String strPositiveButton = mStrPositiveButtonText == null
-                ? "CLOSE"
+                ? getString(R.string.dialog_btn_close)
                 : mStrPositiveButtonText;
 
         alertDialogBuilder.setPositiveButton(strPositiveButton,
-                new DialogInterface.OnClickListener() {
+                (dialog, which) -> {
 
-                    @Override
-                    public void onClick(final DialogInterface dialog,
-                                        final int which) {
+                    // Dismiss dialog
+                    dismissDialog();
 
-                        // Dismiss dialog
-                        dismissDialog();
+                    if (mOnPositiveBtnClickListener != null) {
+                        //
 
-                        if (mOnPositiveBtnClickListener != null) {
-                            //
+                        // Call listener
+                        mOnPositiveBtnClickListener.onClick(dialog,
+                                which);
 
-                            // Call listener
-                            mOnPositiveBtnClickListener.onClick(dialog,
-                                    which);
+                    } else {
+                        //  n' pas
 
-                        } else {
-                            //  n' pas
-
-                            // RAF
-                        }
+                        // RAF
                     }
                 });
 

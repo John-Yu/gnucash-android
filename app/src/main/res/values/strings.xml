@@ -521,5 +521,7 @@
 
     <string name="prefs_ui_title_use_color_in_account_list">Use colors in Account Lists</string>
     <string name="prefs_ui_summary_use_color_in_account_list">Use colors in Account Lists and in Transaction Lists</string>
+    <string name="dialog_btn_close">CLOSE</string>
+    <string name="dialog_title_select">Select Item</string>
 
 </resources>

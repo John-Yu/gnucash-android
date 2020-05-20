@@ -302,7 +302,7 @@
   <string name="label_no_recent_accounts">最近的科目为空</string>
   <string name="label_no_favorite_accounts">没有加星标的科目</string>
   <string name="nav_menu_scheduled_actions">定时任务</string>
-  <string name="label_scheduled_action_ended">"Ended, last executed on "</string>
+  <string name="label_scheduled_action_ended">"已结束，最后执行 "</string>
   <string name="btn_wizard_next">下一步</string>
   <string name="btn_wizard_finish">完成</string>
   <string name="wizard_title_default_currency">默认的货币</string>
@@ -359,8 +359,8 @@
   <string name="title_budgets">预算</string>
   <string name="title_use_compact_list">启用精简视图</string>
   <string name="summary_use_compact_list">交易列表总是用精简视图显示</string>
-  <string name="title_display_negative_signum_in_splits">Display negative signum in splits</string>
-  <string name="summary_display_negative_signum_in_splits">Enable to display negative signum amount even when debit/credit toggle button is displayed</string>
+  <string name="title_display_negative_signum_in_splits">显示负号</string>
+  <string name="summary_display_negative_signum_in_splits">即使显示了借记/贷记切换按钮，也可以显示负号</string>
   <string name="error_invalid_exchange_rate">无效汇率</string>
   <string name="sample_exchange_rate">例如 1 %1$s = x.xx %2$s</string>
   <string name="error_invalid_amount">无效金额</string>
@@ -405,7 +405,7 @@
   <string name="menu_title_new_book">新建帐簿</string>
   <string name="toast_transaction_has_no_splits_and_cannot_open">所选交易没有分割项，无法开启</string>
   <string name="label_split_count">%1$d 项分割</string>
-  <string name="label_inside_account_with_name">于 %1$s</string>
+  <string name="label_inside_account_with_name">%1$s</string>
   <plurals name="book_account_stats">
     <item quantity="other">%d个科目</item>
   </plurals>
@@ -485,18 +485,15 @@
   </string-array>
 
   <string name="select_account">选择账户</string>
-
   <string name="double_back_press_exit_msg">再次点BACK退出\n(或者修改首选项)</string>
-
   <string name="prefs_ui_category_title">界面首选项</string>
-
   <string name="prefs_ui_title_use_double_back_button_press_to_quit">双击BACK退出</string>
-  <string name="prefs_ui_summary_use_double_back_button_press_to_quit">Shall click twice on back button to actually quit GnuCashAndroid</string>
-
+  <string name="prefs_ui_summary_use_double_back_button_press_to_quit">双击BACK退出应用</string>
   <string name="prefs_ui_title_account_searchable_spinner_openkeyboard">在可搜索的账户列表中显示键盘</string>
   <string name="prefs_ui_summary_account_searchable_spinner_openkeyboard">当打开一个可搜索的账户列表时显示键盘</string>
-
   <string name="prefs_ui_title_use_color_in_account_list">在账户列表中应用颜色</string>
   <string name="prefs_ui_summary_use_color_in_account_list">在账户列表和交易列表中应用颜色</string>
+  <string name="dialog_btn_close">关闭</string>
+  <string name="dialog_title_select">选择类型</string>
 
 </resources>
