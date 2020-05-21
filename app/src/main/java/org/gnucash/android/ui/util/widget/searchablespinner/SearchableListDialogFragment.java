@@ -459,21 +459,14 @@ public class SearchableListDialogFragment<T_ITEM>
             });
 
             // On item click listener
-            getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            getListView().setOnItemClickListener((parent, view, position, id) -> {
 
-                @Override
-                public void onItemClick(AdapterView<?> parent,
-                                        View view,
-                                        int position,
-                                        long id) {
+                dismissDialog();
 
-                    dismissDialog();
+                final T_ITEM item = (T_ITEM) getListViewAdapter().getItem(position);
 
-                    final T_ITEM item = (T_ITEM) getListViewAdapter().getItem(position);
-
-                    // Call Listener
-                    getOnSearchableListItemClickedListener().onSearchableListItemClicked(item);
-                }
+                // Call Listener
+                getOnSearchableListItemClickedListener().onSearchableListItemClicked(item);
             });
 
             //

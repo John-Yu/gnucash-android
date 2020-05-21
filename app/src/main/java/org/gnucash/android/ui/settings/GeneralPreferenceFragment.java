@@ -35,6 +35,7 @@ import androidx.preference.PreferenceFragmentCompat;
 
 /**
  * Fragment for general preferences. Currently caters to the passcode and reporting preferences
+ *
  * @author Oleksandr Tyshkovets <olexandr.tyshkovets@gmail.com>
  */
 public class GeneralPreferenceFragment extends PreferenceFragmentCompat implements
@@ -67,6 +68,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat implemen
         super.onCreate(savedInstanceState);
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        assert actionBar != null;
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(R.string.title_general_prefs);
@@ -78,7 +80,8 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat implemen
 
         final Intent intent = new Intent(getActivity(), PasscodePreferenceActivity.class);
 
-        mCheckBoxPreference = (CheckBoxPreference) findPreference(getString(R.string.key_enable_passcode));
+        mCheckBoxPreference = findPreference(getString(R.string.key_enable_passcode));
+        assert mCheckBoxPreference != null;
         mCheckBoxPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -115,84 +118,60 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat implemen
         //
         // Preference : key_use_double_back_button_press_to_quit
         //
-
-        if (preference.getKey()
-                      .equals(getString(R.string.key_use_double_back_button_press_to_quit))) {
+        if (preference.getKey().equals(getString(R.string.key_use_double_back_button_press_to_quit))) {
 
             // Store the new value of the Preference
             getPreferenceManager().getSharedPreferences()
-                                  .edit()
-                                  .putBoolean(getString(R.string.key_use_double_back_button_press_to_quit),
-                                          Boolean.parseBoolean(newValue.toString()))
-                                  .commit();
+                    .edit()
+                    .putBoolean(getString(R.string.key_use_double_back_button_press_to_quit), Boolean.parseBoolean(newValue.toString()))
+                    .apply();
         }
 
         //
         // Set Preference : key_shall_open_keyboard_in_account_searchable_spinner
         //
-
-        if (preference.getKey()
-                      .equals(getString(R.string.key_shall_open_keyboard_in_account_searchable_spinner))) {
+        if (preference.getKey().equals(getString(R.string.key_shall_open_keyboard_in_account_searchable_spinner))) {
 
             // Store the new value of the Preference
             getPreferenceManager().getSharedPreferences()
-                                  .edit()
-                                  .putBoolean(getString(R.string.key_shall_open_keyboard_in_account_searchable_spinner),
-                                          Boolean.parseBoolean(newValue.toString()))
-                                  .commit();
+                    .edit()
+                    .putBoolean(getString(R.string.key_shall_open_keyboard_in_account_searchable_spinner), Boolean.parseBoolean(newValue.toString()))
+                    .apply();
         }
 
         //
         // Set Preference : key_use_color_in_account_list
         //
-
-        if (preference.getKey()
-                      .equals(getString(R.string.key_use_color_in_account_list))) {
+        if (preference.getKey().equals(getString(R.string.key_use_color_in_account_list))) {
 
             // Store the new value of the Preference
             getPreferenceManager().getSharedPreferences()
-                                  .edit()
-                                  .putBoolean(getString(R.string.key_use_color_in_account_list),
-                                          Boolean.parseBoolean(newValue.toString()))
-                                  .commit();
+                    .edit()
+                    .putBoolean(getString(R.string.key_use_color_in_account_list), Boolean.parseBoolean(newValue.toString()))
+                    .apply();
         }
 
         //
         // Set Preference : enable_passcode
         //
-
-        if (preference.getKey()
-                      .equals(getString(R.string.key_enable_passcode))) {
-
+        if (preference.getKey().equals(getString(R.string.key_enable_passcode))) {
             if ((Boolean) newValue) {
-
-                startActivityForResult(new Intent(getActivity(),
-                                                  PasscodePreferenceActivity.class),
-                                       GeneralPreferenceFragment.PASSCODE_REQUEST_CODE);
-
+                startActivityForResult(new Intent(getActivity(), PasscodePreferenceActivity.class), GeneralPreferenceFragment.PASSCODE_REQUEST_CODE);
             } else {
-
-                Intent passIntent = new Intent(getActivity(),
-                                               PasscodeLockScreenActivity.class);
-                passIntent.putExtra(UxArgument.DISABLE_PASSCODE,
-                                    UxArgument.DISABLE_PASSCODE);
-                startActivityForResult(passIntent,
-                                       GeneralPreferenceFragment.REQUEST_DISABLE_PASSCODE);
+                Intent passIntent = new Intent(getActivity(), PasscodeLockScreenActivity.class);
+                passIntent.putExtra(UxArgument.DISABLE_PASSCODE, UxArgument.DISABLE_PASSCODE);
+                startActivityForResult(passIntent, GeneralPreferenceFragment.REQUEST_DISABLE_PASSCODE);
             }
         }
 
         //
         // Set Preference : use_color_in_reports
         //
-
-        if (preference.getKey()
-                      .equals(getString(R.string.key_use_account_color))) {
-
+        if (preference.getKey().equals(getString(R.string.key_use_account_color))) {
             getPreferenceManager().getSharedPreferences()
-                                  .edit()
-                                  .putBoolean(getString(R.string.key_use_account_color),
-                                          Boolean.parseBoolean(newValue.toString()))
-                                  .commit();
+                    .edit()
+                    .putBoolean(getString(R.string.key_use_account_color), Boolean.parseBoolean(newValue.toString()))
+                    .apply();
         }
 
         return true;
@@ -202,7 +181,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat implemen
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (mEditor == null){
+        if (mEditor == null) {
             mEditor = getPreferenceManager().getSharedPreferences().edit();
         }
 
@@ -231,7 +210,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat implemen
                 }
                 break;
         }
-        mEditor.commit();
+        mEditor.apply();
     }
 
 }

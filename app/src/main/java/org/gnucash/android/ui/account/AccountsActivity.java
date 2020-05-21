@@ -71,6 +71,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
+
 import butterknife.BindView;
 
 /**
@@ -145,7 +146,6 @@ public class AccountsActivity extends BaseDrawerActivity implements OnAccountCli
     private final Runnable mResetDoubleBackPressedStatusRunnable = new Runnable() {
         @Override
         public void run() {
-
             // BackPress button is not more considered pressed recently
             mDoubleBackButtonPressedOnce = false;
         }
@@ -159,12 +159,9 @@ public class AccountsActivity extends BaseDrawerActivity implements OnAccountCli
     /**
      * ViewPager which manages the different tabs
      */
-    @BindView(R.id.pager)
-    ViewPager mViewPager;
-    @BindView(R.id.fab_create_account)
-    FloatingActionButton mFloatingActionButton;
-    @BindView(R.id.coordinatorLayout)
-    CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.pager)    ViewPager mViewPager;
+    @BindView(R.id.fab_create_account)    FloatingActionButton mFloatingActionButton;
+    @BindView(R.id.coordinatorLayout)    CoordinatorLayout mCoordinatorLayout;
 
     /**
      * Configuration for rating the app
@@ -178,7 +175,7 @@ public class AccountsActivity extends BaseDrawerActivity implements OnAccountCli
     private class AccountViewPagerAdapter extends FragmentPagerAdapter {
 
         public AccountViewPagerAdapter(FragmentManager fm) {
-            super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+            super(fm);
         }
 
         @NonNull
@@ -231,6 +228,7 @@ public class AccountsActivity extends BaseDrawerActivity implements OnAccountCli
         public int getCount() {
             return DEFAULT_NUM_PAGES;
         }
+
     }
 
     public AccountsListFragment getCurrentAccountListFragment() {
@@ -305,8 +303,7 @@ public class AccountsActivity extends BaseDrawerActivity implements OnAccountCli
                 Toast.LENGTH_SHORT);
 
         // Align-Center text inside the Toast
-        TextView toastTextView = mToast.getView()
-                .findViewById(android.R.id.message);
+        TextView toastTextView = mToast.getView().findViewById(android.R.id.message);
         if (toastTextView != null) {
             toastTextView.setGravity(Gravity.CENTER);
         }
@@ -379,8 +376,7 @@ public class AccountsActivity extends BaseDrawerActivity implements OnAccountCli
     private void init() {
 
         PreferenceManager.setDefaultValues(this,
-                BooksDbAdapter.getInstance()
-                        .getActiveBookUID(),
+                BooksDbAdapter.getInstance().getActiveBookUID(),
                 Context.MODE_PRIVATE,
                 R.xml.fragment_transaction_preferences,
                 true);
@@ -434,7 +430,7 @@ public class AccountsActivity extends BaseDrawerActivity implements OnAccountCli
 
             mHandler.removeCallbacks(mResetDoubleBackPressedStatusRunnable);
         }
-
+        mFragmentPageReferenceMap.clear();
     }
 
     /**

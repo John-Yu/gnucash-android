@@ -25,12 +25,6 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.view.MenuItemCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,6 +36,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.gnucash.android.R;
 import org.gnucash.android.app.GnuCashApplication;
@@ -61,13 +68,8 @@ import org.gnucash.android.ui.util.widget.EmptyRecyclerView;
 import org.gnucash.android.util.BackupManager;
 
 import java.util.List;
+import java.util.Objects;
 
-import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -480,6 +482,7 @@ public class AccountsListFragment extends Fragment implements
            super(cursor);
         }
 
+        @NonNull
         @Override
         public AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext())
@@ -516,16 +519,12 @@ public class AccountsListFragment extends Fragment implements
             if (isPlaceholderAccount) {
                 holder.createTransaction.setVisibility(View.GONE);
             } else {
-                holder.createTransaction.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), FormActivity.class);
-                        intent.setAction(Intent.ACTION_INSERT_OR_EDIT);
-                        intent.putExtra(UxArgument.SELECTED_ACCOUNT_UID, accountUID);
-                        intent.putExtra(UxArgument.FORM_TYPE, FormActivity.FormType.TRANSACTION.name());
-                        getActivity().startActivity(intent);
-                    }
+                holder.createTransaction.setOnClickListener(v -> {
+                    Intent intent = new Intent(getActivity(), FormActivity.class);
+                    intent.setAction(Intent.ACTION_INSERT_OR_EDIT);
+                    intent.putExtra(UxArgument.SELECTED_ACCOUNT_UID, accountUID);
+                    intent.putExtra(UxArgument.FORM_TYPE, FormActivity.FormType.TRANSACTION.name());
+                    Objects.requireNonNull(getActivity()).startActivity(intent);
                 });
             }
 
@@ -549,29 +548,21 @@ public class AccountsListFragment extends Fragment implements
                 holder.favoriteStatus.setImageResource(R.drawable.ic_star_border_black_24dp);
             }
 
-            holder.favoriteStatus.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    boolean isFavoriteAccount = mAccountsDbAdapter.isFavoriteAccount(accountUID);
+            holder.favoriteStatus.setOnClickListener(v -> {
+                boolean isFavoriteAccount = mAccountsDbAdapter.isFavoriteAccount(accountUID);
 
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(DatabaseSchema.AccountEntry.COLUMN_FAVORITE, !isFavoriteAccount);
-                    mAccountsDbAdapter.updateRecord(accountUID, contentValues);
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(DatabaseSchema.AccountEntry.COLUMN_FAVORITE, !isFavoriteAccount);
+                mAccountsDbAdapter.updateRecord(accountUID, contentValues);
 
-                    int drawableResource = !isFavoriteAccount ?
-                            R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp;
-                    holder.favoriteStatus.setImageResource(drawableResource);
-                    if (mDisplayMode == DisplayMode.FAVORITES)
-                        refresh();
-                }
+                int drawableResource = !isFavoriteAccount ?
+                        R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp;
+                holder.favoriteStatus.setImageResource(drawableResource);
+                if (mDisplayMode == DisplayMode.FAVORITES)
+                    refresh();
             });
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onListItemClick(accountUID);
-                }
-            });
+            holder.itemView.setOnClickListener(v -> onListItemClick(accountUID));
         }
 
 
@@ -592,15 +583,12 @@ public class AccountsListFragment extends Fragment implements
 
                 ButterKnife.bind(this, itemView);
 
-                optionsMenu.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        PopupMenu popup = new PopupMenu(getActivity(), v);
-                        popup.setOnMenuItemClickListener(AccountViewHolder.this);
-                        MenuInflater inflater = popup.getMenuInflater();
-                        inflater.inflate(R.menu.account_context_menu, popup.getMenu());
-                        popup.show();
-                    }
+                optionsMenu.setOnClickListener(v -> {
+                    PopupMenu popup = new PopupMenu(getActivity(), v);
+                    popup.setOnMenuItemClickListener(AccountViewHolder.this);
+                    MenuInflater inflater = popup.getMenuInflater();
+                    inflater.inflate(R.menu.account_context_menu, popup.getMenu());
+                    popup.show();
                 });
 
             }
