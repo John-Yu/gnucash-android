@@ -19,7 +19,6 @@ package org.gnucash.android.ui.settings;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -33,9 +32,7 @@ import com.dropbox.core.android.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.drive.Drive;
-import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.MetadataChangeSet;
 
 import org.gnucash.android.R;
@@ -109,6 +106,7 @@ public class BackupPreferenceFragment extends PreferenceFragmentCompat implement
 		super.onCreate(savedInstanceState);
 
 		ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+		assert actionBar != null;
 		actionBar.setHomeButtonEnabled(true);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setTitle(R.string.title_backup_prefs);
@@ -126,9 +124,10 @@ public class BackupPreferenceFragment extends PreferenceFragmentCompat implement
 
 		String keyDefaultEmail = getString(R.string.key_default_export_email);		
 		Preference pref = findPreference(keyDefaultEmail);
+		assert pref != null;
 		String defaultEmail = sharedPrefs.getString(keyDefaultEmail, null);
 		if (defaultEmail != null && !defaultEmail.trim().isEmpty()){
-			pref.setSummary(defaultEmail);			
+			pref.setSummary(defaultEmail);
 		}
 		pref.setOnPreferenceChangeListener(this);
 
@@ -313,23 +312,19 @@ public class BackupPreferenceFragment extends PreferenceFragmentCompat implement
 						SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 						String appFolderId = sharedPreferences.getString(context.getString(R.string.key_google_drive_app_folder_id), null);
 						if (appFolderId == null) {
-							MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-									.setTitle(context.getString(R.string.app_name)).build();
+							MetadataChangeSet changeSet = new MetadataChangeSet.Builder().setTitle(context.getString(R.string.app_name)).build();
 							Drive.DriveApi.getRootFolder(mGoogleApiClient).createFolder(
-									mGoogleApiClient, changeSet).setResultCallback(new ResultCallback<DriveFolder.DriveFolderResult>() {
-								@Override
-								public void onResult(DriveFolder.DriveFolderResult result) {
-									if (!result.getStatus().isSuccess()) {
-										Log.e(LOG_TAG, "Error creating the application folder");
-										return;
-									}
+									mGoogleApiClient, changeSet).setResultCallback(result -> {
+										if (!result.getStatus().isSuccess()) {
+											Log.e(LOG_TAG, "Error creating the application folder");
+											return;
+										}
 
-									String folderId = result.getDriveFolder().getDriveId().toString();
-									PreferenceManager.getDefaultSharedPreferences(context)
-											.edit().putString(context.getString(R.string.key_google_drive_app_folder_id),
-											folderId).commit(); //commit because we need it to be saved *now*
-								}
-							});
+										String folderId = result.getDriveFolder().getDriveId().toString();
+										PreferenceManager.getDefaultSharedPreferences(context)
+												.edit().putString(context.getString(R.string.key_google_drive_app_folder_id),
+												folderId).commit(); //commit because we need it to be saved *now*
+									});
 
 						}
 						Toast.makeText(context, R.string.toast_connected_to_google_drive, Toast.LENGTH_SHORT).show();
@@ -340,24 +335,21 @@ public class BackupPreferenceFragment extends PreferenceFragmentCompat implement
 						Toast.makeText(context, "Connection to Google Drive suspended!", Toast.LENGTH_LONG).show();
 					}
 				})
-				.addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-					@Override
-					public void onConnectionFailed(ConnectionResult connectionResult) {
-						Log.e(PreferenceActivity.class.getName(), "Connection to Google Drive failed");
-						if (connectionResult.hasResolution() && context instanceof Activity) {
-							try {
-								Log.e(BackupPreferenceFragment.class.getName(), "Trying resolution of Google API connection failure");
-								connectionResult.startResolutionForResult((Activity) context, REQUEST_RESOLVE_CONNECTION);
-							} catch (IntentSender.SendIntentException e) {
-								Log.e(BackupPreferenceFragment.class.getName(), e.getMessage());
-								Toast.makeText(context, R.string.toast_unable_to_connect_to_google_drive, Toast.LENGTH_LONG).show();
-							}
-						} else {
-							if (context instanceof Activity)
-								GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(), (Activity) context, 0).show();
-						}
-					}
-				})
+				.addOnConnectionFailedListener(connectionResult -> {
+                    Log.e(PreferenceActivity.class.getName(), "Connection to Google Drive failed");
+                    if (connectionResult.hasResolution() && context instanceof Activity) {
+                        try {
+                            Log.e(BackupPreferenceFragment.class.getName(), "Trying resolution of Google API connection failure");
+                            connectionResult.startResolutionForResult((Activity) context, REQUEST_RESOLVE_CONNECTION);
+                        } catch (IntentSender.SendIntentException e) {
+                            Log.e(BackupPreferenceFragment.class.getName(), e.getMessage());
+                            Toast.makeText(context, R.string.toast_unable_to_connect_to_google_drive, Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        if (context instanceof Activity)
+                            GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(), (Activity) context, 0).show();
+                    }
+                })
 				.build();
 	}
 
@@ -373,18 +365,8 @@ public class BackupPreferenceFragment extends PreferenceFragmentCompat implement
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
 					.setTitle(R.string.title_confirm_restore_backup)
 					.setMessage(R.string.msg_confirm_restore_backup_into_new_book)
-					.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
-						}
-					})
-					.setPositiveButton(R.string.btn_restore, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialogInterface, int i) {
-							new ImportAsyncTask(getActivity()).execute(Uri.parse(defaultBackupFile));
-						}
-					});
+					.setNegativeButton(R.string.btn_cancel, (dialog, which) -> dialog.dismiss())
+					.setPositiveButton(R.string.btn_restore, (dialogInterface, i) -> new ImportAsyncTask(getActivity()).execute(Uri.parse(defaultBackupFile)));
 			builder.create().show();
 			return; //stop here if the default backup file exists
 		}
@@ -394,12 +376,7 @@ public class BackupPreferenceFragment extends PreferenceFragmentCompat implement
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
 					.setTitle(R.string.title_no_backups_found)
 					.setMessage(R.string.msg_no_backups_to_restore_from)
-					.setNegativeButton(R.string.label_dismiss, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
-						}
-					});
+					.setNegativeButton(R.string.label_dismiss, (dialog, which) -> dialog.dismiss());
 			builder.create().show();
 			return;
 		}
@@ -417,19 +394,10 @@ public class BackupPreferenceFragment extends PreferenceFragmentCompat implement
 
 		AlertDialog.Builder restoreDialogBuilder =  new AlertDialog.Builder(getActivity());
 		restoreDialogBuilder.setTitle(R.string.title_select_backup_to_restore);
-		restoreDialogBuilder.setNegativeButton(R.string.alert_dialog_cancel,
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
-		restoreDialogBuilder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				File backupFile = BackupManager.getBackupList(bookUID).get(which);
-				new ImportAsyncTask(getActivity()).execute(Uri.fromFile(backupFile));
-			}
+		restoreDialogBuilder.setNegativeButton(R.string.alert_dialog_cancel, (dialog, which) -> dialog.dismiss());
+		restoreDialogBuilder.setAdapter(arrayAdapter, (dialog, which) -> {
+			File backupFile = BackupManager.getBackupList(bookUID).get(which);
+			new ImportAsyncTask(getActivity()).execute(Uri.fromFile(backupFile));
 		});
 
 		restoreDialogBuilder.create().show();

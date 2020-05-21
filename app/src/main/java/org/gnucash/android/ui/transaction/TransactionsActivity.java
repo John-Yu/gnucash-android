@@ -169,14 +169,9 @@ public class TransactionsActivity extends BaseDrawerActivity implements
         }
 	};
 
-    private DialogInterface.OnClickListener mSearchableSpinnerPositiveBtnOnClickListener = new DialogInterface.OnClickListener() {
+    private DialogInterface.OnClickListener mSearchableSpinnerPositiveBtnOnClickListener = (dialog, which) -> {
 
-        @Override
-        public void onClick(DialogInterface dialog,
-                            int which) {
-
-            // NTD
-        }
+        // NTD
     };
 
     private PagerAdapter mPagerAdapter;
@@ -191,6 +186,7 @@ public class TransactionsActivity extends BaseDrawerActivity implements
             super(fm);
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int i) {
             if (mIsPlaceholderAccount){
@@ -216,7 +212,7 @@ public class TransactionsActivity extends BaseDrawerActivity implements
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             super.destroyItem(container, position, object);
             mFragmentPageReferenceMap.remove(position);
         }
@@ -363,24 +359,21 @@ public class TransactionsActivity extends BaseDrawerActivity implements
             mViewPager.setCurrentItem(INDEX_TRANSACTIONS_FRAGMENT);
         }
 
-        mCreateFloatingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (mViewPager.getCurrentItem()) {
-                    case INDEX_SUB_ACCOUNTS_FRAGMENT:
-                        Intent addAccountIntent = new Intent(TransactionsActivity.this, FormActivity.class);
-                        addAccountIntent.setAction(Intent.ACTION_INSERT_OR_EDIT);
-                        addAccountIntent.putExtra(UxArgument.FORM_TYPE, FormActivity.FormType.ACCOUNT.name());
-                        addAccountIntent.putExtra(UxArgument.PARENT_ACCOUNT_UID,
-                                                  getCurrentAccountUID());
-                        startActivityForResult(addAccountIntent, AccountsActivity.REQUEST_EDIT_ACCOUNT);
-                        break;
+        mCreateFloatingButton.setOnClickListener(v -> {
+            switch (mViewPager.getCurrentItem()) {
+                case INDEX_SUB_ACCOUNTS_FRAGMENT:
+                    Intent addAccountIntent = new Intent(TransactionsActivity.this, FormActivity.class);
+                    addAccountIntent.setAction(Intent.ACTION_INSERT_OR_EDIT);
+                    addAccountIntent.putExtra(UxArgument.FORM_TYPE, FormActivity.FormType.ACCOUNT.name());
+                    addAccountIntent.putExtra(UxArgument.PARENT_ACCOUNT_UID,
+                                              getCurrentAccountUID());
+                    startActivityForResult(addAccountIntent, AccountsActivity.REQUEST_EDIT_ACCOUNT);
+                    break;
 
-                    case INDEX_TRANSACTIONS_FRAGMENT:
-                        createNewTransaction(getCurrentAccountUID());
-                        break;
+                case INDEX_TRANSACTIONS_FRAGMENT:
+                    createNewTransaction(getCurrentAccountUID());
+                    break;
 
-                }
             }
         });
 	}

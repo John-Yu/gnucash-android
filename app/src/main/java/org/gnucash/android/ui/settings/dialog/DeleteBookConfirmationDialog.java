@@ -17,7 +17,6 @@
 package org.gnucash.android.ui.settings.dialog;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import org.gnucash.android.R;
@@ -49,15 +48,11 @@ public class DeleteBookConfirmationDialog extends DoubleConfirmationDialog {
                 .setTitle(R.string.title_confirm_delete_book)
                 .setIcon(R.drawable.ic_close_black_24dp)
                 .setMessage(R.string.msg_all_book_data_will_be_deleted)
-                .setPositiveButton(R.string.btn_delete_book, new DialogInterface.OnClickListener() {
-                    @SuppressWarnings("ConstantConditions")
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        final String bookUID = getArguments().getString("bookUID");
-                        BackupManager.backupBook(bookUID);
-                        BooksDbAdapter.getInstance().deleteBook(bookUID);
-                        ((Refreshable) getTargetFragment()).refresh();
-                    }
+                .setPositiveButton(R.string.btn_delete_book, (dialogInterface, which) -> {
+                    final String bookUID = getArguments().getString("bookUID");
+                    BackupManager.backupBook(bookUID);
+                    BooksDbAdapter.getInstance().deleteBook(bookUID);
+                    ((Refreshable) getTargetFragment()).refresh();
                 })
                 .create();
     }

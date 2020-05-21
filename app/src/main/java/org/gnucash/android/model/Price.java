@@ -8,6 +8,8 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import androidx.annotation.NonNull;
+
 /**
  * Model for commodity prices
  */
@@ -150,6 +152,7 @@ public class Price extends BaseModel {
      *
      * <p>Example: "0.123456"
      */
+    @NonNull
     @Override
     public String toString() {
         BigDecimal numerator = new BigDecimal(mValueNum);

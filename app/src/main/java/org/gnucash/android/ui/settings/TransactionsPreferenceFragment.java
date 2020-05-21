@@ -76,12 +76,10 @@ public class TransactionsPreferenceFragment extends PreferenceFragmentCompat imp
 		//
 
 		String keyDefaultTransactionType = getString(R.string.key_default_transaction_type);
-		String defaultTransactionTypeKey = sharedPreferences.getString(keyDefaultTransactionType,
-																	   AccountType.KEY_USE_NORMAL_BALANCE_EXPENSE);
+		String defaultTransactionTypeKey = sharedPreferences.getString(keyDefaultTransactionType, AccountType.KEY_USE_NORMAL_BALANCE_EXPENSE);
 
 		Preference pref = findPreference(keyDefaultTransactionType);
-		setPrefSummary(pref,
-					   defaultTransactionTypeKey);
+		setPrefSummary(pref, defaultTransactionTypeKey);
 
 		pref.setOnPreferenceChangeListener(this);
 
@@ -97,7 +95,8 @@ public class TransactionsPreferenceFragment extends PreferenceFragmentCompat imp
 		//
 
 		String                 keyCompactView = getString(R.string.key_use_compact_list);
-		SwitchPreferenceCompat switchPref     = (SwitchPreferenceCompat) findPreference(keyCompactView);
+		SwitchPreferenceCompat switchPref     = findPreference(keyCompactView);
+		assert switchPref != null;
 		switchPref.setChecked(sharedPreferences.getBoolean(keyCompactView, false));
 
 		//
@@ -105,7 +104,8 @@ public class TransactionsPreferenceFragment extends PreferenceFragmentCompat imp
 		//
 
 		String keyDisplayNegativeSignumInSplits = getString(R.string.key_display_negative_signum_in_splits);
-		switchPref = (SwitchPreferenceCompat) findPreference(keyDisplayNegativeSignumInSplits);
+		switchPref = findPreference(keyDisplayNegativeSignumInSplits);
+		assert switchPref != null;
 		switchPref.setChecked(sharedPreferences.getBoolean(keyDisplayNegativeSignumInSplits,
 														   false));
 		switchPref.setOnPreferenceChangeListener(this);
@@ -115,21 +115,18 @@ public class TransactionsPreferenceFragment extends PreferenceFragmentCompat imp
 		//
 
 		String keySaveBalance = getString(R.string.key_save_opening_balances);
-		switchPref = (SwitchPreferenceCompat) findPreference(keySaveBalance);
+		switchPref = findPreference(keySaveBalance);
 		switchPref.setChecked(sharedPreferences.getBoolean(keySaveBalance, false));
 
 		String keyDoubleEntry = getString(R.string.key_use_double_entry);
-		switchPref = (SwitchPreferenceCompat) findPreference(keyDoubleEntry);
+		switchPref = findPreference(keyDoubleEntry);
 		switchPref.setChecked(sharedPreferences.getBoolean(keyDoubleEntry, true));
 
 		Preference preference = findPreference(getString(R.string.key_delete_all_transactions));
-        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                showDeleteTransactionsDialog();
-                return true;
-            }
-        });
+        preference.setOnPreferenceClickListener(preference1 -> {
+			showDeleteTransactionsDialog();
+			return true;
+		});
 	}
 
 	@Override
@@ -142,25 +139,21 @@ public class TransactionsPreferenceFragment extends PreferenceFragmentCompat imp
 		// Preference : key_default_transaction_type
 		//
 
-		if (preference.getKey()
-					  .equals(getString(R.string.key_default_transaction_type))) {
+		if (preference.getKey().equals(getString(R.string.key_default_transaction_type))) {
 
 			// Store the new value of the Preference
 			sharedPreferences.edit()
-							 .putString(getString(R.string.key_default_transaction_type),
-										newValue.toString())
-							 .commit();
+							 .putString(getString(R.string.key_default_transaction_type), newValue.toString())
+							 .apply();
 
-			setPrefSummary(preference,
-						   ((String) newValue));
+			setPrefSummary(preference, ((String) newValue));
 		}
 
 		//
 		// Preference : key_use_double_entry
 		//
 
-		if (preference.getKey()
-					  .equals(getString(R.string.key_use_double_entry))) {
+		if (preference.getKey().equals(getString(R.string.key_use_double_entry))) {
 
 			boolean useDoubleEntry = (Boolean) newValue;
 			setImbalanceAccountsHidden(useDoubleEntry);
@@ -171,14 +164,12 @@ public class TransactionsPreferenceFragment extends PreferenceFragmentCompat imp
 		// Preference : key_display_negative_signum_in_splits
 		//
 
-		if (preference.getKey()
-					  .equals(getString(R.string.key_display_negative_signum_in_splits))) {
+		if (preference.getKey().equals(getString(R.string.key_display_negative_signum_in_splits))) {
 
 			// Store the new value of the Preference
 			sharedPreferences.edit()
-							 .putBoolean(getString(R.string.key_display_negative_signum_in_splits),
-									 Boolean.parseBoolean(newValue.toString()))
-							 .commit();
+							 .putBoolean(getString(R.string.key_display_negative_signum_in_splits), Boolean.parseBoolean(newValue.toString()))
+							 .apply();
 		}
 
 		return true;
@@ -225,8 +216,7 @@ public class TransactionsPreferenceFragment extends PreferenceFragmentCompat imp
 								  : AccountType.KEY_DEBIT.equals(defaultTransactionTypeKey)
 									? getString(R.string.label_debit)
 									: getString(R.string.label_credit);
-
-
+		
 		preference.setSummary(localizedLabel);
 	}
 	

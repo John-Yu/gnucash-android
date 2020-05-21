@@ -175,36 +175,33 @@ public class OwnCloudDialogFragment extends DialogFragment {
 
         final Handler mHandler = new Handler();
 
-        OnRemoteOperationListener listener = new OnRemoteOperationListener() {
-            @Override
-            public void onRemoteOperationFinish(RemoteOperation caller, RemoteOperationResult result) {
-                if (!result.isSuccess()) {
-                    Log.e("OC", result.getLogMessage(), result.getException());
+        OnRemoteOperationListener listener = (caller, result) -> {
+            if (!result.isSuccess()) {
+                Log.e("OC", result.getLogMessage(), result.getException());
 
-                    if (caller instanceof GetRemoteStatusOperation) {
-                        mServerError.setTextColor(ContextCompat.getColor(getContext(), R.color.debit_red));
-                        mServerError.setText(getString(R.string.owncloud_server_invalid));
-                        mServerError.setVisibility(View.VISIBLE);
+                if (caller instanceof GetRemoteStatusOperation) {
+                    mServerError.setTextColor(ContextCompat.getColor(getContext(), R.color.debit_red));
+                    mServerError.setText(getString(R.string.owncloud_server_invalid));
+                    mServerError.setVisibility(View.VISIBLE);
 
-                    } else if (caller instanceof GetRemoteUserInfoOperation &&
-                            mServerError.getText().toString().equals(getString(R.string.owncloud_server_ok))) {
-                        mUsernameError.setTextColor(ContextCompat.getColor(getContext(), R.color.debit_red));
-                        mUsernameError.setText(getString(R.string.owncloud_user_invalid));
-                        mUsernameError.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    if (caller instanceof GetRemoteStatusOperation) {
-                        mServerError.setTextColor(ContextCompat.getColor(getContext(), R.color.theme_primary));
-                        mServerError.setText(getString(R.string.owncloud_server_ok));
-                        mServerError.setVisibility(View.VISIBLE);
-                    } else if (caller instanceof GetRemoteUserInfoOperation) {
-                        mUsernameError.setTextColor(ContextCompat.getColor(getContext(), R.color.theme_primary));
-                        mUsernameError.setText(getString(R.string.owncloud_user_ok));
-                        mUsernameError.setVisibility(View.VISIBLE);
-                    }
+                } else if (caller instanceof GetRemoteUserInfoOperation &&
+                        mServerError.getText().toString().equals(getString(R.string.owncloud_server_ok))) {
+                    mUsernameError.setTextColor(ContextCompat.getColor(getContext(), R.color.debit_red));
+                    mUsernameError.setText(getString(R.string.owncloud_user_invalid));
+                    mUsernameError.setVisibility(View.VISIBLE);
                 }
-                saveButton();
+            } else {
+                if (caller instanceof GetRemoteStatusOperation) {
+                    mServerError.setTextColor(ContextCompat.getColor(getContext(), R.color.theme_primary));
+                    mServerError.setText(getString(R.string.owncloud_server_ok));
+                    mServerError.setVisibility(View.VISIBLE);
+                } else if (caller instanceof GetRemoteUserInfoOperation) {
+                    mUsernameError.setTextColor(ContextCompat.getColor(getContext(), R.color.theme_primary));
+                    mUsernameError.setText(getString(R.string.owncloud_user_ok));
+                    mUsernameError.setVisibility(View.VISIBLE);
+                }
             }
+            saveButton();
         };
 
         GetRemoteStatusOperation g = new GetRemoteStatusOperation(mContext);
@@ -230,29 +227,19 @@ public class OwnCloudDialogFragment extends DialogFragment {
      */
     private void setListeners(){
 
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
+        mCancelButton.setOnClickListener(v -> dismiss());
 
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
-
-        mOkButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // If data didn't change
-                if(mOkButton.getText().toString().equals(getString(R.string.btn_save)) &&
-                        mOC_server.equals(mServer.getText().toString().trim()) &&
-                        mOC_username.equals(mUsername.getText().toString().trim()) &&
-                        mOC_password.equals(mPassword.getText().toString().trim()) &&
-                        mOC_dir.equals(mDir.getText().toString().trim())
-                        )
-                    save();
-                else
-                    checkData();
-            }
+        mOkButton.setOnClickListener(v -> {
+            // If data didn't change
+            if(mOkButton.getText().toString().equals(getString(R.string.btn_save)) &&
+                    mOC_server.equals(mServer.getText().toString().trim()) &&
+                    mOC_username.equals(mUsername.getText().toString().trim()) &&
+                    mOC_password.equals(mPassword.getText().toString().trim()) &&
+                    mOC_dir.equals(mDir.getText().toString().trim())
+                    )
+                save();
+            else
+                checkData();
         });
     }
 }

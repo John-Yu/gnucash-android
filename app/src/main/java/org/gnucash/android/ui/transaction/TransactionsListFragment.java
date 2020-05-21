@@ -56,6 +56,7 @@ import org.gnucash.android.util.BackupManager;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -108,7 +109,7 @@ public class TransactionsListFragment extends Fragment implements
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(@NonNull Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putBoolean(getString(R.string.key_use_compact_list), mUseCompactView);
 	}
@@ -193,12 +194,12 @@ public class TransactionsListFragment extends Fragment implements
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.transactions_list_actions, menu);	
 	}
 
 	@Override
-	public void onPrepareOptionsMenu(Menu menu) {
+	public void onPrepareOptionsMenu(@NonNull Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		MenuItem item = menu.findItem(R.id.menu_compact_trn_view);
 		item.setChecked(mUseCompactView);
@@ -218,6 +219,7 @@ public class TransactionsListFragment extends Fragment implements
         }
 	}
 	
+	@NonNull
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 		Log.d(LOG_TAG, "Creating transactions loader");
@@ -225,14 +227,14 @@ public class TransactionsListFragment extends Fragment implements
 	}
 
 	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+	public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
 		Log.d(LOG_TAG, "Transactions loader finished. Swapping in cursor");
 		mTransactionRecyclerAdapter.swapCursor(cursor);
 		mTransactionRecyclerAdapter.notifyDataSetChanged();
 	}
 
 	@Override
-	public void onLoaderReset(Loader<Cursor> loader) {
+	public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 		Log.d(LOG_TAG, "Resetting transactions loader");
 		mTransactionRecyclerAdapter.swapCursor(null);
 	}
@@ -268,6 +270,7 @@ public class TransactionsListFragment extends Fragment implements
 			super(cursor);
 		}
 
+		@NonNull
 		@Override
 		public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 			int layoutRes = viewType == ITEM_TYPE_COMPACT ? R.layout.cardview_compact_transaction : R.layout.cardview_transaction;
@@ -304,13 +307,10 @@ public class TransactionsListFragment extends Fragment implements
             final long transactionListItemId = holder.transactionId;
 
             // Listener when user clicks on a transaction list item
-			holder.itemView.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
+			holder.itemView.setOnClickListener(v -> {
 
-                    // Handle click on a transaction list item
-                    onTransactionListItemClick(transactionListItemId);
-				}
+// Handle click on a transaction list item
+onTransactionListItemClick(transactionListItemId);
 			});
 
 			if (mUseCompactView) {
@@ -346,15 +346,12 @@ public class TransactionsListFragment extends Fragment implements
                 // to open transaction editor
                 //
 
-				holder.editTransaction.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent(getActivity(), FormActivity.class);
-						intent.putExtra(UxArgument.FORM_TYPE, FormActivity.FormType.TRANSACTION.name());
-						intent.putExtra(UxArgument.SELECTED_TRANSACTION_UID, transactionUID);
-						intent.putExtra(UxArgument.SELECTED_ACCOUNT_UID, mAccountUID);
-						startActivity(intent);
-					}
+				holder.editTransaction.setOnClickListener(v -> {
+					Intent intent = new Intent(getActivity(), FormActivity.class);
+					intent.putExtra(UxArgument.FORM_TYPE, FormActivity.FormType.TRANSACTION.name());
+					intent.putExtra(UxArgument.SELECTED_TRANSACTION_UID, transactionUID);
+					intent.putExtra(UxArgument.SELECTED_ACCOUNT_UID, mAccountUID);
+					startActivity(intent);
 				});
 			}
 		}
@@ -381,78 +378,71 @@ public class TransactionsListFragment extends Fragment implements
                 // Define action when clicking on the secondary text to jump to this account transaction list
                 //
 
-                secondaryText.setOnClickListener(new View.OnClickListener() {
+                secondaryText.setOnClickListener(view -> {
 
-                    @Override
-                    public void onClick(View view) {
+					// Prepare Intent to jump to the Transaction List of the Account selected by the user (when clicking on the secondary text)
+					Intent jumpToSelectedAccountTransactionListIntent = new Intent(getActivity(),
+																				   TransactionsActivity.class);
 
-                        // Prepare Intent to jump to the Transaction List of the Account selected by the user (when clicking on the secondary text)
-                        Intent jumpToSelectedAccountTransactionListIntent = new Intent(getActivity(),
-                                                                                       TransactionsActivity.class);
+					// Get Transaction UID for the transactionId nth item of the transaction list
+					String transactionUID = mTransactionsDbAdapter.getUID(transactionId);
 
-                        // Get Transaction UID for the transactionId nth item of the transaction list
-                        String transactionUID = mTransactionsDbAdapter.getUID(transactionId);
+					// Get all Splits of Transaction transactionUID
+					final List<Split> splitsForTransaction = mTransactionsDbAdapter.getSplitDbAdapter()
+																				   .getSplitsForTransaction(transactionUID);
 
-                        // Get all Splits of Transaction transactionUID
-                        final List<Split> splitsForTransaction = mTransactionsDbAdapter.getSplitDbAdapter()
-                                                                                       .getSplitsForTransaction(transactionUID);
+					// Get the Account UID to jump to
+					String jumpToAccountUID = "";
+					for (int i = 0; i < splitsForTransaction.size(); i++) {
 
-                        // Get the Account UID to jump to
-                        String jumpToAccountUID = "";
-                        for (int i = 0; i < splitsForTransaction.size(); i++) {
+						// Get the UID of the i-nth account involved in the Transaction
+						jumpToAccountUID = splitsForTransaction.get(i)
+															   .getAccountUID();
 
-                            // Get the UID of the i-nth account involved in the Transaction
-                            jumpToAccountUID = splitsForTransaction.get(i)
-                                                                   .getAccountUID();
+						if (!mAccountUID.equals(jumpToAccountUID)) {
+							// The account transaction list to jump to is not the current one
 
-                            if (!mAccountUID.equals(jumpToAccountUID)) {
-                                // The account transaction list to jump to is not the current one
+							// Stop searching
+							break;
 
-                                // Stop searching
-                                break;
+						} else {
+							// The account transaction list to jump to is the current one
 
-                            } else {
-                                // The account transaction list to jump to is the current one
+							// NTD : Continue to look for another Account
+						}
+					} // for
 
-                                // NTD : Continue to look for another Account
-                            }
-                        } // for
+					jumpToSelectedAccountTransactionListIntent.setAction(Intent.ACTION_VIEW);
 
-                        jumpToSelectedAccountTransactionListIntent.setAction(Intent.ACTION_VIEW);
+					// Indicate the Account Transaction List to jump to
+					jumpToSelectedAccountTransactionListIntent.putExtra(UxArgument.SELECTED_ACCOUNT_UID,
+																		jumpToAccountUID);
 
-                        // Indicate the Account Transaction List to jump to
-                        jumpToSelectedAccountTransactionListIntent.putExtra(UxArgument.SELECTED_ACCOUNT_UID,
-                                                                            jumpToAccountUID);
-
-                        // Start the Activity to display the Account Transaction List of the other Account
-                        startActivity(jumpToSelectedAccountTransactionListIntent);
-                    }
-                });
+					// Start the Activity to display the Account Transaction List of the other Account
+					startActivity(jumpToSelectedAccountTransactionListIntent);
+				});
 
                 //
                 // Define action when clicking on the three dot icon of a cardview_transaction
                 // to open a menu
                 //
 
-				optionsMenu.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
+				optionsMenu.setOnClickListener(v -> {
 
-                        // Build pop-menu
-                        PopupMenu popupMenu = new PopupMenu(getActivity(),
-                                                            v);
+// Build pop-menu
+PopupMenu popupMenu = new PopupMenu(getActivity(),
+v);
 
-                        // Current ViewHolder instance will handle the click on a menu item
-                        popupMenu.setOnMenuItemClickListener(ViewHolder.this);
+// Current ViewHolder instance will handle the click on a menu item
+popupMenu.setOnMenuItemClickListener(ViewHolder.this);
 
-                        // Unserialize the menu defined in transactions_context_menu.xml
-                        MenuInflater inflater = popupMenu.getMenuInflater();
-                        inflater.inflate(R.menu.transactions_context_menu,
-                                         popupMenu.getMenu());
+// Unserialize the menu defined in transactions_context_menu.xml
+MenuInflater inflater = popupMenu.getMenuInflater();
+inflater.inflate(R.menu.transactions_context_menu,
+popupMenu.getMenu());
 
-                        // Display pop-menu
-                        popupMenu.show();
-					}
+// Display pop-menu
+popupMenu.show();
 				});
 			}
 

@@ -86,14 +86,9 @@ public class ImportAsyncTask extends AsyncTask<Uri, Void, Boolean> {
 
             final String err_msg = exception.getLocalizedMessage();
             Crashlytics.log(err_msg);
-            mContext.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(mContext,
-                            mContext.getString(R.string.toast_error_importing_accounts) + "\n" + err_msg,
-                            Toast.LENGTH_LONG).show();
-                }
-            });
+            mContext.runOnUiThread(() -> Toast.makeText(mContext,
+                    mContext.getString(R.string.toast_error_importing_accounts) + "\n" + err_msg,
+                    Toast.LENGTH_LONG).show());
 
             return false;
         }

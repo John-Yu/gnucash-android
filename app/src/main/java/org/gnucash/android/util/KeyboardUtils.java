@@ -39,14 +39,11 @@ public class KeyboardUtils {
 //        editTextView.requestFocus();
 
         // Delay the keyboard hiding
-        editTextView.postDelayed(new Runnable() {
-                                     @Override
-                                     public void run() {
+        editTextView.postDelayed(() -> {
 
-                                         // Hide keyboard
-                                         hideKeyboard(editTextView);
-                                     }
-                                 },
+            // Hide keyboard
+            hideKeyboard(editTextView);
+        },
                                  delay);
     }
 

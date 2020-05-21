@@ -23,6 +23,7 @@ import org.gnucash.android.R;
 import org.gnucash.android.model.ScheduledAction;
 import org.gnucash.android.ui.common.BaseDrawerActivity;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -106,6 +107,7 @@ public class ScheduledActionsActivity extends BaseDrawerActivity {
             }
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
             switch (position){

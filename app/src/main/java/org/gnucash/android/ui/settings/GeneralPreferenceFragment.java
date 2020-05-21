@@ -82,18 +82,15 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat implemen
 
         mCheckBoxPreference = findPreference(getString(R.string.key_enable_passcode));
         assert mCheckBoxPreference != null;
-        mCheckBoxPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if ((Boolean) newValue) {
-                    startActivityForResult(intent, PASSCODE_REQUEST_CODE);
-                } else {
-                    Intent passIntent = new Intent(getActivity(), PasscodeLockScreenActivity.class);
-                    passIntent.putExtra(UxArgument.DISABLE_PASSCODE, UxArgument.DISABLE_PASSCODE);
-                    startActivityForResult(passIntent, REQUEST_DISABLE_PASSCODE);
-                }
-                return true;
+        mCheckBoxPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+            if ((Boolean) newValue) {
+                startActivityForResult(intent, PASSCODE_REQUEST_CODE);
+            } else {
+                Intent passIntent = new Intent(getActivity(), PasscodeLockScreenActivity.class);
+                passIntent.putExtra(UxArgument.DISABLE_PASSCODE, UxArgument.DISABLE_PASSCODE);
+                startActivityForResult(passIntent, REQUEST_DISABLE_PASSCODE);
             }
+            return true;
         });
         findPreference(getString(R.string.key_change_passcode)).setOnPreferenceClickListener(this);
     }

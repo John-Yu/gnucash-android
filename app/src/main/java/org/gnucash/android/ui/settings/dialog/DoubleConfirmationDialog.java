@@ -16,9 +16,7 @@
 
 package org.gnucash.android.ui.settings.dialog;
 
-import android.content.DialogInterface;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import org.gnucash.android.R;
 
@@ -58,12 +56,7 @@ public abstract class DoubleConfirmationDialog extends DialogFragment {
     protected AlertDialog.Builder getDialogBuilder() {
         return new AlertDialog.Builder(getActivity())
                 .setView(R.layout.dialog_double_confirm)
-                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        onNegativeButton();
-                    }
-                });
+                .setNegativeButton(R.string.btn_cancel, (dialog, which) -> onNegativeButton());
     }
 
     @Override
@@ -79,12 +72,7 @@ public abstract class DoubleConfirmationDialog extends DialogFragment {
     private void setUpConfirmCheckBox() {
         final AlertDialog dialog = (AlertDialog) getDialog();
         CheckBox confirmCheckBox = dialog.findViewById(R.id.checkbox_confirm);
-        confirmCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(b);
-            }
-        });
+        confirmCheckBox.setOnCheckedChangeListener((compoundButton, b) -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(b));
     }
 
     /**

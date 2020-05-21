@@ -41,6 +41,7 @@ import org.joda.time.Months;
 import org.joda.time.Years;
 
 import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
@@ -204,7 +205,7 @@ public abstract class BaseReportFragment extends Fragment implements
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (!(getActivity() instanceof ReportsActivity))
             throw new RuntimeException("Report fragments can only be used with the ReportsActivity");
@@ -266,7 +267,7 @@ public abstract class BaseReportFragment extends Fragment implements
 
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.chart_actions, menu);
     }
 

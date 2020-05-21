@@ -18,6 +18,8 @@ package org.gnucash.android.model;
 import org.gnucash.android.app.GnuCashApplication;
 import org.gnucash.android.db.adapter.CommoditiesDbAdapter;
 
+import androidx.annotation.NonNull;
+
 /**
  * Commodities are the currencies used in the application.
  * At the moment only ISO4217 currencies are supported
@@ -190,6 +192,7 @@ public class Commodity extends BaseModel {
         this.mQuoteFlag = quoteFlag;
     }
 
+    @NonNull
     @Override
     /**
      * Returns the full name of the currency, or the currency code if there is no full name

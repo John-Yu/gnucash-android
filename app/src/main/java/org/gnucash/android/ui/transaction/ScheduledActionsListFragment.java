@@ -248,7 +248,7 @@ public class ScheduledActionsListFragment extends ListFragment implements
 
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         if (mActionType == ScheduledAction.ActionType.BACKUP)
             inflater.inflate(R.menu.scheduled_export_actions, menu);
     }
@@ -267,7 +267,7 @@ public class ScheduledActionsListFragment extends ListFragment implements
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
+    public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         if (mActionMode != null){
             CheckBox checkbox = v.findViewById(R.id.checkbox);
@@ -306,6 +306,7 @@ public class ScheduledActionsListFragment extends ListFragment implements
         startActivity(createTransactionIntent);
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
         Log.d(TAG, "Creating transactions loader");
@@ -318,14 +319,14 @@ public class ScheduledActionsListFragment extends ListFragment implements
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         Log.d(TAG, "Transactions loader finished. Swapping in cursor");
         mCursorAdapter.swapCursor(cursor);
         mCursorAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         Log.d(TAG, "Resetting transactions loader");
         mCursorAdapter.swapCursor(null);
     }
@@ -424,18 +425,14 @@ public class ScheduledActionsListFragment extends ListFragment implements
 
             final TextView secondaryText = view.findViewById(R.id.secondary_text);
 
-            checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    getListView().setItemChecked(itemPosition, isChecked);
-                    if (isChecked) {
-                        startActionMode();
-                    } else {
-                        stopActionMode();
-                    }
-                    setActionModeTitle();
+            checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                getListView().setItemChecked(itemPosition, isChecked);
+                if (isChecked) {
+                    startActionMode();
+                } else {
+                    stopActionMode();
                 }
+                setActionModeTitle();
             });
 
 
@@ -452,19 +449,16 @@ public class ScheduledActionsListFragment extends ListFragment implements
 
             final View checkBoxView = checkbox;
             final View parentView = view;
-            parentView.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (isAdded()){ //may be run when fragment has been unbound from activity
-                        float extraPadding = getResources().getDimension(R.dimen.edge_padding);
-                        final android.graphics.Rect hitRect = new Rect();
-                        checkBoxView.getHitRect(hitRect);
-                        hitRect.right   += extraPadding;
-                        hitRect.bottom  += 3*extraPadding;
-                        hitRect.top     -= extraPadding;
-                        hitRect.left    -= 2*extraPadding;
-                        parentView.setTouchDelegate(new TouchDelegate(hitRect, checkBoxView));
-                    }
+            parentView.post(() -> {
+                if (isAdded()){ //may be run when fragment has been unbound from activity
+                    float extraPadding = getResources().getDimension(R.dimen.edge_padding);
+                    final Rect hitRect = new Rect();
+                    checkBoxView.getHitRect(hitRect);
+                    hitRect.right   += extraPadding;
+                    hitRect.bottom  += 3*extraPadding;
+                    hitRect.top     -= extraPadding;
+                    hitRect.left    -= 2*extraPadding;
+                    parentView.setTouchDelegate(new TouchDelegate(hitRect, checkBoxView));
                 }
             });
 
@@ -525,18 +519,14 @@ public class ScheduledActionsListFragment extends ListFragment implements
 
             final TextView secondaryText = view.findViewById(R.id.secondary_text);
 
-            checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    getListView().setItemChecked(itemPosition, isChecked);
-                    if (isChecked) {
-                        startActionMode();
-                    } else {
-                        stopActionMode();
-                    }
-                    setActionModeTitle();
+            checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                getListView().setItemChecked(itemPosition, isChecked);
+                if (isChecked) {
+                    startActionMode();
+                } else {
+                    stopActionMode();
                 }
+                setActionModeTitle();
             });
 
 
@@ -553,19 +543,16 @@ public class ScheduledActionsListFragment extends ListFragment implements
 
             final View checkBoxView = checkbox;
             final View parentView = view;
-            parentView.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (isAdded()){ //may be run when fragment has been unbound from activity
-                        float extraPadding = getResources().getDimension(R.dimen.edge_padding);
-                        final android.graphics.Rect hitRect = new Rect();
-                        checkBoxView.getHitRect(hitRect);
-                        hitRect.right   += extraPadding;
-                        hitRect.bottom  += 3*extraPadding;
-                        hitRect.top     -= extraPadding;
-                        hitRect.left    -= 2*extraPadding;
-                        parentView.setTouchDelegate(new TouchDelegate(hitRect, checkBoxView));
-                    }
+            parentView.post(() -> {
+                if (isAdded()){ //may be run when fragment has been unbound from activity
+                    float extraPadding = getResources().getDimension(R.dimen.edge_padding);
+                    final Rect hitRect = new Rect();
+                    checkBoxView.getHitRect(hitRect);
+                    hitRect.right   += extraPadding;
+                    hitRect.bottom  += 3*extraPadding;
+                    hitRect.top     -= extraPadding;
+                    hitRect.left    -= 2*extraPadding;
+                    parentView.setTouchDelegate(new TouchDelegate(hitRect, checkBoxView));
                 }
             });
 

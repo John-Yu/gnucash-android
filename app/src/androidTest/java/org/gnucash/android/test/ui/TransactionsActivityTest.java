@@ -884,12 +884,7 @@ public class TransactionsActivityTest {
      */
     private void refreshTransactionsList() {
         try {
-            mActivityRule.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mTransactionsActivity.refresh();
-                }
-            });
+            mActivityRule.runOnUiThread(() -> mTransactionsActivity.refresh());
         } catch (Throwable throwable) {
             System.err.println("Failed to refresh fragment");
         }

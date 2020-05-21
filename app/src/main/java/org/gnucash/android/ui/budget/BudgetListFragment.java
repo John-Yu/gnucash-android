@@ -51,6 +51,7 @@ import org.gnucash.android.ui.util.widget.EmptyRecyclerView;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
@@ -113,6 +114,7 @@ public class BudgetListFragment extends Fragment implements Refreshable,
         getLoaderManager().initLoader(0, null, this);
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(LOG_TAG, "Creating the accounts loader");
@@ -120,14 +122,14 @@ public class BudgetListFragment extends Fragment implements Refreshable,
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loaderCursor, Cursor cursor) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loaderCursor, Cursor cursor) {
         Log.d(LOG_TAG, "Budget loader finished. Swapping in cursor");
         mBudgetRecyclerAdapter.swapCursor(cursor);
         mBudgetRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> arg0) {
+    public void onLoaderReset(@NonNull Loader<Cursor> arg0) {
         Log.d(LOG_TAG, "Resetting the accounts loader");
         mBudgetRecyclerAdapter.swapCursor(null);
     }
@@ -243,14 +245,10 @@ public class BudgetListFragment extends Fragment implements Refreshable,
 
             holder.budgetAmount.setTextColor(BudgetsActivity.getBudgetProgressColor(1 - budgetProgress));
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onClickBudget(budget.getUID());
-                }
-            });
+            holder.itemView.setOnClickListener(v -> onClickBudget(budget.getUID()));
         }
 
+        @NonNull
         @Override
         public BudgetViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext())
@@ -272,15 +270,12 @@ public class BudgetListFragment extends Fragment implements Refreshable,
                 super(itemView);
                 ButterKnife.bind(this, itemView);
 
-                optionsMenu.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        PopupMenu popup = new PopupMenu(getActivity(), v);
-                        popup.setOnMenuItemClickListener(BudgetViewHolder.this);
-                        MenuInflater inflater = popup.getMenuInflater();
-                        inflater.inflate(R.menu.budget_context_menu, popup.getMenu());
-                        popup.show();
-                    }
+                optionsMenu.setOnClickListener(v -> {
+                    PopupMenu popup = new PopupMenu(getActivity(), v);
+                    popup.setOnMenuItemClickListener(BudgetViewHolder.this);
+                    MenuInflater inflater = popup.getMenuInflater();
+                    inflater.inflate(R.menu.budget_context_menu, popup.getMenu());
+                    popup.show();
                 });
 
             }

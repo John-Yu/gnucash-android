@@ -190,59 +190,39 @@ public class DeleteAccountDialogFragment extends DialogFragment {
      * Binds click listeners for the dialog buttons
      */
     protected void setListeners(){
-        mMoveAccountsRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mAccountsDestinationAccountSpinner.setEnabled(isChecked);
+        mMoveAccountsRadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> mAccountsDestinationAccountSpinner.setEnabled(isChecked));
+
+        mMoveTransactionsRadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> mTransactionsDestinationAccountSpinner.setEnabled(isChecked));
+
+        mCancelButton.setOnClickListener(v -> dismiss());
+
+        mOkButton.setOnClickListener(v -> {
+            BackupManager.backupActiveBook();
+
+            AccountsDbAdapter accountsDbAdapter = AccountsDbAdapter.getInstance();
+
+            if ((mTransactionCount > 0) && mMoveTransactionsRadioButton.isChecked()){
+                long targetAccountId = mTransactionsDestinationAccountSpinner.getSelectedItemId();
+                //move all the splits
+                SplitsDbAdapter.getInstance().updateRecords(DatabaseSchema.SplitEntry.COLUMN_ACCOUNT_UID + " = ?",
+                        new String[]{mOriginAccountUID}, DatabaseSchema.SplitEntry.COLUMN_ACCOUNT_UID, accountsDbAdapter.getUID(targetAccountId));
             }
-        });
 
-        mMoveTransactionsRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mTransactionsDestinationAccountSpinner.setEnabled(isChecked);
+            if ((mSubAccountCount > 0) && mMoveAccountsRadioButton.isChecked()){
+                long targetAccountId = mAccountsDestinationAccountSpinner.getSelectedItemId();
+                AccountsDbAdapter.getInstance().reassignDescendantAccounts(mOriginAccountUID, accountsDbAdapter.getUID(targetAccountId));
             }
-        });
 
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                dismiss();
+            if (GnuCashApplication.isDoubleEntryEnabled()){ //reassign splits to imbalance
+                TransactionsDbAdapter.getInstance().deleteTransactionsForAccount(mOriginAccountUID);
             }
-        });
 
-        mOkButton.setOnClickListener(new View.OnClickListener() {
+            //now kill them all!!
+            accountsDbAdapter.recursiveDeleteAccount(accountsDbAdapter.getID(mOriginAccountUID));
 
-            @Override
-            public void onClick(View v) {
-                BackupManager.backupActiveBook();
-
-                AccountsDbAdapter accountsDbAdapter = AccountsDbAdapter.getInstance();
-
-                if ((mTransactionCount > 0) && mMoveTransactionsRadioButton.isChecked()){
-                    long targetAccountId = mTransactionsDestinationAccountSpinner.getSelectedItemId();
-                    //move all the splits
-                    SplitsDbAdapter.getInstance().updateRecords(DatabaseSchema.SplitEntry.COLUMN_ACCOUNT_UID + " = ?",
-                            new String[]{mOriginAccountUID}, DatabaseSchema.SplitEntry.COLUMN_ACCOUNT_UID, accountsDbAdapter.getUID(targetAccountId));
-                }
-
-                if ((mSubAccountCount > 0) && mMoveAccountsRadioButton.isChecked()){
-                    long targetAccountId = mAccountsDestinationAccountSpinner.getSelectedItemId();
-                    AccountsDbAdapter.getInstance().reassignDescendantAccounts(mOriginAccountUID, accountsDbAdapter.getUID(targetAccountId));
-                }
-
-                if (GnuCashApplication.isDoubleEntryEnabled()){ //reassign splits to imbalance
-                    TransactionsDbAdapter.getInstance().deleteTransactionsForAccount(mOriginAccountUID);
-                }
-
-                //now kill them all!!
-                accountsDbAdapter.recursiveDeleteAccount(accountsDbAdapter.getID(mOriginAccountUID));
-
-                WidgetConfigurationActivity.updateAllWidgets(getActivity());
-                ((Refreshable)getTargetFragment()).refresh();
-                dismiss();
-            }
+            WidgetConfigurationActivity.updateAllWidgets(getActivity());
+            ((Refreshable)getTargetFragment()).refresh();
+            dismiss();
         });
     }
 

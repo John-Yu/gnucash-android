@@ -225,16 +225,13 @@ public class PieChartReportTest {
     public static ViewAction clickXY(final Position horizontal, final Position vertical){
         return new GeneralClickAction(
                 Tap.SINGLE,
-                new CoordinatesProvider() {
-                    @Override
-                    public float[] calculateCoordinates(View view) {
-                        int[] xy = new int[2];
-                        view.getLocationOnScreen(xy);
+                view -> {
+                    int[] xy = new int[2];
+                    view.getLocationOnScreen(xy);
 
-                        float x = horizontal.getPosition(xy[0], view.getWidth());
-                        float y = vertical.getPosition(xy[1], view.getHeight());
-                        return new float[]{x, y};
-                    }
+                    float x = horizontal.getPosition(xy[0], view.getWidth());
+                    float y = vertical.getPosition(xy[1], view.getHeight());
+                    return new float[]{x, y};
                 },
                 Press.FINGER);
     }
@@ -267,12 +264,7 @@ public class PieChartReportTest {
      */
     private void refreshReport(){
         try {
-            mActivityRule.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mReportsActivity.refresh();
-                }
-            });
+            mActivityRule.runOnUiThread(() -> mReportsActivity.refresh());
         } catch (Throwable t){
             System.err.println("Faile to refresh reports");
         }

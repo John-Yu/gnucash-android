@@ -111,46 +111,43 @@ public class QualifiedAccountNameCursorAdapter
         setCursorWhereArgs(cursorWhereArgs);
 
         // Define filter
-        setFilterQueryProvider(new FilterQueryProvider() {
+        setFilterQueryProvider(constraint -> {
 
-            public Cursor runQuery(CharSequence constraint) {
+            //
+            // Add %constraint% at the end of the whereArgs
+            //
 
-                //
-                // Add %constraint% at the end of the whereArgs
-                //
+            // Convert WhereArgs into List
+            final String[] cursorWhereArgs1 = getCursorWhereArgs();
+            final List<String> whereArgsAsList = (cursorWhereArgs1 != null)
+                    ? new ArrayList<>(Arrays.asList(cursorWhereArgs1))
+                    : new ArrayList<>();
 
-                // Convert WhereArgs into List
-                final String[] cursorWhereArgs = getCursorWhereArgs();
-                final List<String> whereArgsAsList = (cursorWhereArgs != null)
-                        ? new ArrayList<>(Arrays.asList(cursorWhereArgs))
-                        : new ArrayList<>();
+            // Add the %constraint% for the LIKE added in the where clause
+            whereArgsAsList.add("%" + ((constraint != null)
+                                       ? constraint.toString()
+                                       : "") + "%");
 
-                // Add the %constraint% for the LIKE added in the where clause
-                whereArgsAsList.add("%" + ((constraint != null)
-                                           ? constraint.toString()
-                                           : "") + "%");
-
-                // Convert List into WhereArgs
-                final String[] whereArgs = whereArgsAsList.toArray(new String[whereArgsAsList.size()]);
+            // Convert List into WhereArgs
+            final String[] whereArgs = whereArgsAsList.toArray(new String[whereArgsAsList.size()]);
 
 
-                //
-                // Run the original query but constrained with full account name containing constraint
-                //
+            //
+            // Run the original query but constrained with full account name containing constraint
+            //
 
-                final AccountsDbAdapter accountsDbAdapter = AccountsDbAdapter.getInstance();
+            final AccountsDbAdapter accountsDbAdapter = AccountsDbAdapter.getInstance();
 
-                final String where = ((getCursorWhere() != null)
-                                      ? getCursorWhere() + " AND "
-                                      : "")
-                                     + DatabaseSchema.AccountEntry.COLUMN_FULL_NAME
-                                     + " LIKE ?";
+            final String where = ((getCursorWhere() != null)
+                                  ? getCursorWhere() + " AND "
+                                  : "")
+                                 + DatabaseSchema.AccountEntry.COLUMN_FULL_NAME
+                                 + " LIKE ?";
 
-                final Cursor accountsCursor = accountsDbAdapter.fetchAccountsOrderedByFavoriteAndFullName(where,
-                                                                                                          whereArgs);
+            final Cursor accountsCursor = accountsDbAdapter.fetchAccountsOrderedByFavoriteAndFullName(where,
+                                                                                                      whereArgs);
 
-                return accountsCursor;
-            }
+            return accountsCursor;
         });
     }
 

@@ -497,12 +497,7 @@ public class AccountsActivityTest {
         editor.remove(mAccountsActivity.getString(R.string.key_first_run)).commit();
 
 
-        mActivityRule.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mAccountsActivity.recreate();
-            }
-        });
+        mActivityRule.runOnUiThread(() -> mAccountsActivity.recreate());
 
         //check that wizard is shown
         onView(withText(mAccountsActivity.getString(R.string.title_setup_gnucash)))
@@ -523,12 +518,9 @@ public class AccountsActivityTest {
      */
     private void refreshAccountsList() {
         try {
-            mActivityRule.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Fragment fragment = mAccountsActivity.getCurrentAccountListFragment();
-                    ((AccountsListFragment) fragment).refresh();
-                }
+            mActivityRule.runOnUiThread(() -> {
+                Fragment fragment = mAccountsActivity.getCurrentAccountListFragment();
+                ((AccountsListFragment) fragment).refresh();
             });
         } catch (Throwable throwable) {
             System.err.println("Failed to refresh fragment");

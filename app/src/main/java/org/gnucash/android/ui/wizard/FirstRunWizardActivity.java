@@ -45,6 +45,7 @@ import org.gnucash.android.ui.account.AccountsActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
@@ -94,14 +95,11 @@ public class FirstRunWizardActivity extends AppCompatActivity implements
         mPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mStepPagerStrip
-                .setOnPageSelectedListener(new StepPagerStrip.OnPageSelectedListener() {
-                    @Override
-                    public void onPageStripSelected(int position) {
-                        position = Math.min(mPagerAdapter.getCount() - 1,
-                                position);
-                        if (mPager.getCurrentItem() != position) {
-                            mPager.setCurrentItem(position);
-                        }
+                .setOnPageSelectedListener(position -> {
+                    position = Math.min(mPagerAdapter.getCount() - 1,
+                            position);
+                    if (mPager.getCurrentItem() != position) {
+                        mPager.setCurrentItem(position);
                     }
                 });
 
@@ -121,49 +119,46 @@ public class FirstRunWizardActivity extends AppCompatActivity implements
             }
         });
 
-        mNextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mPager.getCurrentItem() == mCurrentPageSequence.size()) {
-                    ArrayList<ReviewItem> reviewItems = new ArrayList<>();
-                    for (Page page : mCurrentPageSequence) {
-                        page.getReviewItems(reviewItems);
+        mNextButton.setOnClickListener(view -> {
+            if (mPager.getCurrentItem() == mCurrentPageSequence.size()) {
+                ArrayList<ReviewItem> reviewItems = new ArrayList<>();
+                for (Page page : mCurrentPageSequence) {
+                    page.getReviewItems(reviewItems);
+                }
+
+                mCurrencyCode = GnuCashApplication.getDefaultCurrencyCode();
+                mAccountOptions = getString(R.string.wizard_option_let_me_handle_it); //default value, do nothing
+                String feedbackOption = getString(R.string.wizard_option_disable_crash_reports);
+                for (ReviewItem reviewItem : reviewItems) {
+                    String title = reviewItem.getTitle();
+                    if (title.equals(getString(R.string.wizard_title_default_currency))){
+                        mCurrencyCode = reviewItem.getDisplayValue();
+                    } else if (title.equals(getString(R.string.wizard_title_select_currency))){
+                        mCurrencyCode = reviewItem.getDisplayValue();
+                    } else if (title.equals(getString(R.string.wizard_title_account_setup))){
+                        mAccountOptions = reviewItem.getDisplayValue();
+                    } else if (title.equals(getString(R.string.wizard_title_feedback_options))){
+                        feedbackOption = reviewItem.getDisplayValue();
                     }
+                }
 
-                    mCurrencyCode = GnuCashApplication.getDefaultCurrencyCode();
-                    mAccountOptions = getString(R.string.wizard_option_let_me_handle_it); //default value, do nothing
-                    String feedbackOption = getString(R.string.wizard_option_disable_crash_reports);
-                    for (ReviewItem reviewItem : reviewItems) {
-                        String title = reviewItem.getTitle();
-                        if (title.equals(getString(R.string.wizard_title_default_currency))){
-                            mCurrencyCode = reviewItem.getDisplayValue();
-                        } else if (title.equals(getString(R.string.wizard_title_select_currency))){
-                            mCurrencyCode = reviewItem.getDisplayValue();
-                        } else if (title.equals(getString(R.string.wizard_title_account_setup))){
-                            mAccountOptions = reviewItem.getDisplayValue();
-                        } else if (title.equals(getString(R.string.wizard_title_feedback_options))){
-                            feedbackOption = reviewItem.getDisplayValue();
-                        }
-                    }
+                GnuCashApplication.setDefaultCurrencyCode(mCurrencyCode);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(FirstRunWizardActivity.this);
+                SharedPreferences.Editor preferenceEditor = preferences.edit();
 
-                    GnuCashApplication.setDefaultCurrencyCode(mCurrencyCode);
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(FirstRunWizardActivity.this);
-                    SharedPreferences.Editor preferenceEditor = preferences.edit();
-
-                    if (feedbackOption.equals(getString(R.string.wizard_option_auto_send_crash_reports))){
-                        preferenceEditor.putBoolean(getString(R.string.key_enable_crashlytics), true);
-                    } else {
-                        preferenceEditor.putBoolean(getString(R.string.key_enable_crashlytics), false);
-                    }
-                    preferenceEditor.apply();
-
-                    createAccountsAndFinish();
+                if (feedbackOption.equals(getString(R.string.wizard_option_auto_send_crash_reports))){
+                    preferenceEditor.putBoolean(getString(R.string.key_enable_crashlytics), true);
                 } else {
-                    if (mEditingAfterReview) {
-                        mPager.setCurrentItem(mPagerAdapter.getCount() - 1);
-                    } else {
-                        mPager.setCurrentItem(mPager.getCurrentItem() + 1);
-                    }
+                    preferenceEditor.putBoolean(getString(R.string.key_enable_crashlytics), false);
+                }
+                preferenceEditor.apply();
+
+                createAccountsAndFinish();
+            } else {
+                if (mEditingAfterReview) {
+                    mPager.setCurrentItem(mPagerAdapter.getCount() - 1);
+                } else {
+                    mPager.setCurrentItem(mPager.getCurrentItem() + 1);
                 }
             }
         });
@@ -175,12 +170,7 @@ public class FirstRunWizardActivity extends AppCompatActivity implements
         mPrevButton.setTextAppearance(this, v.resourceId);
         mNextButton.setTextAppearance(this, v.resourceId);
 
-        mPrevButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-            }
-        });
+        mPrevButton.setOnClickListener(view -> mPager.setCurrentItem(mPager.getCurrentItem() - 1));
 
         onPageTreeChanged();
         updateBottomBar();
@@ -276,7 +266,7 @@ public class FirstRunWizardActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBundle("model", mWizardModel.save());
     }
@@ -341,6 +331,7 @@ public class FirstRunWizardActivity extends AppCompatActivity implements
             super(fm);
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int i) {
             if (i >= mCurrentPageSequence.size()) {
@@ -351,7 +342,7 @@ public class FirstRunWizardActivity extends AppCompatActivity implements
         }
 
         @Override
-        public int getItemPosition(Object object) {
+        public int getItemPosition(@NonNull Object object) {
             // TODO: be smarter about this
             if (object == mPrimaryItem) {
                 // Re-use the current fragment (its position never changes)
@@ -362,8 +353,8 @@ public class FirstRunWizardActivity extends AppCompatActivity implements
         }
 
         @Override
-        public void setPrimaryItem(ViewGroup container, int position,
-                                   Object object) {
+        public void setPrimaryItem(@NonNull ViewGroup container, int position,
+                                   @NonNull Object object) {
             super.setPrimaryItem(container, position, object);
             mPrimaryItem = (Fragment) object;
         }

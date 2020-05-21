@@ -85,27 +85,19 @@ public class DateRangePickerDialogFragment extends DialogFragment {
                 .withSelectedDate(today);
 
         mDoneButton.setText(R.string.done_label);
-        mDoneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<Date> selectedDates = mCalendarPickerView.getSelectedDates();
-                Date startDate = selectedDates.get(0);
-                // If only one day is selected (no interval) start and end should be the same (the selected one)
-                Date endDate = selectedDates.size() > 1 ? selectedDates.get(selectedDates.size() - 1) : new Date(startDate.getTime());
-                // CaledarPicker returns the start of the selected day but we want all transactions of that day to be included.
-                // Therefore we have to add 24 hours to the endDate.
-                endDate.setTime(endDate.getTime() + ONE_DAY_IN_MILLIS);
-                mDateRangeSetListener.onDateRangeSet(startDate, endDate);
-                dismiss();
-            }
+        mDoneButton.setOnClickListener(v -> {
+            List<Date> selectedDates = mCalendarPickerView.getSelectedDates();
+            Date startDate = selectedDates.get(0);
+            // If only one day is selected (no interval) start and end should be the same (the selected one)
+            Date endDate = selectedDates.size() > 1 ? selectedDates.get(selectedDates.size() - 1) : new Date(startDate.getTime());
+            // CaledarPicker returns the start of the selected day but we want all transactions of that day to be included.
+            // Therefore we have to add 24 hours to the endDate.
+            endDate.setTime(endDate.getTime() + ONE_DAY_IN_MILLIS);
+            mDateRangeSetListener.onDateRangeSet(startDate, endDate);
+            dismiss();
         });
 
-        mCancelButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        mCancelButton.setOnClickListener(v -> dismiss());
         return view;
     }
 

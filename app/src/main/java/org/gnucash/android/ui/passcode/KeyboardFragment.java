@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import org.gnucash.android.R;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 /**
@@ -59,86 +60,33 @@ public class KeyboardFragment extends Fragment {
         pass3 = rootView.findViewById(R.id.passcode3);
         pass4 = rootView.findViewById(R.id.passcode4);
 
-        rootView.findViewById(R.id.one_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add("1");
-            }
-        });
-        rootView.findViewById(R.id.two_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add("2");
-            }
-        });
-        rootView.findViewById(R.id.three_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add("3");
-            }
-        });
-        rootView.findViewById(R.id.four_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add("4");
-            }
-        });
-        rootView.findViewById(R.id.five_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add("5");
-            }
-        });
-        rootView.findViewById(R.id.six_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add("6");
-            }
-        });
-        rootView.findViewById(R.id.seven_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add("7");
-            }
-        });
-        rootView.findViewById(R.id.eight_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add("8");
-            }
-        });
-        rootView.findViewById(R.id.nine_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add("9");
-            }
-        });
-        rootView.findViewById(R.id.zero_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add("0");
-            }
-        });
-        rootView.findViewById(R.id.delete_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (length) {
-                    case 1:
-                        pass1.setText(null);
-                        length--;
-                        break;
-                    case 2:
-                        pass2.setText(null);
-                        length--;
-                        break;
-                    case 3:
-                        pass3.setText(null);
-                        length--;
-                        break;
-                    case 4:
-                        pass4.setText(null);
-                        length--;
-                }
+        rootView.findViewById(R.id.one_btn).setOnClickListener(v -> add("1"));
+        rootView.findViewById(R.id.two_btn).setOnClickListener(v -> add("2"));
+        rootView.findViewById(R.id.three_btn).setOnClickListener(v -> add("3"));
+        rootView.findViewById(R.id.four_btn).setOnClickListener(v -> add("4"));
+        rootView.findViewById(R.id.five_btn).setOnClickListener(v -> add("5"));
+        rootView.findViewById(R.id.six_btn).setOnClickListener(v -> add("6"));
+        rootView.findViewById(R.id.seven_btn).setOnClickListener(v -> add("7"));
+        rootView.findViewById(R.id.eight_btn).setOnClickListener(v -> add("8"));
+        rootView.findViewById(R.id.nine_btn).setOnClickListener(v -> add("9"));
+        rootView.findViewById(R.id.zero_btn).setOnClickListener(v -> add("0"));
+        rootView.findViewById(R.id.delete_btn).setOnClickListener(v -> {
+            switch (length) {
+                case 1:
+                    pass1.setText(null);
+                    length--;
+                    break;
+                case 2:
+                    pass2.setText(null);
+                    length--;
+                    break;
+                case 3:
+                    pass3.setText(null);
+                    length--;
+                    break;
+                case 4:
+                    pass4.setText(null);
+                    length--;
             }
         });
 
@@ -146,7 +94,7 @@ public class KeyboardFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(@NonNull Activity activity) {
         super.onAttach(activity);
         try {
             listener = (OnPasscodeEnteredListener) activity;
@@ -174,16 +122,14 @@ public class KeyboardFragment extends Fragment {
                 pass4.setText(num);
                 length++;
 
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        listener.onPasscodeEntered(pass1.getText().toString() + pass2.getText()
-                                + pass3.getText() + pass4.getText());
-                        pass1.setText(null);
-                        pass2.setText(null);
-                        pass3.setText(null);
-                        pass4.setText(null);
-                        length = 0;
-                    }
+                new Handler().postDelayed(() -> {
+                    listener.onPasscodeEntered(pass1.getText().toString() + pass2.getText()
+                            + pass3.getText() + pass4.getText());
+                    pass1.setText(null);
+                    pass2.setText(null);
+                    pass3.setText(null);
+                    pass4.setText(null);
+                    length = 0;
                 }, DELAY);
         }
     }

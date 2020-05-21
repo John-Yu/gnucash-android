@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import org.gnucash.android.R;
 import org.gnucash.android.ui.colorpicker.ColorPickerSwatch.OnColorSelectedListener;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 /**
@@ -101,6 +102,7 @@ public class ColorPickerDialog extends DialogFragment implements OnColorSelected
         }
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Activity activity = getActivity();
@@ -195,7 +197,7 @@ public class ColorPickerDialog extends DialogFragment implements OnColorSelected
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putIntArray(KEY_COLORS, mColors);
         outState.putSerializable(KEY_SELECTED_COLOR, mSelectedColor);

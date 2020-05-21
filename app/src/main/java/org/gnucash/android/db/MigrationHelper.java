@@ -188,43 +188,40 @@ public class MigrationHelper {
      * <p>The new folder structure also futher enables parallel installation of multiple flavours of
      * the program (like development and production) on the same device.</p>
      */
-    static final Runnable moveExportedFilesToNewDefaultLocation = new Runnable() {
-        @Override
-        public void run() {
-            File oldExportFolder = new File(Environment.getExternalStorageDirectory() + "/gnucash");
-            if (oldExportFolder.exists()){
-                for (File src : oldExportFolder.listFiles()) {
-                    if (src.isDirectory())
-                        continue;
-                    File dst = new File(Exporter.LEGACY_BASE_FOLDER_PATH + "/exports/" + src.getName());
-                    try {
-                        MigrationHelper.moveFile(src, dst);
-                    } catch (IOException e) {
-                        Log.e(LOG_TAG, "Error migrating " + src.getName());
-                        Crashlytics.logException(e);
-                    }
-                }
-            } else {
-                //if the base folder does not exist, no point going one level deeper
-                return;
-            }
-
-            File oldBackupFolder = new File(oldExportFolder, "backup");
-            if (oldBackupFolder.exists()){
-                for (File src : new File(oldExportFolder, "backup").listFiles()) {
-                    File dst = new File(Exporter.LEGACY_BASE_FOLDER_PATH + "/backups/" + src.getName());
-                    try {
-                        MigrationHelper.moveFile(src, dst);
-                    } catch (IOException e) {
-                        Log.e(LOG_TAG, "Error migrating backup: " + src.getName());
-                        Crashlytics.logException(e);
-                    }
+    static final Runnable moveExportedFilesToNewDefaultLocation = () -> {
+        File oldExportFolder = new File(Environment.getExternalStorageDirectory() + "/gnucash");
+        if (oldExportFolder.exists()){
+            for (File src : oldExportFolder.listFiles()) {
+                if (src.isDirectory())
+                    continue;
+                File dst = new File(Exporter.LEGACY_BASE_FOLDER_PATH + "/exports/" + src.getName());
+                try {
+                    MigrationHelper.moveFile(src, dst);
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "Error migrating " + src.getName());
+                    Crashlytics.logException(e);
                 }
             }
-
-            if (oldBackupFolder.delete())
-                oldExportFolder.delete();
+        } else {
+            //if the base folder does not exist, no point going one level deeper
+            return;
         }
+
+        File oldBackupFolder = new File(oldExportFolder, "backup");
+        if (oldBackupFolder.exists()){
+            for (File src : new File(oldExportFolder, "backup").listFiles()) {
+                File dst = new File(Exporter.LEGACY_BASE_FOLDER_PATH + "/backups/" + src.getName());
+                try {
+                    MigrationHelper.moveFile(src, dst);
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "Error migrating backup: " + src.getName());
+                    Crashlytics.logException(e);
+                }
+            }
+        }
+
+        if (oldBackupFolder.delete())
+            oldExportFolder.delete();
     };
 
     /**
@@ -1548,28 +1545,25 @@ public class MigrationHelper {
         File backupFolder = new File(Exporter.BASE_FOLDER_PATH);
         backupFolder.mkdir();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                File srcDir = new File(Exporter.LEGACY_BASE_FOLDER_PATH);
-                File dstDir = new File(Exporter.BASE_FOLDER_PATH);
-                try {
-                    moveDirectory(srcDir, dstDir);
-                    File readmeFile = new File(Exporter.LEGACY_BASE_FOLDER_PATH, "README.txt");
-                    FileWriter writer = null;
-                    writer = new FileWriter(readmeFile);
-                    writer.write("Backup files have been moved to " + dstDir.getPath() +
-                            "\nYou can now delete this folder");
-                    writer.flush();
-                } catch (IOException | IllegalArgumentException ex) {
-                    ex.printStackTrace();
-                    String msg = String.format("Error moving files from %s to %s", srcDir.getPath(), dstDir.getPath());
-                    Log.e(LOG_TAG, msg);
-                    Crashlytics.log(msg);
-                    Crashlytics.logException(ex);
-                }
-
+        new Thread(() -> {
+            File srcDir = new File(Exporter.LEGACY_BASE_FOLDER_PATH);
+            File dstDir = new File(Exporter.BASE_FOLDER_PATH);
+            try {
+                moveDirectory(srcDir, dstDir);
+                File readmeFile = new File(Exporter.LEGACY_BASE_FOLDER_PATH, "README.txt");
+                FileWriter writer = null;
+                writer = new FileWriter(readmeFile);
+                writer.write("Backup files have been moved to " + dstDir.getPath() +
+                        "\nYou can now delete this folder");
+                writer.flush();
+            } catch (IOException | IllegalArgumentException ex) {
+                ex.printStackTrace();
+                String msg = String.format("Error moving files from %s to %s", srcDir.getPath(), dstDir.getPath());
+                Log.e(LOG_TAG, msg);
+                Crashlytics.log(msg);
+                Crashlytics.logException(ex);
             }
+
         }).start();
 
         return 14;

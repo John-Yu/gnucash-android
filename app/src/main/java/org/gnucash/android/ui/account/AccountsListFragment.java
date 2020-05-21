@@ -217,7 +217,7 @@ public class AccountsListFragment extends Fragment implements
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(@NonNull Activity activity) {
         super.onAttach(activity);
         try {
             mAccountSelectedListener = (OnAccountClickedListener) activity;
@@ -271,7 +271,7 @@ public class AccountsListFragment extends Fragment implements
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         if (mParentAccountUID != null)
             inflater.inflate(R.menu.sub_account_actions, menu);
         else {
@@ -313,7 +313,7 @@ public class AccountsListFragment extends Fragment implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(STATE_DISPLAY_MODE, mDisplayMode);
     }
@@ -341,6 +341,7 @@ public class AccountsListFragment extends Fragment implements
         startActivityForResult(editAccountIntent, AccountsActivity.REQUEST_EDIT_ACCOUNT);
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "Creating the accounts loader");
@@ -355,14 +356,14 @@ public class AccountsListFragment extends Fragment implements
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loaderCursor, Cursor cursor) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loaderCursor, Cursor cursor) {
         Log.d(TAG, "Accounts loader finished. Swapping in cursor");
         mAccountRecyclerAdapter.swapCursor(cursor);
         mAccountRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> arg0) {
+    public void onLoaderReset(@NonNull Loader<Cursor> arg0) {
         Log.d(TAG, "Resetting the accounts loader");
         mAccountRecyclerAdapter.swapCursor(null);
     }

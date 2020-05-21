@@ -24,6 +24,7 @@ import android.os.Bundle;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 /**
@@ -70,6 +71,7 @@ public class DatePickerDialogFragment extends DialogFragment {
 	/**
 	 * Creates and returns an Android {@link DatePickerDialog}
 	 */
+    @NonNull
     @Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Calendar cal = mDate == null ? Calendar.getInstance() : mDate;

@@ -54,6 +54,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -157,7 +158,7 @@ public class BudgetDetailFragment extends Fragment implements Refreshable {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.budget_actions, menu);
     }
 
@@ -194,8 +195,9 @@ public class BudgetDetailFragment extends Fragment implements Refreshable {
             mBudgetAmounts = mBudget.getCompactedBudgetAmounts();
         }
 
+        @NonNull
         @Override
-        public BudgetAmountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public BudgetAmountViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(getActivity()).inflate(R.layout.cardview_budget_amount, parent, false);
             return new BudgetAmountViewHolder(view);
         }
@@ -228,13 +230,10 @@ public class BudgetDetailFragment extends Fragment implements Refreshable {
 
             generateChartData(holder.budgetChart, budgetAmount);
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), TransactionsActivity.class);
-                    intent.putExtra(UxArgument.SELECTED_ACCOUNT_UID, mBudgetAmounts.get(position).getAccountUID());
-                    startActivityForResult(intent, 0x10);
-                }
+            holder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), TransactionsActivity.class);
+                intent.putExtra(UxArgument.SELECTED_ACCOUNT_UID, mBudgetAmounts.get(position).getAccountUID());
+                startActivityForResult(intent, 0x10);
             });
         }
 

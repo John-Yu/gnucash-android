@@ -23,6 +23,8 @@ import org.gnucash.android.util.TimestampHelper;
 
 import java.sql.Timestamp;
 
+import androidx.annotation.NonNull;
+
 /**
  * Encapsulation of the parameters used for exporting transactions.
  * The parameters are determined by the user in the export dialog and are then transmitted to the asynchronous task which
@@ -190,6 +192,7 @@ public class ExportParams {
         mCsvSeparator = separator;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Export all transactions created since " + TimestampHelper.getUtcStringFromTimestamp(mExportStartTime) + " UTC"

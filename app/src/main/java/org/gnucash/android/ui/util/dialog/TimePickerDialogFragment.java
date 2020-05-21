@@ -23,6 +23,7 @@ import android.os.Bundle;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 /**
@@ -68,7 +69,8 @@ public class TimePickerDialogFragment extends DialogFragment {
 	/**
 	 * Creates and returns an Android {@link TimePickerDialog}
 	 */
-	@Override
+	@NonNull
+    @Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Calendar cal = mCurrentTime == null ? Calendar.getInstance() : mCurrentTime;
 		

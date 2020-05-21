@@ -47,6 +47,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -114,7 +115,7 @@ public class BudgetAmountEditorFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.budget_amount_editor_actions, menu);
     }
 
@@ -259,12 +260,9 @@ public class BudgetAmountEditorFragment extends Fragment {
                 }
             });
 
-            removeItemBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mBudgetAmountTableLayout.removeView(itemView);
-                    mBudgetAmountViews.remove(itemView);
-                }
+            removeItemBtn.setOnClickListener(v -> {
+                mBudgetAmountTableLayout.removeView(itemView);
+                mBudgetAmountViews.remove(itemView);
             });
         }
 

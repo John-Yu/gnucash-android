@@ -137,51 +137,32 @@ public class TransferFundsDialogFragment extends DialogFragment {
         mExchangeRateInput.addTextChangedListener(textChangeListener);
         mConvertedAmountInput.addTextChangedListener(textChangeListener);
 
-        mConvertedAmountRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mConvertedAmountInput.setEnabled(isChecked);
-                mConvertedAmountInputLayout.setErrorEnabled(isChecked);
-                mExchangeRateRadioButton.setChecked(!isChecked);
-                if (isChecked) {
-                    mConvertedAmountInput.requestFocus();
-                }
+        mConvertedAmountRadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mConvertedAmountInput.setEnabled(isChecked);
+            mConvertedAmountInputLayout.setErrorEnabled(isChecked);
+            mExchangeRateRadioButton.setChecked(!isChecked);
+            if (isChecked) {
+                mConvertedAmountInput.requestFocus();
             }
         });
 
-        mExchangeRateRadioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mExchangeRateInput.setEnabled(isChecked);
-                mExchangeRateInputLayout.setErrorEnabled(isChecked);
-                mFetchExchangeRateButton.setEnabled(isChecked);
-                mConvertedAmountRadioButton.setChecked(!isChecked);
-                if (isChecked) {
-                    mExchangeRateInput.requestFocus();
-                }
+        mExchangeRateRadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mExchangeRateInput.setEnabled(isChecked);
+            mExchangeRateInputLayout.setErrorEnabled(isChecked);
+            mFetchExchangeRateButton.setEnabled(isChecked);
+            mConvertedAmountRadioButton.setChecked(!isChecked);
+            if (isChecked) {
+                mExchangeRateInput.requestFocus();
             }
         });
 
-        mFetchExchangeRateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: Pull the exchange rate for the currency here
-            }
+        mFetchExchangeRateButton.setOnClickListener(v -> {
+            //TODO: Pull the exchange rate for the currency here
         });
 
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        mCancelButton.setOnClickListener(v -> dismiss());
 
-        mSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                transferFunds();
-            }
-        });
+        mSaveButton.setOnClickListener(v -> transferFunds());
         return view;
     }
 

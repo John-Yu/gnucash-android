@@ -29,6 +29,7 @@ import org.gnucash.android.R;
 import org.gnucash.android.db.adapter.CommoditiesDbAdapter;
 import org.gnucash.android.util.CommoditiesCursorAdapter;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.ListFragment;
 import butterknife.ButterKnife;
 
@@ -81,7 +82,7 @@ public class CurrencySelectFragment extends ListFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(@NonNull Activity activity) {
         super.onAttach(activity);
         if (!(activity instanceof PageFragmentCallbacks)) {
             throw new ClassCastException("Activity must implement PageFragmentCallbacks");
@@ -97,7 +98,7 @@ public class CurrencySelectFragment extends ListFragment {
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
+    public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
         String currencyCode = mCommoditiesDbAdapter.getCurrencyCode(mCommoditiesDbAdapter.getUID(id));

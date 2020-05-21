@@ -157,44 +157,34 @@ public class WidgetConfigurationActivity extends Activity {
             }
         });
 
-        mOkButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent intent = getIntent();
-                Bundle extras = intent.getExtras();
-                if (extras != null) {
-                    mAppWidgetId = extras.getInt(
-                            AppWidgetManager.EXTRA_APPWIDGET_ID,
-                            AppWidgetManager.INVALID_APPWIDGET_ID);
-                }
-
-                if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    finish();
-                    return;
-                }
-
-                String bookUID = BooksDbAdapter.getInstance().getUID(mBooksSpinner.getSelectedItemId());
-                String accountUID = mAccountsDbAdapter.getUID(mAccountsSpinner.getSelectedItemId());
-                boolean hideAccountBalance = mHideAccountBalance.isChecked();
-
-                configureWidget(WidgetConfigurationActivity.this, mAppWidgetId, bookUID, accountUID, hideAccountBalance);
-                updateWidget(WidgetConfigurationActivity.this, mAppWidgetId);
-
-                Intent resultValue = new Intent();
-                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-                setResult(RESULT_OK, resultValue);
-                finish();
+        mOkButton.setOnClickListener(v -> {
+            Intent intent = getIntent();
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                mAppWidgetId = extras.getInt(
+                        AppWidgetManager.EXTRA_APPWIDGET_ID,
+                        AppWidgetManager.INVALID_APPWIDGET_ID);
             }
+
+            if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+                finish();
+                return;
+            }
+
+            String bookUID = BooksDbAdapter.getInstance().getUID(mBooksSpinner.getSelectedItemId());
+            String accountUID = mAccountsDbAdapter.getUID(mAccountsSpinner.getSelectedItemId());
+            boolean hideAccountBalance = mHideAccountBalance.isChecked();
+
+            configureWidget(WidgetConfigurationActivity.this, mAppWidgetId, bookUID, accountUID, hideAccountBalance);
+            updateWidget(WidgetConfigurationActivity.this, mAppWidgetId);
+
+            Intent resultValue = new Intent();
+            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+            setResult(RESULT_OK, resultValue);
+            finish();
         });
 
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        mCancelButton.setOnClickListener(v -> finish());
     }
 
     /**
@@ -352,12 +342,9 @@ public class WidgetConfigurationActivity extends Activity {
 
         //update widgets asynchronously so as not to block method which called the update
         //inside the computation of the account balance
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (final int widgetId : appWidgetIds) {
-                    updateWidget(context, widgetId);
-                }
+        new Thread(() -> {
+            for (final int widgetId : appWidgetIds) {
+                updateWidget(context, widgetId);
             }
         }).start();
     }

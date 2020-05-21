@@ -139,39 +139,29 @@ public class BulkMoveDialogFragment extends DialogFragment {
 	 * Binds click listeners for the dialog buttons
 	 */
 	protected void setListeners(){
-		mCancelButton.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				dismiss();
-			}
-		});
+		mCancelButton.setOnClickListener(v -> dismiss());
 		
-		mOkButton.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (mTransactionIds == null) {
-					dismiss();
-				}
-
-				long dstAccountId = mDestinationAccountSpinner.getSelectedItemId();
-				String dstAccountUID = AccountsDbAdapter.getInstance().getUID(dstAccountId);
-				TransactionsDbAdapter trxnAdapter = TransactionsDbAdapter.getInstance();
-				if (!trxnAdapter.getAccountCurrencyCode(dstAccountUID).equals(trxnAdapter.getAccountCurrencyCode(mOriginAccountUID))) {
-					Toast.makeText(getActivity(), R.string.toast_incompatible_currency, Toast.LENGTH_LONG).show();
-					return;
-				}
-				String srcAccountUID = ((TransactionsActivity) getActivity()).getCurrentAccountUID();
-
-				for (long trxnId : mTransactionIds) {
-					trxnAdapter.moveTransaction(trxnAdapter.getUID(trxnId), srcAccountUID, dstAccountUID);
-				}
-
-				WidgetConfigurationActivity.updateAllWidgets(getActivity());
-				((Refreshable) getTargetFragment()).refresh();
+		mOkButton.setOnClickListener(v -> {
+			if (mTransactionIds == null) {
 				dismiss();
 			}
+
+			long dstAccountId = mDestinationAccountSpinner.getSelectedItemId();
+			String dstAccountUID = AccountsDbAdapter.getInstance().getUID(dstAccountId);
+			TransactionsDbAdapter trxnAdapter = TransactionsDbAdapter.getInstance();
+			if (!trxnAdapter.getAccountCurrencyCode(dstAccountUID).equals(trxnAdapter.getAccountCurrencyCode(mOriginAccountUID))) {
+				Toast.makeText(getActivity(), R.string.toast_incompatible_currency, Toast.LENGTH_LONG).show();
+				return;
+			}
+			String srcAccountUID = ((TransactionsActivity) getActivity()).getCurrentAccountUID();
+
+			for (long trxnId : mTransactionIds) {
+				trxnAdapter.moveTransaction(trxnAdapter.getUID(trxnId), srcAccountUID, dstAccountUID);
+			}
+
+			WidgetConfigurationActivity.updateAllWidgets(getActivity());
+			((Refreshable) getTargetFragment()).refresh();
+			dismiss();
 		});
 	}
 }

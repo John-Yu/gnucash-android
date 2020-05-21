@@ -127,7 +127,7 @@ public enum ReportType {
             //
 
             //
-            mReportNames = new ArrayList<String>();
+            mReportNames = new ArrayList<>();
 
             mReportNames.add(context.getString(R.string.title_pie_chart));
             mReportNames.add(context.getString(R.string.title_bar_chart));

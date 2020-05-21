@@ -32,6 +32,7 @@ import android.widget.Filter;
 import android.widget.FilterQueryProvider;
 import android.widget.Filterable;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -91,7 +92,7 @@ public abstract class CursorRecyclerAdapter<VH
      * @param i {@inheritDoc}
      */
     @Override
-    public void onBindViewHolder(VH holder, int i){
+    public void onBindViewHolder(@NonNull VH holder, int i){
         if (!mDataValid) {
             throw new IllegalStateException("this should only be called when the cursor is valid");
         }

@@ -593,6 +593,7 @@ public class ScheduledAction extends BaseModel{
         return scheduledAction;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return mActionType.name() + " - " + getRepeatString();

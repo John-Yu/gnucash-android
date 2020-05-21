@@ -23,6 +23,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.content.ContextCompat;
 
@@ -177,7 +178,7 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
     }
 
     @Override
-    public void onAttachFragment(Fragment fragment) {
+    public void onAttachFragment(@NonNull Fragment fragment) {
         super.onAttachFragment(fragment);
 
         if (fragment instanceof BaseReportFragment) {
@@ -224,7 +225,7 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
             @Override
             public View getView(final int position,
                                 final View convertView,
-                                final ViewGroup parent) {
+                                @NonNull final ViewGroup parent) {
 
                 View view = super.getView(position,
                         convertView,
@@ -480,7 +481,7 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putSerializable(STATE_REPORT_TYPE, mReportType);

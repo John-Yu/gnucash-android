@@ -118,7 +118,7 @@ public class PricesDbAdapter extends DatabaseAdapter<Price> {
                     valueNum = valueDenom;
                     valueDenom = t;
                 }
-                return new Pair<Long, Long>(valueNum, valueDenom);
+                return new Pair<>(valueNum, valueDenom);
             } else {
                 return pairZero;
             }

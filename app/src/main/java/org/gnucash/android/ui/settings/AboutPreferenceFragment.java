@@ -57,12 +57,9 @@ public class AboutPreferenceFragment extends PreferenceFragmentCompat {
         if (BuildConfig.FLAVOR.equals("development")) {
             pref.setSummary(pref.getSummary() + " - Built: " + BuildConfig.BUILD_TIME);
         }
-        pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                AccountsActivity.showWhatsNewDialog(getActivity());
-                return true;
-            }
+        pref.setOnPreferenceClickListener(preference -> {
+            AccountsActivity.showWhatsNewDialog(getActivity());
+            return true;
         });
     }
 }

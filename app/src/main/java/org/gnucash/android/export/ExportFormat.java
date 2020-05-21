@@ -15,6 +15,8 @@
  */
 package org.gnucash.android.export;
 
+import androidx.annotation.NonNull;
+
 /**
  * Enumeration of the different export formats supported by the application
 * @author Ngewi Fet <ngewif@gmail.com>
@@ -55,6 +57,7 @@ public enum ExportFormat {
         }
     }
 
+    @NonNull
     @Override
     public String toString() {
         return mDescription;

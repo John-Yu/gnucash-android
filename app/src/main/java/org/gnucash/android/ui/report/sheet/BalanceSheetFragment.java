@@ -35,6 +35,7 @@ import org.gnucash.android.ui.report.ReportType;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import butterknife.BindView;
 
@@ -108,7 +109,7 @@ public class BalanceSheetFragment extends BaseReportFragment {
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.menu_group_reports_by).setVisible(false);
     }

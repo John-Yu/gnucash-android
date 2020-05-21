@@ -17,7 +17,6 @@
 package org.gnucash.android.ui.settings;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -50,6 +49,7 @@ import org.gnucash.android.util.PreferencesHelper;
 
 import java.sql.Timestamp;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -108,7 +108,7 @@ public class BookManagerFragment extends ListFragment implements
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.book_list_actions, menu);
     }
 
@@ -135,6 +135,7 @@ public class BookManagerFragment extends ListFragment implements
         refresh();
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(LOG_TAG, "Creating loader for books");
@@ -142,14 +143,14 @@ public class BookManagerFragment extends ListFragment implements
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         Log.d(LOG_TAG, "Finished loading books from database");
         mCursorAdapter.swapCursor(data);
         mCursorAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         Log.d(LOG_TAG, "Resetting books list loader");
         mCursorAdapter.swapCursor(null);
     }
@@ -170,13 +171,10 @@ public class BookManagerFragment extends ListFragment implements
             setStatisticsText(view, bookUID);
             setUpMenu(view, context, cursor, bookUID);
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //do nothing if the active book is tapped
-                    if (!BooksDbAdapter.getInstance().getActiveBookUID().equals(bookUID)) {
-                        BookUtils.loadBook(bookUID);
-                    }
+            view.setOnClickListener(v -> {
+                //do nothing if the active book is tapped
+                if (!BooksDbAdapter.getInstance().getActiveBookUID().equals(bookUID)) {
+                    BookUtils.loadBook(bookUID);
                 }
             });
         }
@@ -185,36 +183,30 @@ public class BookManagerFragment extends ListFragment implements
             final String bookName = cursor.getString(
                     cursor.getColumnIndexOrThrow(BookEntry.COLUMN_DISPLAY_NAME));
             ImageView optionsMenu = view.findViewById(R.id.options_menu);
-            optionsMenu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PopupMenu popupMenu = new PopupMenu(context, v);
-                    MenuInflater menuInflater = popupMenu.getMenuInflater();
-                    menuInflater.inflate(R.menu.book_context_menu, popupMenu.getMenu());
+            optionsMenu.setOnClickListener(v -> {
+                PopupMenu popupMenu = new PopupMenu(context, v);
+                MenuInflater menuInflater = popupMenu.getMenuInflater();
+                menuInflater.inflate(R.menu.book_context_menu, popupMenu.getMenu());
 
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R.id.ctx_menu_rename_book:
-                                    return handleMenuRenameBook(bookName, bookUID);
-                                case R.id.ctx_menu_sync_book:
-                                    //TODO implement sync
-                                    return false;
-                                case R.id.ctx_menu_delete_book:
-                                    return handleMenuDeleteBook(bookUID);
-                                default:
-                                    return true;
-                            }
-                        }
-                    });
-
-                    String activeBookUID = BooksDbAdapter.getInstance().getActiveBookUID();
-                    if (activeBookUID.equals(bookUID)) {//we cannot delete the active book
-                        popupMenu.getMenu().findItem(R.id.ctx_menu_delete_book).setEnabled(false);
+                popupMenu.setOnMenuItemClickListener(item -> {
+                    switch (item.getItemId()) {
+                        case R.id.ctx_menu_rename_book:
+                            return handleMenuRenameBook(bookName, bookUID);
+                        case R.id.ctx_menu_sync_book:
+                            //TODO implement sync
+                            return false;
+                        case R.id.ctx_menu_delete_book:
+                            return handleMenuDeleteBook(bookUID);
+                        default:
+                            return true;
                     }
-                    popupMenu.show();
+                });
+
+                String activeBookUID = BooksDbAdapter.getInstance().getActiveBookUID();
+                if (activeBookUID.equals(bookUID)) {//we cannot delete the active book
+                    popupMenu.getMenu().findItem(R.id.ctx_menu_delete_book).setEnabled(false);
                 }
+                popupMenu.show();
             });
         }
 
@@ -236,23 +228,15 @@ public class BookManagerFragment extends ListFragment implements
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
             dialogBuilder.setTitle(R.string.title_rename_book)
                     .setView(R.layout.dialog_rename_book)
-                    .setPositiveButton(R.string.btn_rename, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            EditText bookTitle = ((AlertDialog) dialog).findViewById(R.id.input_book_title);
-                            BooksDbAdapter.getInstance()
-                                    .updateRecord(bookUID,
-                                            BookEntry.COLUMN_DISPLAY_NAME,
-                                            bookTitle.getText().toString().trim());
-                            refresh();
-                        }
+                    .setPositiveButton(R.string.btn_rename, (dialog, which) -> {
+                        EditText bookTitle = ((AlertDialog) dialog).findViewById(R.id.input_book_title);
+                        BooksDbAdapter.getInstance()
+                                .updateRecord(bookUID,
+                                        BookEntry.COLUMN_DISPLAY_NAME,
+                                        bookTitle.getText().toString().trim());
+                        refresh();
                     })
-                    .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+                    .setNegativeButton(R.string.btn_cancel, (dialog, which) -> dialog.dismiss());
             AlertDialog dialog = dialogBuilder.create();
             dialog.show();
             ((TextView) dialog.findViewById(R.id.input_book_title)).setText(bookName);

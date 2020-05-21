@@ -35,6 +35,7 @@ import org.gnucash.android.util.BackupManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 /**
@@ -54,6 +55,7 @@ public class TransactionsDeleteConfirmationDialogFragment extends DialogFragment
         return frag;
     }
 
+    @NonNull
     @Override    public Dialog onCreateDialog(Bundle savedInstanceState) {
         int title = getArguments().getInt("title");
         final long rowId = getArguments().getLong(UxArgument.SELECTED_TRANSACTION_IDS);
@@ -62,38 +64,32 @@ public class TransactionsDeleteConfirmationDialogFragment extends DialogFragment
                 .setIcon(android.R.drawable.ic_delete)
                 .setTitle(title).setMessage(message)
                 .setPositiveButton(R.string.alert_dialog_ok_delete,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                TransactionsDbAdapter transactionsDbAdapter = TransactionsDbAdapter.getInstance();
-                                if (rowId == 0) {
-                                    BackupManager.backupActiveBook(); //create backup before deleting everything
-                                    List<Transaction> openingBalances = new ArrayList<Transaction>();
-                                    boolean preserveOpeningBalances = GnuCashApplication.shouldSaveOpeningBalances(false);
-                                    if (preserveOpeningBalances) {
-                                        openingBalances = AccountsDbAdapter.getInstance().getAllOpeningBalanceTransactions();
-                                    }
-
-                                    transactionsDbAdapter.deleteAllRecords();
-
-                                    if (preserveOpeningBalances) {
-                                        transactionsDbAdapter.bulkAddRecords(openingBalances, DatabaseAdapter.UpdateMethod.insert);
-                                    }
-                                } else {
-                                    transactionsDbAdapter.deleteRecord(rowId);
+                        (dialog, whichButton) -> {
+                            TransactionsDbAdapter transactionsDbAdapter = TransactionsDbAdapter.getInstance();
+                            if (rowId == 0) {
+                                BackupManager.backupActiveBook(); //create backup before deleting everything
+                                List<Transaction> openingBalances = new ArrayList<Transaction>();
+                                boolean preserveOpeningBalances = GnuCashApplication.shouldSaveOpeningBalances(false);
+                                if (preserveOpeningBalances) {
+                                    openingBalances = AccountsDbAdapter.getInstance().getAllOpeningBalanceTransactions();
                                 }
-                                if (getTargetFragment() instanceof Refreshable) {
-                                    ((Refreshable) getTargetFragment()).refresh();
+
+                                transactionsDbAdapter.deleteAllRecords();
+
+                                if (preserveOpeningBalances) {
+                                    transactionsDbAdapter.bulkAddRecords(openingBalances, DatabaseAdapter.UpdateMethod.insert);
                                 }
-                                WidgetConfigurationActivity.updateAllWidgets(getActivity());
+                            } else {
+                                transactionsDbAdapter.deleteRecord(rowId);
                             }
+                            if (getTargetFragment() instanceof Refreshable) {
+                                ((Refreshable) getTargetFragment()).refresh();
+                            }
+                            WidgetConfigurationActivity.updateAllWidgets(getActivity());
                         }
                 )
                 .setNegativeButton(R.string.alert_dialog_cancel,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                dismiss();
-                            }
-                        }
+                        (dialog, whichButton) -> dismiss()
                 )
                 .create();
     }

@@ -450,7 +450,8 @@ public final class Money implements Comparable<Money>{
 	 * to the default locale
 	 * @return String representation of the amount formatted with default locale
 	 */
-    @Override
+    @NonNull
+	@Override
 	public String toString() {
 		return formattedString(Locale.getDefault());
 	}
@@ -506,7 +507,7 @@ public final class Money implements Comparable<Money>{
 		return mAmount.compareTo(BigDecimal.ZERO) == 0;
 	}
 
-	public class CurrencyMismatchException extends IllegalArgumentException{
+	public static class CurrencyMismatchException extends IllegalArgumentException{
 		@Override
 		public String getMessage() {
 			return "Cannot perform operation on Money instances with different currencies";

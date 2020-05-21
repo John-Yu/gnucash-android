@@ -47,8 +47,7 @@ public class PreferenceActivity extends PasscodeLockActivity implements
 
     public static final String ACTION_MANAGE_BOOKS = "org.gnucash.android.intent.action.MANAGE_BOOKS";
 
-    @BindView(R.id.slidingpane_layout)
-    SlidingPaneLayout mSlidingPaneLayout;
+    @BindView(R.id.slidingpane_layout) SlidingPaneLayout mSlidingPaneLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -128,8 +127,7 @@ public class PreferenceActivity extends PasscodeLockActivity implements
      */
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager
-                .beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();

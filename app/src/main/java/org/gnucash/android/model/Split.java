@@ -376,6 +376,7 @@ public class Split extends BaseModel implements Parcelable{
         this.mReconcileDate = reconcileDate;
     }
 
+    @NonNull
     @Override
     public String toString() {
 

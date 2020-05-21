@@ -122,27 +122,19 @@ public class CalculatorEditText extends AppCompatEditText {
     public void bindListeners(CalculatorKeyboard calculatorKeyboard){
         mCalculatorKeyboard = calculatorKeyboard;
         mContext = calculatorKeyboard.getContext();
-        setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    setSelection(getText().length());
-                    mCalculatorKeyboard.showCustomKeyboard(v);
-                } else {
-                    mCalculatorKeyboard.hideCustomKeyboard();
-                    evaluate();
-                }
+        setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                setSelection(getText().length());
+                mCalculatorKeyboard.showCustomKeyboard(v);
+            } else {
+                mCalculatorKeyboard.hideCustomKeyboard();
+                evaluate();
             }
         });
 
-        setOnClickListener(new OnClickListener() {
-            // NOTE By setting the on click listener we can show the custom keyboard again,
-            // by tapping on an edit box that already had focus (but that had the keyboard hidden).
-            @Override
-            public void onClick(View v) {
-                mCalculatorKeyboard.showCustomKeyboard(v);
-            }
-        });
+        // NOTE By setting the on click listener we can show the custom keyboard again,
+// by tapping on an edit box that already had focus (but that had the keyboard hidden).
+        setOnClickListener(v -> mCalculatorKeyboard.showCustomKeyboard(v));
 
         // Disable spell check (hex strings look like words to Android)
         setInputType(getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -156,13 +148,10 @@ public class CalculatorEditText extends AppCompatEditText {
 
         // Although this handler doesn't make sense, if removed, the standard keyboard
         // shows up in addition to the calculator one when the EditText gets a touch event.
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // XXX: Use dispatchTouchEvent()?
-                onTouchEvent(event);
-                return false;
-            }
+        setOnTouchListener((v, event) -> {
+            // XXX: Use dispatchTouchEvent()?
+            onTouchEvent(event);
+            return false;
         });
 
         ((FormActivity)mContext).setOnBackListener(mCalculatorKeyboard);

@@ -66,6 +66,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
@@ -162,7 +163,7 @@ public class SplitEditorFragment extends Fragment {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mCalculatorKeyboard = new CalculatorKeyboard(getActivity(), mKeyboardView, R.xml.calculator_keyboard);
     }
@@ -174,7 +175,7 @@ public class SplitEditorFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.split_editor_actions, menu);
     }
 
@@ -425,14 +426,11 @@ public class SplitEditorFragment extends Fragment {
             // Listeners on removeSplitButton
             //
 
-            removeSplitButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            removeSplitButton.setOnClickListener(view -> {
 
-                    mSplitsLinearLayout.removeView(splitView);
-                    mSplitItemViewList.remove(splitView);
-                    mImbalanceWatcher.afterTextChanged(null);
-                }
+                mSplitsLinearLayout.removeView(splitView);
+                mSplitItemViewList.remove(splitView);
+                mImbalanceWatcher.afterTextChanged(null);
             });
 
             //
@@ -449,14 +447,7 @@ public class SplitEditorFragment extends Fragment {
             // Set a ColorizeOnTransactionTypeChange listener
             splitTypeSwitch.setColorizeOnCheckedChangeListener();
 
-            splitTypeSwitch.addOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView,
-                                             boolean isChecked) {
-
-                    mImbalanceWatcher.afterTextChanged(null);
-                }
-            });
+            splitTypeSwitch.addOnCheckedChangeListener((buttonView, isChecked) -> mImbalanceWatcher.afterTextChanged(null));
         }
 
         private void initViews(final Split split) {
