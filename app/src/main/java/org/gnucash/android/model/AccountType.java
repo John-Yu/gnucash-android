@@ -52,9 +52,9 @@ public enum AccountType {
     //
 
     public static final String KEY_USE_NORMAL_BALANCE_EXPENSE = "KEY_USE_NORMAL_BALANCE_EXPENSE";
-    public static final String KEY_USE_NORMAL_BALANCE_INCOME  = "KEY_USE_NORMAL_BALANCE_INCOME";
-    public static final String KEY_DEBIT                      = "KEY_DEBIT";
-    public static final String KEY_CREDIT                     = "KEY_CREDIT";
+    public static final String KEY_USE_NORMAL_BALANCE_INCOME = "KEY_USE_NORMAL_BALANCE_INCOME";
+    public static final String KEY_DEBIT = "KEY_DEBIT";
+    public static final String KEY_CREDIT = "KEY_CREDIT";
 
 
     /**
@@ -81,9 +81,9 @@ public enum AccountType {
 
 
         String transactionTypePref = PreferenceActivity.getActiveBookSharedPreferences()
-                                                       .getString(GnuCashApplication.getAppContext()
-                                                                                    .getString(R.string.key_default_transaction_type),
-                                                                  KEY_USE_NORMAL_BALANCE_EXPENSE);
+                .getString(GnuCashApplication.getAppContext()
+                                .getString(R.string.key_default_transaction_type),
+                        KEY_USE_NORMAL_BALANCE_EXPENSE);
 
         final TransactionType transactionType;
 
@@ -92,8 +92,8 @@ public enum AccountType {
 
             // Use Account Normal Balance as default, except for Asset which are CREDIT by default
             transactionType = isAssetAccount()
-                              ? TransactionType.CREDIT
-                              : getNormalBalanceType();
+                    ? TransactionType.CREDIT
+                    : getNormalBalanceType();
 
         } else if (KEY_USE_NORMAL_BALANCE_INCOME.equals(transactionTypePref)) {
             // Use Normal Balance (Income Mode)
@@ -106,8 +106,8 @@ public enum AccountType {
 
             // Convert String to Enum
             transactionType = KEY_DEBIT.equals(transactionTypePref)
-                              ? TransactionType.DEBIT
-                              : TransactionType.CREDIT;
+                    ? TransactionType.DEBIT
+                    : TransactionType.CREDIT;
         }
         return transactionType;
     }
@@ -117,7 +117,7 @@ public enum AccountType {
      * Display the balance of a transaction in a text view and format the text color to match the sign of the amount
      *
      * @param balanceTextView {@link android.widget.TextView} where balance is to be displayed
-     * @param balance {@link org.gnucash.android.model.Money} balance (>0 or <0) to display
+     * @param balance         {@link org.gnucash.android.model.Money} balance (>0 or <0) to display
      */
     public void displayBalance(final TextView balanceTextView,
                                final Money balance,
@@ -128,9 +128,9 @@ public enum AccountType {
         //
 
         balanceTextView.setText(shallDisplayAbsValue
-                                ? balance.abs()
-                                         .formattedString()
-                                : balance.formattedString());
+                ? balance.abs()
+                .formattedString()
+                : balance.formattedString());
 
         //
         // Define amount color
@@ -139,13 +139,13 @@ public enum AccountType {
         @ColorInt int fontColor;
 
         if (balance.asBigDecimal()
-                   .compareTo(BigDecimal.ZERO) == 0) {
+                .compareTo(BigDecimal.ZERO) == 0) {
             // balance is null
 
             Context context = GnuCashApplication.getAppContext();
 
             fontColor = context.getResources()
-                               .getColor(android.R.color.black);
+                    .getColor(android.R.color.black);
 
         } else {
             // balance is not null
@@ -161,23 +161,21 @@ public enum AccountType {
     /**
      * Display the balance of a transaction in a text view and format the text color to match the sign of the amount
      *
-     * @param balanceTextView
-     *         {@link android.widget.TextView} where balance is to be displayed
-     * @param balance
-     *         {@link org.gnucash.android.model.Money} balance (>0 or <0) to display
+     * @param balanceTextView {@link android.widget.TextView} where balance is to be displayed
+     * @param balance         {@link org.gnucash.android.model.Money} balance (>0 or <0) to display
      */
     public void displayBalance(final TextView balanceTextView,
                                final Money balance) {
 
         displayBalance(balanceTextView,
-                       balance,
-                       false);
+                balance,
+                false);
     }
+
     /**
      * Compute red/green color according to accountType and isCreditAmount
      *
      * @param isCreditAmount
-     *
      * @return
      */
     @ColorInt
@@ -193,41 +191,47 @@ public enum AccountType {
 
             // RED
             // colorRes = R.color.debit_red;
-            if (!isExpenseOrIncomeAccount()) {
-                // It is not an Expense/Income account
+            if (isExpenseOrIncomeAccount()) {
+                // It is an Expense/Income account
+
+                // BLUE
+                colorRes = R.color.debit_expense_income;
+
+            } else if (isEquityAccount()) {
+                // It is an Equity account
+
+                colorRes = R.color.debit_equity;
+            } else {
+                // It is mot an Expense/Income account
 
                 // RED
                 colorRes = R.color.debit_red;
-
-            } else {
-                // It is an Expense/Income account
-
-                // PURPLE
-                colorRes = R.color.debit_expense_income;
             }
 
         } else {
             // Credit amount and account like Expense/Income, or Debit amount and account like Assets, Bank, Cash...)
 
-            // GREEN
-            // colorRes = R.color.credit_green;
-            if (!isExpenseOrIncomeAccount()) {
-                // It is not an Expense/Income account
-
-                // GREEN
-                colorRes = R.color.credit_green;
-
-            } else {
+            if (isExpenseOrIncomeAccount()) {
                 // It is an Expense/Income account
 
                 // BLUE
                 colorRes = R.color.credit_expense_income;
+            } else if (isEquityAccount()) {
+                // It is an Equity account
+
+                colorRes = R.color.credit_equity;
+
+            } else {
+                // It is not an Expense/Income account
+
+                // GREEN
+                colorRes = R.color.credit_green;
             }
         }
 
         return GnuCashApplication.getAppContext()
-                                 .getResources()
-                                 .getColor(colorRes);
+                .getResources()
+                .getColor(colorRes);
     }
 
     public boolean isAssetAccount() {
@@ -250,12 +254,48 @@ public enum AccountType {
         return mNormalBalance == TransactionType.DEBIT;
     }
 
+    /**
+     * Returns balance with the right signum to be displayed
+     * <p>
+     * A Debit is always the addition of a positive amount
+     * A credit is always the substraction of a positive amount
+     * The balance is always Debit - Credit
+     * Therefore :
+     * Debit > Credit => balance is > 0
+     * Debit < Credit => balance is < 0
+     * <p>
+     * But for display, habit is to reduce the use of negative numbers
+     * To achieve this, for accounts which USUALLY have :
+     * Debit > Credit => compute balance as usual
+     * Debit < Credit => negate balance
+     *
+     * @return balance with the right signum to be displayed
+     */
+    public Money getBalanceWithSignumForDisplay(final Money balance) {
+
+        final Money balanceWithSignumForDisplay;
+
+        if (hasDebitNormalBalance()) {
+            // Account usually debitor
+
+            balanceWithSignumForDisplay = balance;
+
+        } else {
+            // account usually creditor
+
+            // Negate
+            balanceWithSignumForDisplay = balance.negate();
+        }
+
+        return balanceWithSignumForDisplay;
+    }
     //
     // Getters/Setters
     //
 
     /**
      * Returns the type of normal balance this account possesses
+     *
      * @return TransactionType balance of the account type
      */
     public TransactionType getNormalBalanceType() {
