@@ -136,7 +136,7 @@
                 android:id="@+id/export_separator_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="32dp"
                 android:checkedButton="@id/radio_separator_comma_format"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">

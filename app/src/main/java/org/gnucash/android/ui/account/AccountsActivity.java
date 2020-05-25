@@ -400,7 +400,6 @@ public class AccountsActivity extends BaseDrawerActivity implements OnAccountCli
             // Default preference not to show negative number in splits
             prefs.edit().putBoolean(getString(R.string.key_display_negative_signum_in_splits), false).apply();
 
-
             // Finish Activity
             finish();
 
@@ -450,8 +449,7 @@ public class AccountsActivity extends BaseDrawerActivity implements OnAccountCli
 
             // Get Preference about double back button press to exit
             boolean prefShallUseDoubleBackPressToExit = PreferenceManager.getDefaultSharedPreferences(this)
-                    .getBoolean(getString(R.string.key_use_double_back_button_press_to_quit),
-                            true);
+                    .getBoolean(getString(R.string.key_use_double_back_button_press_to_quit), true);
 
             if (mDoubleBackButtonPressedOnce || !prefShallUseDoubleBackPressToExit) {
                 // BackPress button has already been pressed recently OR shall not use double back press to exit

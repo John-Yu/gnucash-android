@@ -81,12 +81,9 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
     };
     private static final String STATE_REPORT_TYPE = "STATE_REPORT_TYPE";
 
-    @BindView(R.id.time_range_spinner)
-    Spinner mTimeRangeSpinner;
-    @BindView(R.id.report_account_type_spinner)
-    Spinner mAccountTypeSpinner;
-    @BindView(R.id.toolbar_spinner)
-    Spinner mReportsToolbarSpinner;
+    @BindView(R.id.time_range_spinner) Spinner mTimeRangeSpinner;
+    @BindView(R.id.report_account_type_spinner) Spinner mAccountTypeSpinner;
+    @BindView(R.id.toolbar_spinner) Spinner mReportsToolbarSpinner;
 
     private TransactionsDbAdapter mTransactionsDbAdapter;
     private AccountType mAccountType = AccountType.EXPENSE;
@@ -194,8 +191,7 @@ public class ReportsActivity extends BaseDrawerActivity implements AdapterView.O
      */
     private void loadFragment(BaseReportFragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager
-                .beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();

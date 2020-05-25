@@ -242,8 +242,7 @@ public class ExportFormFragment extends Fragment implements
     }
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_export_form, container, false);
 
 		ButterKnife.bind(this, view);

@@ -186,9 +186,7 @@ public class GnuCashApplication extends MultiDexApplication {
         return mSplitsDbAdapter;
     }
 
-    public static ScheduledActionDbAdapter getScheduledEventDbAdapter(){
-        return mScheduledActionDbAdapter;
-    }
+    public static ScheduledActionDbAdapter getScheduledEventDbAdapter(){ return mScheduledActionDbAdapter; }
 
     public static CommoditiesDbAdapter getCommoditiesDbAdapter(){
         return mCommoditiesDbAdapter;
@@ -206,13 +204,9 @@ public class GnuCashApplication extends MultiDexApplication {
         return mRecurrenceDbAdapter;
     }
 
-    public static BudgetAmountsDbAdapter getBudgetAmountsDbAdapter(){
-        return mBudgetAmountsDbAdapter;
-    }
+    public static BudgetAmountsDbAdapter getBudgetAmountsDbAdapter(){ return mBudgetAmountsDbAdapter; }
 
-    public static BooksDbAdapter getBooksDbAdapter(){
-        return mBooksDbAdapter;
-    }
+    public static BooksDbAdapter getBooksDbAdapter(){ return mBooksDbAdapter; }
 
     /**
      * Returns the currently active database in the application

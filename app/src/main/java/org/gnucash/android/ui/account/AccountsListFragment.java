@@ -197,7 +197,6 @@ public class AccountsListFragment extends Fragment implements
         actionbar.setDisplayHomeAsUpEnabled(true);
         setHasOptionsMenu(true);
 
-
         // specify an adapter (see also next example)
         mAccountRecyclerAdapter = new AccountRecyclerAdapter(null);
         mRecyclerView.setAdapter(mAccountRecyclerAdapter);

@@ -71,20 +71,13 @@ public class WidgetConfigurationActivity extends Activity {
     private AccountsDbAdapter mAccountsDbAdapter;
     private int mAppWidgetId;
 
-    @BindView(R.id.input_accounts_spinner)
-    Spinner mAccountsSpinner;
-    @BindView(R.id.input_books_spinner)
-    Spinner mBooksSpinner;
-    @BindView(R.id.input_hide_account_balance)
-    CheckBox mHideAccountBalance;
-    @BindView(R.id.btn_save)
-    Button mOkButton;
-    @BindView(R.id.btn_cancel)
-    Button mCancelButton;
-
+    @BindView(R.id.input_accounts_spinner) Spinner mAccountsSpinner;
+    @BindView(R.id.input_books_spinner) Spinner mBooksSpinner;
+    @BindView(R.id.input_hide_account_balance) CheckBox mHideAccountBalance;
+    @BindView(R.id.btn_save) Button mOkButton;
+    @BindView(R.id.btn_cancel) Button mCancelButton;
 
     private SimpleCursorAdapter mAccountsCursorAdapter;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -269,8 +262,7 @@ public class WidgetConfigurationActivity extends Activity {
         } catch (IllegalArgumentException e) {
             Log.i("WidgetConfiguration", "Account not found, resetting widget " + appWidgetId);
             //if account has been deleted, let the user know
-            RemoteViews views = new RemoteViews(context.getPackageName(),
-                    R.layout.widget_4x1);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_4x1);
             views.setTextViewText(R.id.account_name, context.getString(R.string.toast_account_deleted));
             views.setTextViewText(R.id.transactions_summary, "");
             //set it to simply open the app
@@ -285,8 +277,7 @@ public class WidgetConfigurationActivity extends Activity {
             return;
         }
 
-        final RemoteViews views = new RemoteViews(context.getPackageName(),
-                R.layout.widget_4x1);
+        final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_4x1);
         views.setTextViewText(R.id.account_name, account.getName());
 
         Money accountBalance = accountsDbAdapter.getAccountBalance(accountUID, -1, System.currentTimeMillis());
@@ -294,8 +285,7 @@ public class WidgetConfigurationActivity extends Activity {
         if (hideAccountBalance) {
             views.setViewVisibility(R.id.transactions_summary, View.GONE);
         } else {
-            views.setTextViewText(R.id.transactions_summary,
-                    accountBalance.formattedString(Locale.getDefault()));
+            views.setTextViewText(R.id.transactions_summary, accountBalance.formattedString(Locale.getDefault()));
             int color = accountBalance.isNegative() ? R.color.debit_red : R.color.credit_green;
             views.setTextColor(R.id.transactions_summary, ContextCompat.getColor(context, color));
         }
@@ -306,8 +296,7 @@ public class WidgetConfigurationActivity extends Activity {
         accountViewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         accountViewIntent.putExtra(UxArgument.SELECTED_ACCOUNT_UID, accountUID);
         accountViewIntent.putExtra(UxArgument.BOOK_UID, bookUID);
-        PendingIntent accountPendingIntent = PendingIntent
-                .getActivity(context, appWidgetId, accountViewIntent, 0);
+        PendingIntent accountPendingIntent = PendingIntent.getActivity(context, appWidgetId, accountViewIntent, 0);
         views.setOnClickPendingIntent(R.id.widget_layout, accountPendingIntent);
 
         if (accountsDbAdapter.isPlaceholderAccount(accountUID)) {
@@ -320,8 +309,7 @@ public class WidgetConfigurationActivity extends Activity {
             newTransactionIntent.putExtra(UxArgument.FORM_TYPE, FormActivity.FormType.TRANSACTION.name());
             newTransactionIntent.putExtra(UxArgument.BOOK_UID, bookUID);
             newTransactionIntent.putExtra(UxArgument.SELECTED_ACCOUNT_UID, accountUID);
-            PendingIntent pendingIntent = PendingIntent
-                    .getActivity(context, appWidgetId, newTransactionIntent, 0);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, newTransactionIntent, 0);
             views.setOnClickPendingIntent(R.id.btn_new_transaction, pendingIntent);
             views.setViewVisibility(R.id.btn_view_account, View.GONE);
         }

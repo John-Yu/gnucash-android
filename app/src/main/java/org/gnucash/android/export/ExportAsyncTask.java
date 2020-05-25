@@ -17,6 +17,7 @@
 
 package org.gnucash.android.export;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -90,6 +91,7 @@ public class ExportAsyncTask extends AsyncTask<ExportParams, Void, Boolean> {
     /**
      * App context
      */
+    @SuppressLint("StaticFieldLeak")
     private final Context mContext;
 
     private ProgressDialog mProgressDialog;
@@ -139,9 +141,9 @@ public class ExportAsyncTask extends AsyncTask<ExportParams, Void, Boolean> {
     @Override
     protected Boolean doInBackground(ExportParams... params) {
         mExportParams = params[0];
-        mExporter = getExporter();
 
         try {
+            mExporter = getExporter();
             mExportedFiles = mExporter.generateExport();
         } catch (final Exception e) {
             Log.e(TAG, "Error exporting: " + e.getMessage());
@@ -176,6 +178,8 @@ public class ExportAsyncTask extends AsyncTask<ExportParams, Void, Boolean> {
      */
     @Override
     protected void onPostExecute(Boolean exportSuccessful) {
+        super.onPostExecute(exportSuccessful);
+
         if (exportSuccessful) {
             if (mContext instanceof Activity)
                 reportSuccess();

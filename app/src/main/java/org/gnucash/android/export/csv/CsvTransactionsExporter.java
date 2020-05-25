@@ -53,17 +53,7 @@ public class CsvTransactionsExporter extends Exporter{
 
     private char mCsvSeparator;
 
-    private DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd", Locale.US);
-
-    /**
-     * Construct a new exporter with export parameters
-     * @param params Parameters for the export
-     */
-    public CsvTransactionsExporter(ExportParams params) {
-        super(params, null);
-        mCsvSeparator = params.getCsvSeparator();
-        LOG_TAG = "GncXmlExporter";
-    }
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd", Locale.US);
 
     /**
      * Overloaded constructor.
@@ -74,7 +64,7 @@ public class CsvTransactionsExporter extends Exporter{
     public CsvTransactionsExporter(ExportParams params, SQLiteDatabase db) {
         super(params, db);
         mCsvSeparator = params.getCsvSeparator();
-        LOG_TAG = "GncXmlExporter";
+        LOG_TAG = "CSVTExporter";
     }
 
     @Override
