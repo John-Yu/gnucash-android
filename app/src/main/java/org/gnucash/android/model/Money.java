@@ -441,6 +441,15 @@ public final class Money implements Comparable<Money>{
 	 *
 	 * @return String representation of the amount (without currency) of the Money object
 	 */
+	public String toShortString(){
+		return String.format(Locale.getDefault(), "%.0f", asDouble());
+	}
+
+	/**
+	 * Returns a locale-specific representation of the amount of the Money object (excluding the currency)
+	 *
+	 * @return String representation of the amount (without currency) of the Money object
+	 */
 	public String toLocaleString(){
 		return String.format(Locale.getDefault(), "%.2f", asDouble());
 	}
@@ -481,8 +490,8 @@ public final class Money implements Comparable<Money>{
 		Money other = (Money) obj;
 		if (!mAmount.equals(other.mAmount))
 			return false;
-		return mCommodity.equals(other.mCommodity);
-	}
+        return mCommodity.equals(other.mCommodity);
+    }
 
 	@Override
 	public int compareTo(@NonNull Money another) {

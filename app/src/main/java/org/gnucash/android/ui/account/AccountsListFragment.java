@@ -279,7 +279,7 @@ public class AccountsListFragment extends Fragment implements
 
             SearchManager searchManager =
                     (SearchManager) GnuCashApplication.getAppContext().getSystemService(Context.SEARCH_SERVICE);
-            mSearchView = (SearchView)
+            mSearchView = (androidx.appcompat.widget.SearchView)
                 MenuItemCompat.getActionView(menu.findItem(R.id.menu_search));
             if (mSearchView == null)
                 return;

@@ -43,6 +43,7 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 import org.gnucash.android.R;
+import org.gnucash.android.app.GnuCashApplication;
 import org.gnucash.android.db.DatabaseSchema;
 import org.gnucash.android.db.adapter.AccountsDbAdapter;
 import org.gnucash.android.db.adapter.CommoditiesDbAdapter;
@@ -155,7 +156,8 @@ public class SplitEditorFragment extends Fragment {
             view.findViewById(R.id.input_accounts_spinner).setEnabled(false);
             view.findViewById(R.id.btn_remove_split).setVisibility(View.GONE);
 
-            accountType.displayBalance(mImbalanceTextView,
+            // Display imbalance with signum and currency as if it was an asset
+            AccountType.ASSET.displayBalance(mImbalanceTextView,
                                        new Money(mBaseAmount.negate(),
                                                  mCommodity));
         }
@@ -401,7 +403,7 @@ public class SplitEditorFragment extends Fragment {
             this.splitView = splitView;
 
             // Set Listeners
-            setListeners();
+            setListeners(split);
 
             if (split != null && !split.getQuantity()
                                        .equals(split.getValue())) {
@@ -412,7 +414,7 @@ public class SplitEditorFragment extends Fragment {
             initViews(split);
         }
 
-        private void setListeners() {
+        private void setListeners(Split split) {
 
             //
             // Listeners on splitAmountEditText
@@ -447,7 +449,21 @@ public class SplitEditorFragment extends Fragment {
             // Set a ColorizeOnTransactionTypeChange listener
             splitTypeSwitch.setColorizeOnCheckedChangeListener();
 
-            splitTypeSwitch.addOnCheckedChangeListener((buttonView, isChecked) -> mImbalanceWatcher.afterTextChanged(null));
+            splitTypeSwitch.addOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView,
+                                             boolean isChecked) {
+
+                    // Change Transaction Type according to splitTypeSwitch
+                    split.setType(splitTypeSwitch.getTransactionType());
+
+                    // Update Split Amount Signum
+                    updateSplitAmountEditText(split);
+
+                    // Recompute Split List Balance
+                    mImbalanceWatcher.afterTextChanged(null);
+                }
+            });
         }
 
         private void initViews(final Split split) {
@@ -490,17 +506,8 @@ public class SplitEditorFragment extends Fragment {
                 splitAmountEditText.setCommodity(split.getValue()
                                                       .getCommodity());
 
-                // Get Preference about showing signum in Splits
-                boolean shallDisplayNegativeSignumInSplits = PreferenceManager.getDefaultSharedPreferences(getActivity())
-                                                                              .getBoolean(getString(R.string.key_display_negative_signum_in_splits),
-                                                                                          false);
-
-                // Display abs value because switch button is visible
-                splitAmountEditText.setValue(shallDisplayNegativeSignumInSplits
-                                             ? split.getValueWithSignum()
-                                                    .asBigDecimal()
-                                             : split.getValueWithSignum()
-                                                  .asBigDecimal().abs());
+                // Update Split Amount EditText
+                updateSplitAmountEditText(split);
 
                 splitCurrencyTextView.setText(split.getValue()
                                                    .getCommodity()
@@ -518,6 +525,24 @@ public class SplitEditorFragment extends Fragment {
 
                 splitTypeSwitch.setChecked(split.getType());
             }
+        }
+
+        private void updateSplitAmountEditText(final Split split) {
+
+            // Get Preference about showing signum in Splits
+            boolean shallDisplayNegativeSignumInSplits = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                                                                          .getBoolean(getString(R.string.key_display_negative_signum_in_splits),
+                                                                                      false);
+
+            final Money splitValueWithSignum = split.getValueWithSignum();
+
+            AccountType accountType = GnuCashApplication.getAccountsDbAdapter()
+                                                        .getAccountType(split.getAccountUID());
+
+            // Display abs value because switch button is visible
+            accountType.displayBalanceWithoutCurrency(splitAmountEditText,
+                                                      splitValueWithSignum,
+                                                      shallDisplayNegativeSignumInSplits);
         }
 
         /**
@@ -567,7 +592,7 @@ public class SplitEditorFragment extends Fragment {
     //
 
     /**
-     * Updates the displayed balance of the accounts when the amount of a split is changed
+     * Updates the displayed balance of the list of Splits when the amount of a split is changed
      */
     private class BalanceTextWatcher
             implements TextWatcher {
@@ -643,6 +668,9 @@ public class SplitEditorFragment extends Fragment {
 
             } // for
 
+//            AccountType accountType = mAccountsDbAdapter.getAccountType(mAccountUID);
+
+            // Display imbalance with signum and currency as if it was an asset
             AccountType.ASSET.displayBalance(mImbalanceTextView,
                                              new Money(imbalance,
                                                        mCommodity));

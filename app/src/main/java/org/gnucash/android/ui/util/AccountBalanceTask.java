@@ -78,6 +78,7 @@ public class AccountBalanceTask extends AsyncTask<String, Void, Money> {
 
                 final AccountType accountType = accountsDbAdapter.getAccountType(mAccountUID);
 
+                // Get Preference about showing signum in Splits
                 accountType.displayBalance(balanceTextView,
                                            balance);
             }
