@@ -78,7 +78,7 @@ android {
     buildTypes {
         //todo re-enable proguard and test coverage
         release {
-            minifyEnabled true
+//            minifyEnabled true
 //            shrinkResources true
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (project.hasProperty("RELEASE_STORE_FILE")) {
@@ -204,19 +204,19 @@ dependencies {
             'org.jraf:android-switch-backport:2.0.1@aar',
             'com.github.PhilJay:MPAndroidChart:v2.1.3',
             'joda-time:joda-time:2.10.6',
-            'com.google.android.gms:play-services-drive:9.6.1',
+            'com.google.android.gms:play-services-drive:17.0.0',
             'io.github.kobakei:ratethisapp:1.1.3',
-            'com.squareup:android-times-square:1.6.5@aar',
+            'com.squareup:android-times-square:1.7.10@aar',
             'com.github.techfreak:wizardpager:1.0.3',
-            'net.objecthunter:exp4j:0.4.7',
-            'org.apache.jackrabbit:jackrabbit-webdav:2.13.3',
-            'com.dropbox.core:dropbox-core-sdk:3.0.3',
+            'net.objecthunter:exp4j:0.4.8',
+            'com.dropbox.core:dropbox-core-sdk:3.1.3',
             'androidx.multidex:multidex:2.0.1',
-            'androidx.preference:preference:1.1.0',
-            'androidx.core:core:1.3.0-rc01',
+            'androidx.preference:preference:1.1.1',
+            'androidx.core:core:1.4.0-alpha01',
             'androidx.cardview:cardview:1.0.0',
             'com.google.android.material:material:1.1.0',
-            'androidx.fragment:fragment:1.3.0-alpha04'
+            'androidx.fragment:fragment:1.3.0-alpha05',
+            'org.apache.jackrabbit:jackrabbit-webdav:2.13.3'  //2.13.3
     )
 
     debugImplementation 'com.facebook.stetho:stetho:1.5.1'
@@ -235,17 +235,17 @@ dependencies {
     }
 
 
-    testImplementation 'org.robolectric:robolectric:3.5.1'
+    testImplementation 'org.robolectric:robolectric:4.3.1'
 
     testImplementation(
-            'junit:junit:4.12',
+            'junit:junit:4.13',
             'joda-time:joda-time:2.10.6',
-            'org.assertj:assertj-core:1.7.1'
+            'org.assertj:assertj-core:3.16.1'
     )
     testImplementation 'org.robolectric:shadows-multidex:4.3.1'
 
     androidTestImplementation(
-            'androidx.annotation:annotation:1.1.0',
+            'androidx.annotation:annotation:1.2.0-alpha01',
             'androidx.test:runner:1.2.0',
             'androidx.test:rules:1.2.0',
             'androidx.test.espresso:espresso-core:3.2.0',
@@ -257,11 +257,11 @@ dependencies {
         exclude module: 'recyclerview-v7'
     }
 
-    androidTestImplementation('com.squareup.assertj:assertj-android:1.1.1') {
+    androidTestImplementation('com.squareup.assertj:assertj-android:1.2.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
 
-    androidTestImplementation 'com.squareup.spoon:spoon-client:1.6.4'
+    androidTestImplementation 'com.squareup.spoon:spoon-client:1.7.1'
 
     testImplementation 'org.mockito:mockito-core:3.3.3'
     androidTestImplementation 'org.mockito:mockito-android:3.3.3'
