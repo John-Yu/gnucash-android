@@ -789,10 +789,10 @@ public class TransactionFormFragment extends Fragment implements
         mTransactionTypeSwitch.setColorizeOnCheckedChangeListener();
 
         mTransactionTypeSwitch.addOnCheckedChangeListener((buttonView, isChecked) -> {
-
+            // UI to Transaction
+            Transaction transaction = extractTransactionFromView();
             // Compute balance signed value of saved transaction
-            final Money signedTransactionBalance = mTransaction.getBalance(mAccountUID);
-
+            final Money signedTransactionBalance = transaction.getBalance(mAccountUID);
             // Update Amount Signum
             updateAmountEditText(signedTransactionBalance);
         });
@@ -985,7 +985,12 @@ public class TransactionFormFragment extends Fragment implements
         transaction.setNote(notes);
         transaction.setSplits(splits);
         transaction.setExported(false); //not necessary as exports use timestamps now. Because, legacy
+        if (mEditMode) {
+            // Editing an existing transaction
 
+            // reset the transaction UID
+            transaction.setUID(mTransaction.getUID());
+        }
         return transaction;
     }
 
@@ -1029,14 +1034,14 @@ public class TransactionFormFragment extends Fragment implements
             startTransferFunds();
             return;
         }
+        //
+        // UI to Transaction, with same UID if transaction edit mode
+        //
+        mTransaction = extractTransactionFromView();
 
-        Transaction transaction = extractTransactionFromView();
-
-        if (mEditMode) { //if editing an existing transaction
-            transaction.setUID(mTransaction.getUID());
-        }
-
-        mTransaction = transaction;
+        //
+        // Save transaction in DB
+        //
         mAccountsDbAdapter.beginTransaction();
 
         try {
